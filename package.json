@@ -1,0 +1,24 @@
+{
+  "name": "graphicsearch.ahk",
+  "version": "0.1.0",
+  "description": "Capture screen graphics, turn graphics into text, and then find them",
+  "main": "export.ahk",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chunjee/graphicsearch.ahk.git"
+  },
+  "keywords": [
+    "ahk",
+    "findtext",
+    "imagesearch"
+  ],
+  "author": "Shawn Brooker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chunjee/graphicsearch.ahk/issues"
+  },
+  "homepage": "https://github.com/Chunjee/graphicsearch.ahk#readme"
+}
