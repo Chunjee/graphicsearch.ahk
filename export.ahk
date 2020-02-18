@@ -750,7 +750,7 @@ class graphicsearch {
         {
         x := v.x, y := v.y, add := 1
         For k2,v2 in ypos
-            if Abs(y-v2)<=dy
+            if Abs(y-v2) <= dy
             {
             y := v2, add := 0
             Break
