@@ -13,8 +13,6 @@ See [quickstart](/quickstart) for installation, inclusion, and initializiation.
 
 ## .search
 
-#### Arguments
-
 X1, Y1                  the search scope's upper left corner coordinates
 
 X2, Y2                  the search scope's lower right corner coordinates
@@ -37,3 +35,25 @@ offsetX, offsetY        Set the Max text offset for combination lookup
 The method returns an array of objects containing all lookup results, Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:Comment}, 
 If no graphic is found, the method returns an empty array.
 All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
+
+## .scan
+
+#### Arguments
+
+**[string=''] (string):** The string to truncate.
+
+**[options:={}] (Object)**: The options object.
+
+**[options.x1:=0] (number)** /
+**[options.y1:=0] (number)**: the search scope's upper left corner coordinates
+
+**[options.x2:=A_ScreenWidth] (number)**: /
+**[options.y2:=A_ScreenHeight] (number)**: the search scope's lower right corner coordinates
+
+**[options.err0:=0] (number)**: /
+**[options.err1:=0] (number)**: Fault tolerance of graphic and background (0.1=10%)
+
+[options.omission='...'] (string): The string to indicate text is omitted.
+
+[options.separator] (RegExp|string): The separator pattern to truncate to.
