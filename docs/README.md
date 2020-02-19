@@ -11,7 +11,8 @@ See [quickstart](/quickstart) for installation, inclusion, and initializiation.
 
 # Methods
 
-## .search
+
+## .find
 
 X1, Y1                  the search scope's upper left corner coordinates
 
@@ -19,7 +20,7 @@ X2, Y2                  the search scope's lower right corner coordinates
 
 err1, err0              Fault tolerance percentage of text and background (0.1=10%)
 
-Text                    can be a lot of text parsed into images, separated by "|"
+Text                    images parsed into text. Can be multiple GraphicsSearch queries separated by `|`
 
 ScreenShot              if the value is 0, the last ScreenShot will be used
 
@@ -39,11 +40,13 @@ All coordinates are relative to Screen, colors are in RGB format, and combinatio
 #### Example
 
 ```autohotkey
-oGraphicSearch.search(x1, y1, x2, y2, err1, err0, text, ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
+oGraphicSearch.search(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
 ```
 
 
-## .scan
+## .search
+
+functionally identicle to `.find` but uses an options object instead of many arguments
 
 #### Arguments
 
@@ -57,12 +60,10 @@ oGraphicSearch.search(x1, y1, x2, y2, err1, err0, text, ScreenShot := 1, FindAll
 **[options.x2:=A_ScreenWidth] (number)**: /
 **[options.y2:=A_ScreenHeight] (number)**: the search scope's lower right corner coordinates
 
+**[options.err1:=0] (number)**: /
+**[options.err0:=0] (number)**: Fault tolerance of graphic and background (0.1=10%)
+
 **[options.err0:=0] (number)**: /
-**[options.err1:=0] (number)**: Fault tolerance of graphic and background (0.1=10%)
-
-[options.omission='...'] (string): The string to indicate text is omitted
-
-[options.separator] (RegExp|string): The separator pattern to truncate to
 
 ```autohotkey
 optionsObj := {   "x1": 0
@@ -77,5 +78,7 @@ optionsObj := {   "x1": 0
                 , "offsetx": 1
                 , "offsety": 1 }
 
-oGraphicSearch.scan("|<HumanReadableTag>*165$22.03z", optionsObj)
+oGraphicSearch.scan("|<tag>*165$22.03z", optionsObj)
 ```
+
+## .scan
