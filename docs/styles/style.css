@@ -354,8 +354,8 @@ pre[data-lang] {
 }
 .markdown-section {
   position: relative;
-  max-width: var(--content-max-width);
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0px;
   padding: 2rem 45px;
 }
 .app-nav:not(:empty) ~ main .markdown-section {
