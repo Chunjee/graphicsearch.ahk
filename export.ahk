@@ -1,6 +1,20 @@
 class graphicsearch {
 
-    search(x1, y1, x2, y2, err1, err0, text, ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
+    static optionsObj := {    "x1": 0
+                            , "y1": 0
+                            , "x2": A_ScreenWidth
+                            , "y2": A_ScreenHeight
+                            , "err0": 0
+                            , "err1": 0
+                            , "screenshot": 1
+                            , "findall": 1
+                            , "joinstring": 1
+                            , "offsetx": 1
+                            , "offsety": 1 }
+    static screenshot := ""
+
+
+    find(x1, y1, x2, y2, err1, err0, text, ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
     {
         local
         savedBatchLines := A_BatchLines
@@ -14,7 +28,7 @@ class graphicsearch {
         }
         bits := this.GetBitsFromScreen(x, y, w, h, ScreenShot, zx, zy, zw, zh)
         sx := x - zx, sy := y-zy, sw := w, sh := h, arr := [], info := []
-        Loop, Parse, text, |
+        loop, Parse, text, |
         if IsObject(j := this.PicInfo(A_LoopField))
             info.Push(j)
         if (!(num := info.MaxIndex()) || !bits.1) {
@@ -22,35 +36,36 @@ class graphicsearch {
             return []
         }
         VarSetCapacity(input, num*7*4), k := 0
-        Loop, % num
+        loop, % num
             k+=Round(info[A_Index].2 * info[A_Index].3)
             VarSetCapacity(s1, k * 4), VarSetCapacity(s0, k * 4)
             , VarSetCapacity(gs, sw * sh), VarSetCapacity(ss, sw * sh)
             , allpos_max := (FindAll ? 1024 : 1)
             , VarSetCapacity(allpos, allpos_max*4)
-        Loop, 2
+        loop, 2
         {
             if (err1 = 0 && err0 = 0) && (num > 1 || A_Index>1) {
                 err1 := 0.1, err0 := 0.05
             }
-            if (JoinText)
-            {
+            if (JoinText) {
                 j := info[1], mode := j.8, color := j.9, n := j.10
                 , w1 := -1, h1 := j.3, comment := "", v := "", i := 0
-                Loop, % num
+                loop, % num
                 {
-                j := info[A_Index], w1+=j.2+1, comment.=j.11
-                Loop, 7
-                    NumPut((A_Index=1 ? StrLen(v)
-                    : A_Index=6 && err1 && !j.12 ? Round(j.4 * err1)
-                    : A_Index=7 && err0 && !j.12 ? Round(j.5 * err0)
-                    : j[A_Index]), input, 4*(i++), "int")
-                v .= j.1
+                    j := info[A_Index], w1+=j.2+1, comment.=j.11
+                    loop, 7
+                    {
+                        NumPut((A_Index=1 ? StrLen(v)
+                        : A_Index=6 && err1 && !j.12 ? Round(j.4 * err1)
+                        : A_Index=7 && err0 && !j.12 ? Round(j.5 * err0)
+                        : j[A_Index]), input, 4*(i++), "int")
+                    }
+                    v .= j.1
                 }
                 ok := this.PicFind( mode, color, n, offsetX, offsetY
                 , bits, sx, sy, sw, sh, gs, ss, v, s1, s0
                 , input,num*7, allpos, allpos_max )
-                Loop, % ok
+                loop, % ok
                 {
                     pos := NumGet(allpos, 4*(A_Index-1), "uint")
                     , rx := (pos&0xFFFF)+zx, ry := (pos>>16)+zy
@@ -58,10 +73,10 @@ class graphicsearch {
                     , x:rx+w1//2, y:ry+h1//2, id:comment} )
                 }
             } else {
-                For i, j in info {
+                for i, j in info {
                     mode := j.8, color := j.9, n := j.10, comment := j.11
                     , w1 := j.2, h1 := j.3, v := j.1
-                    Loop, 7
+                    loop, 7
                         NumPut((A_Index=1 ? 0
                         : A_Index=6 && err1 && !j.12 ? Round(j.4*err1)
                         : A_Index=7 && err0 && !j.12 ? Round(j.5*err0)
@@ -69,37 +84,54 @@ class graphicsearch {
                     ok := this.PicFind( mode,color,n,offsetX,offsetY
                     , bits,sx,sy,sw,sh,gs,ss,v,s1,s0
                     , input,7,allpos,allpos_max )
-                    Loop, % ok
+                    loop, % ok
                         pos := NumGet(allpos, 4*(A_Index-1), "uint")
                         , rx := (pos&0xFFFF)+zx, ry := (pos>>16)+zy
                         , arr.Push( {1:rx, 2:ry, 3:w1, 4:h1
                         , x:rx+w1//2, y:ry+h1//2, id:comment} )
                     if (ok && !FindAll) {
-                        Break
+                        break
                     }
                 }
             }
             if (err1=0 && err0=0 && num=1 && !arr.MaxIndex())
             {
                 k := 0
-                For i,j in info {
+                for i,j in info {
                     k += (!j.12)
                 }
                 if (k = 0) {
-                    Break
+                    break
                 }
             } else {
-                Break
+                break
             }
         }
         SetBatchLines, %savedBatchLines%
         return arr
     }
 
+
+    search(param_string, param_options)
+    {
+        optionsObj := {   "x1": 0
+                        , "y1": 0
+                        , "x2": A_ScreenWidth
+                        , "y2": A_ScreenHeight
+                        , "err0": 0
+                        , "err1": 0
+                        , "screenshot": 1
+                        , "findall": 1
+                        , "joinstring": 1
+                        , "offsetx": 1
+                        , "offsety": 1 }
+
+    }
+
+
     ; Bind the window so that it can find images when obscured
     ; by other windows, it's equivalent to always being
     ; at the front desk. Unbind Window using BindWindow(0)
-
     BindWindow(window_id := 0, set_exstyle := 0, get := 0)
     {
         local
@@ -113,12 +145,12 @@ class graphicsearch {
         {
             WinGet, old, ExStyle, ahk_id %id%
             WinSet, Transparent, 255, ahk_id %id%
-            Loop, 30
+            loop, 30
             {
             Sleep, 100
             WinGet, i, Transparent, ahk_id %id%
             }
-            Until (i=255)
+            until (i=255)
         }
         }
         else
@@ -128,6 +160,7 @@ class graphicsearch {
         id := old := 0
         }
     }
+
 
     xywh2xywh(x1,y1,w1,h1, ByRef x,ByRef y,ByRef w,ByRef h, ByRef zx := "", ByRef zy := "", ByRef zw := "", ByRef zh := "")
     {
@@ -141,6 +174,7 @@ class graphicsearch {
         up := up<zy ? zy:up, down := down>zy+zh-1 ? zy+zh-1:down
         x := left, y := up, w := right-left+1, h := down-up+1
     }
+
 
     GetBitsFromScreen(x, y, w, h, ScreenShot := 1, ByRef zx := "", ByRef zy := "", ByRef zw := "", ByRef zh := "")
     {
@@ -208,11 +242,12 @@ class graphicsearch {
         return bits
     }
 
+
     PicInfo(text)
     {
         local
         static info := []
-        If !InStr(text,"$")
+        if !InStr(text,"$")
         return
         if (info[text])
         return info[text]
@@ -253,6 +288,7 @@ class graphicsearch {
         return info[text] := [v,w1,h1,len1,len0,e1,e0
         , mode,color,n,comment,set_e1_e0]
     }
+
 
     PicFind(mode, color, n, offsetX, offsetY, bits, sx, sy, sw, sh
         , ByRef gs, ByRef ss, ByRef text, ByRef s1, ByRef s0
@@ -532,6 +568,7 @@ class graphicsearch {
         , Ptr,&input, "int",num, Ptr,&allpos, "int",allpos_max)
     }
 
+
     MCode(ByRef code, hex)
     {
         local
@@ -540,13 +577,14 @@ class graphicsearch {
         VarSetCapacity(code, len := StrLen(hex)//2)
         lls := A_ListLines=0 ? "Off" : "On"
         ListLines, Off
-        Loop, % len
+        loop, % len
         NumPut("0x" SubStr(hex,2*A_Index-1,2),code,A_Index-1,"uchar")
         ListLines, %lls%
         Ptr := A_PtrSize ? "UPtr" : "UInt", PtrP := Ptr "*"
         DllCall("VirtualProtect",Ptr,&code, Ptr,len,"uint",0x40,PtrP,0)
         SetBatchLines, %bch%
     }
+
 
     base64tobit(s)
     {
@@ -555,7 +593,7 @@ class graphicsearch {
         . "abcdefghijklmnopqrstuvwxyz"
         lls := A_ListLines=0 ? "Off" : "On"
         ListLines, Off
-        Loop, Parse, Chars
+        loop, Parse, Chars
         {
         i := A_Index-1, v := (i>>5&1) . (i>>4&1)
             . (i>>3&1) . (i>>2&1) . (i>>1&1) . (i&1)
@@ -564,6 +602,7 @@ class graphicsearch {
         ListLines, %lls%
         return RegExReplace(RegExReplace(s,"10*$"),"[^01]+")
     }
+
 
     bit2base64(s)
     {
@@ -575,7 +614,7 @@ class graphicsearch {
         . "abcdefghijklmnopqrstuvwxyz"
         lls := A_ListLines=0 ? "Off" : "On"
         ListLines, Off
-        Loop, Parse, Chars
+        loop, Parse, Chars
         {
         i := A_Index-1, v := "|" . (i>>5&1) . (i>>4&1)
             . (i>>3&1) . (i>>2&1) . (i>>1&1) . (i&1)
@@ -584,6 +623,7 @@ class graphicsearch {
         ListLines, %lls%
         return s
     }
+
 
     ASCII(s)
     {
@@ -597,10 +637,10 @@ class graphicsearch {
         return s
     }
 
+
     ; You can put the text library at the beginning of the script,
     ; and Use this.PicLib(Text,1) to add the text library to this.PicLib()'s Lib,
     ; Use this.PicLib("comment1|comment2|...") to get text images from Lib
-
     PicLib(comments, add_to_Lib := 0, index := 1)
     {
         local
@@ -608,11 +648,11 @@ class graphicsearch {
         if (add_to_Lib)
         {
         re := "<([^>]*)>[^$]+\$\d+\.[\w+/]+"
-        Loop, Parse, comments, |
+        loop, Parse, comments, |
             if RegExMatch(A_LoopField,re,r)
             {
             s1 := Trim(r1), s2 := ""
-            Loop, Parse, s1
+            loop, Parse, s1
                 s2.="_" . Format("{:d}",Ord(A_LoopField))
             Lib[index,s2] := r
             }
@@ -621,10 +661,10 @@ class graphicsearch {
         else
         {
         Text := ""
-        Loop, Parse, comments, |
+        loop, Parse, comments, |
         {
             s1 := Trim(A_LoopField), s2 := ""
-            Loop, Parse, s1
+            loop, Parse, s1
             s2.="_" . Format("{:d}",Ord(A_LoopField))
             Text.="|" . Lib[index,s2]
         }
@@ -632,14 +672,15 @@ class graphicsearch {
         }
     }
 
+
     PicN(Number, index := 1)
     {
         return this.PicLib(RegExReplace(Number,".","|$0"), 0, index)
     }
 
+
     ; Use PicX(Text) to automatically cut into multiple characters
     ; Can't be used in ColorPos mode, because it can cause position errors
-
     PicX(Text)
     {
         local
@@ -648,12 +689,12 @@ class graphicsearch {
         v := this.base64tobit(r3), Text := ""
         c := StrLen(StrReplace(v,"0"))<=StrLen(v)//2 ? "1":"0"
         wz := RegExReplace(v,".{" r2 "}","$0`n")
-        While InStr(wz,c)
+        while InStr(wz,c)
         {
-        While !(wz~="m`n)^" c)
+        while !(wz~="m`n)^" c)
             wz := RegExReplace(wz,"m`n)^.")
         i := 0
-        While (wz~="m`n)^.{" i "}" c)
+        while (wz~="m`n)^.{" i "}" c)
             i := Format("{:d}",i+1)
         v := RegExReplace(wz,"m`n)^(.{" i "}).*","$1")
         wz := RegExReplace(wz,"m`n)^.{" i "}")
@@ -663,8 +704,8 @@ class graphicsearch {
         return Text
     }
 
-    ; ScreenShot and retained as the last this.ScreenShot.
 
+    ; ScreenShot and retained as the last this.ScreenShot.
     ScreenShot(x1 := "", y1 := "", x2 := "", y2 := "")
     {
         local
@@ -677,10 +718,10 @@ class graphicsearch {
         this.GetBitsFromScreen(x,y,w,h,1,zx,zy,zw,zh)
     }
 
+
     ; Get the RGB color of a point from the last this.ScreenShot.
     ; If the point to get the color is beyond the range of
     ; Screen, it will return White color (0xFFFFFF).
-
     ScreenShot_GetColor(x,y)
     {
         local
@@ -690,40 +731,40 @@ class graphicsearch {
         +(y-zy)*bits.2+(x-zx)*4,"uint")&0xFFFFFF)
     }
 
+
     ; Identify a line of text or verification code
     ; based on the result returned by this.search()
     ; Return Association array {ocr:Text, x:X, y:Y}
-
     OcrOK(ok, offsetX := 20, offsetY := 20)
     {
         local
         ocr_Text := ocr_X := ocr_Y := min_X := ""
-        For k,v in ok
+        for k,v in ok
         x := v.1
         , min_X := (A_Index=1 or x<min_X ? x : min_X)
         , max_X := (A_Index=1 or x>max_X ? x : max_X)
-        While (min_X!="" and min_X<=max_X)
+        while (min_X!="" and min_X<=max_X)
         {
         LeftX := ""
-        For k,v in ok
+        for k,v in ok
         {
             x := v.1, y := v.2, w := v.3, h := v.4
             if (x<min_X) or Abs(y-ocr_Y)>offsetY
-            Continue
+            continue
             ; Get the leftmost X coordinates
             if (LeftX="" or x<LeftX)
             LeftX := x, LeftY := y, LeftW := w, LeftH := h, LeftOCR := v.id
             else if (x=LeftX)
             {
-            Loop, 100
+            loop, 100
             {
                 err := (A_Index-1)/100+0.000001
                 if this.search(LeftX,LeftY,LeftX+LeftW-1,LeftY+LeftH-1,err,err,Text,0).Count()
-                Break
+                break
                 if this.search(x, y, x+w-1, y+h-1, err, err, Text, 0).Count()
                 {
                 LeftX := x, LeftY := y, LeftW := w, LeftH := h, LeftOCR := v.id
-                Break
+                break
                 }
             }
             }
@@ -738,6 +779,7 @@ class graphicsearch {
         return {ocr:ocr_Text, x:ocr_X, y:ocr_Y}
     }
 
+
     ; Sort the results returned by this.search() from left to right
     ; and top to bottom, ignore slight height difference
     SortResult(ok, dy := 10)
@@ -746,10 +788,10 @@ class graphicsearch {
         if !IsObject(ok)
         return ok
         ypos := []
-        For k,v in ok
+        for k,v in ok
         {
         x := v.x, y := v.y, add := 1
-        For k2,v2 in ypos
+        for k2,v2 in ypos
             if Abs(y-v2) <= dy
             {
             y := v2, add := 0
@@ -761,10 +803,11 @@ class graphicsearch {
         }
         Sort, s, N D-
         ok2 := []
-        Loop, Parse, s, -
+        loop, Parse, s, -
         ok2.Push( ok[(StrSplit(A_LoopField,".")[2])] )
         return ok2
     }
+
 
     ; Reordering according to the nearest distance
     SortResultDistance(ok, px, py)
@@ -772,7 +815,7 @@ class graphicsearch {
         local
         if !IsObject(ok)
         return ok
-        For k,v in ok
+        for k,v in ok
         {
         x := v.1+v.3//2, y := v.2+v.4//2
         n := ((x-px)**2+(y-py)**2) "." k
@@ -780,10 +823,11 @@ class graphicsearch {
         }
         Sort, s, N D-
         ok2 := []
-        Loop, Parse, s, -
+        loop, Parse, s, -
         ok2.Push( ok[(StrSplit(A_LoopField,".")[2])] )
         return ok2
     }
+
 
     ; Prompt mouse position in remote assistance
     MouseTip(x := "", y := "")
@@ -808,7 +852,7 @@ class graphicsearch {
         DetectHiddenWindows, %dhw%
         ;-------------------------
         Gui, _MouseTip_: Show, NA x%x% y%y%
-        Loop, 4
+        loop, 4
         {
         Gui, _MouseTip_: Color, % A_Index & 1 ? "Red" : "Blue"
         Sleep, 500
@@ -816,8 +860,8 @@ class graphicsearch {
         Gui, _MouseTip_: Destroy
     }
 
-    GetTextFromScreen(x1, y1, x2, y2, Threshold := "", ScreenShot := 1
-        , ByRef rx := "", ByRef ry := "")
+
+    GetTextFromScreen(x1, y1, x2, y2, Threshold := "", ScreenShot := 1, ByRef rx := "", ByRef ry := "")
     {
         local
         bch := A_BatchLines
@@ -833,9 +877,9 @@ class graphicsearch {
         ListLines, Off
         this.GetBitsFromScreen(x,y,w,h,this.ScreenShot,zx,zy,zw,zh)
         gc := [], k := 0
-        Loop, %h% {
+        loop, %h% {
             j := y+A_Index-1
-            Loop, %w%
+            loop, %w%
             {
                 i := x+A_Index-1, c := this.this.ScreenShot_GetColor(i,j), gc[++k] := (((c>>16)&0xFF)*38+((c>>8)&0xFF)*75+(c&0xFF)*15)>>7
             }
@@ -843,37 +887,37 @@ class graphicsearch {
         Threshold := StrReplace(Threshold,"*")
         if (Threshold="") {
             pp := []
-            Loop, 256
+            loop, 256
                 pp[A_Index-1] := 0
-            Loop, % w*h
+            loop, % w*h
                 pp[gc[A_Index]]++
             IP := IS := 0
-            Loop, 256
+            loop, 256
                 k := A_Index-1, IP+=k*pp[k], IS+=pp[k]
             Threshold := Floor(IP/IS)
-            Loop, 20
+            loop, 20
             {
                 LastThreshold := Threshold
                 IP1 := IS1 := 0
-                Loop, % LastThreshold+1
+                loop, % LastThreshold+1
                     k := A_Index-1, IP1+=k*pp[k], IS1+=pp[k]
                     IP2 := IP-IP1, IS2 := IS-IS1
                     if (IS1!=0 and IS2!=0)
                         Threshold := Floor((IP1/IS1+IP2/IS2)/2)
                     if (Threshold=LastThreshold)
-                        Break
+                        break
             }
         }
         s := ""
-        Loop, % w*h
+        loop, % w*h
         s .= gc[A_Index]<=Threshold ? "1":"0"
         ;--------------------
         w := Format("{:d}",w), CutUp := CutDown := 0
         re1 = (^0{%w%}|^1{%w%})
         re2 = (0{%w%}$|1{%w%}$)
-        While RegExMatch(s,re1)
+        while RegExMatch(s,re1)
             s := RegExReplace(s,re1), CutUp++
-        While RegExMatch(s,re2)
+        while RegExMatch(s,re2)
             s := RegExReplace(s,re2), CutDown++
             rx := x+w//2, ry := y+CutUp+(h-CutUp-CutDown)//2
             s := "|<>*" Threshold "$" w "." this.bit2base64(s)
