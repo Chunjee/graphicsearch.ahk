@@ -11,10 +11,10 @@ class graphicsearch {
                             , "joinstring": 1
                             , "offsetx": 1
                             , "offsety": 1 }
-    static screenshot := ""
+    static savedScreenshot := []
 
 
-    find(x1, y1, x2, y2, err1, err0, text, ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
+    find(x1, y1, x2, y2, err1, err0, text, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10)
     {
         local
         savedBatchLines := A_BatchLines
@@ -112,20 +112,22 @@ class graphicsearch {
     }
 
 
-    search(param_string, param_options)
+    search(param_string, param_obj:=0)
     {
-        optionsObj := {   "x1": 0
-                        , "y1": 0
-                        , "x2": A_ScreenWidth
-                        , "y2": A_ScreenHeight
-                        , "err0": 0
-                        , "err1": 0
-                        , "screenshot": 1
-                        , "findall": 1
-                        , "joinstring": 1
-                        , "offsetx": 1
-                        , "offsety": 1 }
+        ; create default if needed
+        if (!IsObject(param_obj)) {
+            param_obj := this.optionsObj.Clone()
+        }
+        ; merge with default for any blank parameters
+        for Key, Value in this.optionsObj {
+            if (!param_obj.HasKey(Key)) { ; if the key is not already in use
+                param_obj[Key] := Value
+            }
+        }
 
+        ; pass the parameters to .find and return
+        return this.find(param_obj.x1, param_obj.y1, param_obj.x2, param_obj.y2, param_obj.err1, param_obj.err0, param_string
+            , param_obj.screenshot, param_obj.findall, param_obj.joinstring, param_obj.offsetx, param_obj.offsety)
     }
 
 

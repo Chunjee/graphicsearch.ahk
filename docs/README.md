@@ -18,7 +18,6 @@ See [quickstart](/quickstart) for installation, inclusion, and initializiation.
 OutputVarY, X1, Y1, X2, Y2, ColorID , Variation, Mode`
 
 ### Arguments
-
 #### x1, y1                
 > the search scope's upper left corner coordinates
 
@@ -46,7 +45,7 @@ OutputVarY, X1, Y1, X2, Y2, ColorID , Variation, Mode`
 
 #### Return
 
-The method returns an array of objects containing all lookup results, Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:Comment}, 
+(Array) The method returns an array of objects containing all lookup results, Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:Comment}, 
 If no graphic is found, the method returns an empty array.
 All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
@@ -58,13 +57,11 @@ oGraphicSearch.search(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenSho
 
 
 ## .search
-
 functionally identicle to `.find` but uses an options object instead of many arguments
 
-#### Arguments
-
-#### [string:=''] (string)
-> The GraphicSearch string(s) to search
+### Arguments
+#### [string:=""] (string)
+> The GraphicSearch string(s) to search. Must be concatinated with `|` if searching multiple graphics
 
 #### [options:={}] (object)
 > The options object
@@ -90,20 +87,22 @@ functionally identicle to `.find` but uses an options object instead of many arg
 #### [options.offsetx:=1] (number), [options.offsety:=0] (number)
 > Set the Max text offset for combination lookup
 
+
+#### Example
 ```autohotkey
 optionsObj := {   "x1": 0
                 , "y1": 0
                 , "x2": A_ScreenWidth
                 , "y2": A_ScreenHeight
-                , "err0": 0
                 , "err1": 0
+                , "err0": 0
                 , "screenshot": 1
                 , "findall": 1
                 , "joinstring": 1
                 , "offsetx": 1
                 , "offsety": 1 }
 
-oGraphicSearch.scan("|<tag>*165$22.03z", optionsObj)
+oGraphicSearch.search("|<tag>*165$22.03z", optionsObj)
 ```
 
 ## .scan
