@@ -416,7 +416,7 @@ pre[data-lang] {
 }
 .markdown-section blockquote {
   overflow: visible;
-  margin: 2em 0;
+  margin: 0.2em 0;
   padding: 1.5em;
   border-width: var(--blockquote-border-width, 0);
   border-style: var(--blockquote-border-style);
@@ -2178,7 +2178,7 @@ body .sidebar {
   --code-inline-padding: 0.125em 0.4em;
   --code-theme-background: var(--mono-tint3);
   --heading-color: var(--mono-shade3);
-  --heading-margin: 2.5rem 0 0;
+  --heading-margin: 0.5rem 0 0;
   --heading-h1-border-style: solid;
   --heading-h1-font-size: var(--font-size-xxl);
   --heading-h2-border-style: solid;
