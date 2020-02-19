@@ -36,14 +36,20 @@ The method returns an array of objects containing all lookup results, Any result
 If no graphic is found, the method returns an empty array.
 All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
+#### Example
+
+```autohotkey
+oGraphicSearch.search(x1, y1, x2, y2, err1, err0, text, ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
+```
+
 
 ## .scan
 
 #### Arguments
 
-**[string=''] (string):** The string to truncate.
+**[string=''] (string):** The GraphicSearch string(s) to search
 
-**[options:={}] (Object)**: The options object.
+**[options:={}] (Object)**: The options object
 
 **[options.x1:=0] (number)** /
 **[options.y1:=0] (number)**: the search scope's upper left corner coordinates
@@ -54,6 +60,22 @@ All coordinates are relative to Screen, colors are in RGB format, and combinatio
 **[options.err0:=0] (number)**: /
 **[options.err1:=0] (number)**: Fault tolerance of graphic and background (0.1=10%)
 
-[options.omission='...'] (string): The string to indicate text is omitted.
+[options.omission='...'] (string): The string to indicate text is omitted
 
-[options.separator] (RegExp|string): The separator pattern to truncate to.
+[options.separator] (RegExp|string): The separator pattern to truncate to
+
+```autohotkey
+optionsObj := {   "x1": 0
+                , "y1": 0
+                , "x2": A_ScreenWidth
+                , "y2": A_ScreenHeight
+                , "err0": 0
+                , "err1": 0
+                , "screenshot": 1
+                , "findall": 1
+                , "joinstring": 1
+                , "offsetx": 1
+                , "offsety": 1 }
+
+oGraphicSearch.scan("|<HumanReadableTag>*165$22.03z", optionsObj)
+```
