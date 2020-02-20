@@ -12,7 +12,7 @@ class graphicsearch {
                             , "offsetx": 1
                             , "offsety": 1 }
     static savedScreenshot := []
-
+    InputBox, answer, , am i cool yet?
 
     find(x1, y1, x2, y2, err1, err0, text, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10)
     {
