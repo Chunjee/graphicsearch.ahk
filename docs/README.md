@@ -5,26 +5,24 @@ A fast, super powerful, and flexible alternative to AutoHotkey's ImageSearch
 
 ## What is it?
 
-> Can be thought of as an alternative to native [AHK Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) function. The native function requires saved graphic files, identical image matching, is hard to troubleshoot, and performs in a relatively slow manner. GraphicSearch approaches searching differently. Think of ASCII art. GraphicSearch abstracts the screen's image into representative 0's and _'s. Because this is an abstraction, not and bit for bit comparison, it allows for faster matching and easier adjustments of fault tolerance. It can also check for several different graphics without recapturing the screen's image every time. In addition, it finds **all** instances of the graphic unlike AHK ImageSearch which only returns the first match. 
+> Can be thought of as an alternative to native [AHK Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) function. The native function requires saved graphic files, nearly identical image matching, can be difficult to troubleshoot, and performs in a relatively slow manner. GraphicSearch approaches searching differently. Think of ASCII art; GraphicSearch abstracts the screen's image into representative 0's and _'s. Because this is an abstraction, not and bit for bit comparison, it allows for faster matching and easier adjustments of fault tolerance. It can also check for several different graphics without recapturing the screen's image every time. In addition, it finds **all** instances of the graphic unlike AHK ImageSearch which only returns the first match. 
 
 
 ## Installation
 
 In a terminal or command line:
-
 ```bash
 npm install graphicsearch.ahk
 ```
 
 In your code:
-
 ```autohotkey
 #Include %A_ScriptDir%\node_modules
 #Include graphicsearch.ahk\export.ahk
 
 oGraphicSearch := new graphicsearch()
 result := oGraphicSearch.search("|<HumanReadableTag>*165$22.03z")
-; => [{1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}, {1: 1457, 2: 815, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1468, "y" :820}]
+; => [{1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
 ```
 
 
@@ -38,7 +36,6 @@ See [**Generating Queries**](/generating-queries) for turning images into Graphi
 ## Examples
 
 In the following example, we search for an image and click on it.
-
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
@@ -51,7 +48,6 @@ if (resultObj.Count()) {
 ```
 
 In the next example, we search for an image; if more than 4 are found, sort them by the closest to the bottom of the screen and mouseover all of them.
-
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
@@ -69,7 +65,6 @@ if (resultObj.Count() >= 4) {
 ```
 
 For the last example, search for two images. If found, sort them by the closest to the center of the monitor and click the 3rd one.
-
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
