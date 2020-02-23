@@ -118,11 +118,11 @@ Sort the results object from left to right and top to bottom, ignoring slight he
 
 ### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
-              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x":2000, "y":2000}
+              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x":1226, "y":412}]
 
 oGraphicSearch.resultSort(resultsObj)
-; => [1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}, {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}]
+; => [1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x":1226, "y":412}, {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x":2000, "y":2000}]
 ```
 
 
@@ -145,18 +145,18 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 
 ### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
-              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x": 2000, "y": 2000}
+              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x": 1226, "y": 412}]
 
 oGraphicSearch.resultSort(resultsObj, 2000, 2000)
 /* 
-[ {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "12.08", "id": "HumanReadableTag", "x" :2000, "y" :2000}
-, {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1766.58", "id": "HumanReadableTag", "x" :1226, "y" :412}]
+[ {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "12.08", "id":"HumanReadableTag", "x":2000, "y": 2000}
+, {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1766.58", "id":"HumanReadableTag", "x":1226, "y": 412}]
 */
 
 oGraphicSearch.resultSort(resultsObj)
 /* 
-[ {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", "x" :1226, "y" :412}
-, {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "2838.33", "id": "HumanReadableTag", "x" :2000, "y" :2000}]
+[ {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", "x":1226, "y": 412}
+, {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "2838.33", "id": "HumanReadableTag", "x":2000, "y": 2000}]
 */
 ```
