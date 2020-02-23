@@ -23,7 +23,7 @@ class graphicsearch {
         , this.xywh2xywh(x, y, w, h, x, y, w, h, zx, zy, zw, zh)
         if (w < 1 || h < 1) {
             SetBatchLines, %savedBatchLines%
-            return []
+            return false
         }
         bits := this.GetBitsFromScreen(x, y, w, h, ScreenShot, zx, zy, zw, zh)
         sx := x - zx, sy := y-zy, sw := w, sh := h, arr := [], info := []
@@ -32,7 +32,7 @@ class graphicsearch {
             info.Push(j)
         if (!(num := info.MaxIndex()) || !bits.1) {
             SetBatchLines, %savedBatchLines%
-            return []
+            return false
         }
         VarSetCapacity(input, num*7*4), k := 0
         loop, % num
@@ -781,52 +781,47 @@ class graphicsearch {
     }
 
 
-    ; Sort the results returned by this.search() from left to right
-    ; and top to bottom, ignore slight height difference
-    SortResult(ok, dy := 10)
+    ; Sort the results objects from left to right and top to bottom, ignoring slight height difference
+    resultSort(resultObj, dy := 10)
     {
         local
-        if !IsObject(ok)
-        return ok
         ypos := []
-        for k,v in ok
-        {
-        x := v.x, y := v.y, add := 1
-        for k2,v2 in ypos
-            if Abs(y-v2) <= dy
-            {
-            y := v2, add := 0
-            Break
+        for k,v in resultObj {
+            x := v.x, y := v.y, add := 1
+            for k2,v2 in ypos
+                if (Abs(y-v2) <= dy) {
+                y := v2, add := 0
+                Break
             }
-        if (add)
-            ypos.Push(y)
-        n := (y*150000+x) "." k, s := A_Index=1 ? n : s "-" n
+            if (add)
+                ypos.Push(y)
+            n := (y*150000+x) "." k, s := A_Index=1 ? n : s "-" n
         }
         Sort, s, N D-
-        ok2 := []
+        resultObj2 := []
         loop, Parse, s, -
-        ok2.Push( ok[(StrSplit(A_LoopField,".")[2])] )
-        return ok2
+        resultObj2.Push( resultObj[(StrSplit(A_LoopField,".")[2])] )
+        return resultObj2
     }
 
 
-    ; Reordering according to the nearest distance
-    SortResultDistance(ok, px, py)
+    ; Re-order resultObj according to the nearest distance
+    resultSortDistance(resultObj, px, py)
     {
-        local
-        if !IsObject(ok)
-        return ok
-        for k,v in ok
-        {
-        x := v.1+v.3//2, y := v.2+v.4//2
-        n := ((x-px)**2+(y-py)**2) "." k
-        s := A_Index=1 ? n : s "-" n
+        for k, v in resultObj {
+            x := v.1+v.3//2, y := v.2+v.4//2
+            n := ((x-px)**2+(y-py)**2) "." k
+            ; save the square root to the result object pre-sorting
+            resultObj[A_Index].distance := round(sqrt(StrSplit(n, ".")[1]), 2)
+            s := A_Index = 1 ? n : s "-" n
         }
         Sort, s, N D-
-        ok2 := []
+        resultObj2 := []
         loop, Parse, s, -
-        ok2.Push( ok[(StrSplit(A_LoopField,".")[2])] )
-        return ok2
+        {
+            resultObj2.Push(resultObj[(StrSplit(A_LoopField,".")[2])])
+        }
+        return resultObj2
     }
 
 
