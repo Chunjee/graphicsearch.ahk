@@ -15,6 +15,10 @@
     "findtext",
     "imagesearch"
   ],
+  "dependencies": {},
+  "devDependencies": {
+    "unit-testing.ahk": "github:chunjee/unit-testing.ahk"
+  },
   "author": "Shawn Brooker",
   "license": "MIT",
   "bugs": {
