@@ -2457,25 +2457,25 @@ body .sidebar {
   --sidebar-toggle-width: 32px;
 }
 :root {
-  --code-theme-objects: #86b9f5;
+  --code-theme-objects: #569cd6;
+  --code-theme-function: #569cd6;
   --code-theme-string: #62d543;
+  --code-theme-selector: #62d543;
   --code-theme-background: #222;
   --code-theme-comment: #516e7a;
-  --code-theme-function: #86b9f5;
-  --code-theme-keyword: #be7cd8;
-  --code-theme-constant: #5ecaaa;
-  --code-theme-boolean: #5ecaaa;
+  --code-theme-keyword: #C586C0;
+  --code-theme-constant: #4EC9B0;
+  --code-theme-boolean: #4EC9B0;
   --code-theme-number: #ffe600;
   --code-theme-operator: #ffe600;
+  --code-theme-tag: #ffe600;
   --code-theme-punctuation: #f3f3f3;
   --code-theme-selection: rgba(255, 255, 255, 0.2);
-  --code-theme-selector: #62d543;
   --code-theme-text: #f3f3f3;
   --code-theme-variable: #f3f3f3;
-  --code-theme-tag: #ffe600;
   --code-theme-property: #CE9178;
 
-  --code-theme-custom: #86b9f5;
+  --code-theme-custom: #569cd6;
 }
 :root {
   --mono-hue: 201;

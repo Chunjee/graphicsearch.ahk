@@ -3,8 +3,6 @@
 ## .find
 `oGraphicSearch.fisnd(x1, y1, x2, y2, err1, err2, text [, screenshot, findall, jointext, offsetx, offsety])`
 
-OutputVarY, X1, Y1, X2, Y2, ColorID , Variation, Mode`
-
 ### Arguments
 #### x1, y1                
 > the search scope's upper left corner coordinates
@@ -31,17 +29,21 @@ OutputVarY, X1, Y1, X2, Y2, ColorID , Variation, Mode`
 > Set the Max text offset for combination lookup
 
 
-#### Return
+### Return
+(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:Comment}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
-(Array) The method returns an array of objects containing all lookup results, Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:Comment}, 
-If no graphic is found, the method returns an empty array.
-All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
-
-#### Example
+### Example
 
 ```autohotkey
 oGraphicSearch.search(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
 ```
+
+
+## .findAgain
+performs the last .find again with the last arguments supplied
+
+
 
 
 ## .search
@@ -76,7 +78,10 @@ functionally identicle to `.find` but uses an options object instead of many arg
 > Set the Max text offset for combination lookup
 
 
-#### Example
+### Return
+(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+
+### Example
 ```autohotkey
 optionsObj := {   "x1": 0
                 , "y1": 0
@@ -93,4 +98,65 @@ optionsObj := {   "x1": 0
 oGraphicSearch.search("|<tag>*165$22.03z", optionsObj)
 ```
 
-## .scan
+## .searchAgain
+performs the last .search again with the last arguments supplied
+
+
+
+
+# Sorting Methods
+
+## .resultSort
+Sort the results object from left to right and top to bottom, ignoring slight height difference
+
+### Arguments
+#### [resultsobject] (Object)
+> The GraphicSearch results object to sort
+
+### Return
+(Array) Return an array of objects containing all lookup results
+
+### Example
+```autohotkey
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
+              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
+
+oGraphicSearch.resultSort(resultsObj)
+; => [1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}, {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}]
+```
+
+
+
+## .resultSortDistance
+Sort the results objects by distance to a given x,y coordinate. A property "distance" is added to all elements of the result object
+
+### Arguments
+#### resultsObject (Object)
+> The GraphicSearch results object
+
+#### [x:=1] (number)
+> The x screen coordinate to measure from
+
+#### [y:=1] (number)
+> The y screen coordinate to measure from
+
+### Return
+(Array) Return an array of objects containing all lookup results
+
+### Example
+```autohotkey
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
+              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
+
+oGraphicSearch.resultSort(resultsObj, 2000, 2000)
+/* 
+[ {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "12.08", "id": "HumanReadableTag", "x" :2000, "y" :2000}
+, {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1766.58", "id": "HumanReadableTag", "x" :1226, "y" :412}]
+*/
+
+oGraphicSearch.resultSort(resultsObj)
+/* 
+[ {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", "x" :1226, "y" :412}
+, {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "2838.33", "id": "HumanReadableTag", "x" :2000, "y" :2000}]
+*/
+```

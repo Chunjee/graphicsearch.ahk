@@ -9,8 +9,8 @@ class graphicsearch {
                             , "screenshot": 1
                             , "findall": 1
                             , "joinstring": 1
-                            , "offsetx": 1
-                            , "offsety": 1 }
+                            , "offsetx": 0
+                            , "offsety": 0 }
     static savedScreenshot := []
 
     find(x1, y1, x2, y2, err1, err0, text, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10)
@@ -782,16 +782,16 @@ class graphicsearch {
 
 
     ; Sort the results objects from left to right and top to bottom, ignoring slight height difference
-    resultSort(resultObj, dy := 10)
+    resultSort(param_resultObj, param_ydistance := 10)
     {
-        local
+        resultObj := param_resultObj.clone()
         ypos := []
         for k,v in resultObj {
             x := v.x, y := v.y, add := 1
             for k2,v2 in ypos
-                if (Abs(y-v2) <= dy) {
+                if (Abs(y-v2) <= param_ydistance) {
                 y := v2, add := 0
-                Break
+                break
             }
             if (add)
                 ypos.Push(y)
@@ -806,11 +806,12 @@ class graphicsearch {
 
 
     ; Re-order resultObj according to the nearest distance
-    resultSortDistance(resultObj, px, py)
+    resultSortDistance(param_resultObj, param_x:=1, param_y:=1)
     {
+        resultObj := param_resultObj.clone()
         for k, v in resultObj {
             x := v.1+v.3//2, y := v.2+v.4//2
-            n := ((x-px)**2+(y-py)**2) "." k
+            n := ((x-param_x)**2+(y-param_y)**2) "." k
             ; save the square root to the result object pre-sorting
             resultObj[A_Index].distance := round(sqrt(StrSplit(n, ".")[1]), 2)
             s := A_Index = 1 ? n : s "-" n
