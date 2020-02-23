@@ -41,13 +41,13 @@ oGraphicSearch := new graphicsearch()
 
 resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z")
 ; check if any graphic was found
-if (resultObj.Count()) {
+if (resultObj) {
     ; click on the first graphic in the object
     Click, % resultObj[1].x, resultObj[1].y
 }
 ```
 
-In the next example, we search for an image; if more than 4 are found, sort them by the closest to the bottom of the screen and mouseover all of them.
+In the next example, we search for an image; if more than four or more found, sort them by the closest to the bottom of the screen and mouseover all of them.
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
@@ -55,7 +55,7 @@ resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z")
 ; check if more than one graphic was found
 if (resultObj.Count() >= 4) {
     ; sort by the closest to the bottom of the screen
-    resultObj2 := oGraphicSearch.SortResult(resultObj)
+    resultObj2 := oGraphicSearch.resultSort(resultObj)
     ; Mouseover each of the graphics found
     for _, object in resultObj2 {
         MouseMove, % object.x, object.y, 50
@@ -64,7 +64,7 @@ if (resultObj.Count() >= 4) {
 }
 ```
 
-For the last example, search for two images. If found, sort them by the closest to the center of the monitor and click the 3rd one.
+For the last example, search for two images. If four or more found, sort them by the closest to the center of the monitor and click the third one.
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
@@ -72,7 +72,7 @@ resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z||<spaghetti>*125$26.z")
 ; check if more than one graphic was found
 if (resultObj.Count() >= 4) {
     ; sort by the closest to x,y point
-    resultObj2 := oGraphicSearch.SortResultDistance(resultObj)
+    resultObj2 := oGraphicSearch.resultSortDistance(resultObj)
     ; click the 3rd graphic found
     Click, % resultObj2[3].x, resultObj2[3].y
 }
