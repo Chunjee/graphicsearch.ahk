@@ -73,7 +73,7 @@ resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z||<spaghetti>*125$26.z")
 if (resultObj.Count() >= 4) {
     ; sort by the closest to x,y point
     resultObj2 := oGraphicSearch.SortResultDistance(resultObj)
-    ; Mouseover each of the graphics found
+    ; click the 3rd graphic found
     Click, % resultObj2[3].x, resultObj2[3].y
 }
 ```
