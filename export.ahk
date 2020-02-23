@@ -130,6 +130,14 @@ class graphicsearch {
     }
 
 
+    scan(param_graphicsearchstring, x1:=1, y1:=1, x2:=A_ScreenWidth, y2:=A_ScreenHeight, err1:=0, err0:=0, screenshot:=1
+        , findall:=1, jointext:=0, offsetx:=20, offsety:=10)
+    {
+        ; pass the parameters to .find and return
+        return this.find(x1, y1, x2, y2, err1, err0, param_graphicsearchstring, screenshot, findall, jointext, offsetx, offsety)
+    }
+
+
     ; Bind the window so that it can find images when obscured
     ; by other windows, it's equivalent to always being
     ; at the front desk. Unbind Window using BindWindow(0)
