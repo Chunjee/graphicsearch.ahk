@@ -309,10 +309,12 @@ pre[data-lang] {
   color: var(--code-theme-constant);
 }
 .token.deleted,
-.token.property,
 .token.symbol,
 .token.tag {
   color: var(--code-theme-tag);
+}
+.token.property {
+  color: var(--code-theme-property);
 }
 .token.boolean {
   color: var(--code-theme-boolean);
@@ -2471,6 +2473,7 @@ body .sidebar {
   --code-theme-text: #f3f3f3;
   --code-theme-variable: #f3f3f3;
   --code-theme-tag: #ffe600;
+  --code-theme-property: #CE9178;
 
   --code-theme-custom: #86b9f5;
 }
