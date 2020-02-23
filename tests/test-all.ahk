@@ -41,6 +41,13 @@ if (result) {
 
     ; test resultSortDistance
     assert.label("resultSortDistance")
+    resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
+                  , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
+    resultsObj := oGraphicSearch.resultSortDistance(resultsObj)
+    assert.test(resultsObj[1].distance, "1292.11")
+    assert.test(resultsObj[2].distance, "2838.33")
+    
+
     distanceCoords := oGraphicSearch.resultSortDistance(result, A_ScreenWidth, A_ScreenHeight)
     assert.test(sortedCoords.Count(), 5)
     assert.test(sortedCoords[5].id, "pizza")
@@ -49,5 +56,19 @@ if (result) {
 } else {
     msgbox, % "There was no graphic found, testing could not take place"
 }
+
+
+; test resultSortDistance with static data
+assert.label("resultSortDistance")
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
+              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
+resultsObj0 := oGraphicSearch.resultSortDistance(resultsObj)
+assert.test(resultsObj0[1].distance, "1292.11")
+assert.test(resultsObj0[2].distance, "2838.33")
+
+resultsObj1 := oGraphicSearch.resultSortDistance(resultsObj, 2000, 2000)
+assert.test(resultsObj1[1].distance, "12.08")
+assert.test(resultsObj1[2].distance, "1766.58")
+
 assert.fullreport()
 ExitApp
