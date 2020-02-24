@@ -19,14 +19,28 @@ class graphicsearch {
     static lastSearchOptions    := {}
 
     ; .find
-
+    static lastFindQuery        := ""
+    static lastFindOptions      := {}
     
 
     find(x1, y1, x2, y2, err1, err0, text, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10)
     {
-        local
         savedBatchLines := A_BatchLines
         SetBatchLines, -1
+
+        OptionsObj := { "x1": x1
+                      , "y1": y1
+                      , "x2": x2
+                      , "y2": y2
+                      , "err1": err1
+                      , "err0": err0
+                      , "screenshot": ScreenShot
+                      , "findall": FindAll
+                      , "joinstring": JoinText
+                      , "offsetx": offsetX
+                      , "offsety": offsetY }
+        this.lastFindQuery := text
+        this.lastFindOptions := OptionsObj
         x := (x1 < x2 ? x1:x2), y := (y1 < y2 ? y1:y2)
         , w := Abs(x2 - x1)+1, h := Abs(y2 - y1)+1
         , this.xywh2xywh(x, y, w, h, x, y, w, h, zx, zy, zw, zh)
@@ -124,7 +138,7 @@ class graphicsearch {
         SetBatchLines, %savedBatchLines%
         return arr
     }
-
+    
 
     search(param_string, param_obj:=0)
     {
@@ -142,6 +156,18 @@ class graphicsearch {
         ; pass the parameters to .find and return
         return this.find(param_obj.x1, param_obj.y1, param_obj.x2, param_obj.y2, param_obj.err1, param_obj.err0, param_string
             , param_obj.screenshot, param_obj.findall, param_obj.joinstring, param_obj.offsetx, param_obj.offsety)
+    }
+
+
+    findAgain() {
+        ; pass saved arguments to .search and return
+        return this.search(this.lastFindQuery, this.lastFindOptions)
+    }
+
+
+    searchAgain() {
+        ; pass saved arguments to .search and return
+        return this.search(this.lastSearchQuery, this.lastSearchOptions)
     }
 
 
