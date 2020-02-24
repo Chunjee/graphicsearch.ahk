@@ -2538,3 +2538,10 @@ body .sidebar {
   --sidebar-nav-pagelink-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='11.2' viewBox='0 0 7 11.2'%3E%3Cpath d='M1.5 1.5l4 4.1 -4 4.1' stroke-width='1.5' stroke='rgb%2873, 93, 104%29' fill='none' stroke-linecap='square' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 }
 /*# sourceMappingURL=theme-simple-dark.css.map */
+[data-id ^="definition"] {
+  font-weight: 700;
+  margin: 0 -999rem;
+  padding: 0.2rem 999rem;
+  overflow-y: hidden;
+  background-color: hsla(204, 90%, 45%, 0.6);
+}

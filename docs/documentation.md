@@ -1,7 +1,8 @@
 # Main Methods
 
 ## .find
-## .find(x1, y1, x2, y2, err1, err0, text [, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
+### .find(x1, y1, x2, y2, err1, err0, text [, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
+finds GraphicSearch queries on the screen
 
 ### Arguments
 #### x1, y1                
@@ -46,7 +47,7 @@ performs the last .find with the last arguments supplied
 
 
 ## .search
-## .search(graphicquery [, options:={}]) :id=definition {docsify-ignore}
+### .search(graphicquery [, options:={}]) :id=definition {docsify-ignore}
 functionally identicle to `.find` but uses an options object instead of many arguments
 
 ### Arguments
@@ -115,6 +116,7 @@ oGraphicSearch.searchAgain("|<tag>*165$22.03z", )
 # Sorting Methods
 
 ## .resultSort
+## .resultSort([resultsObject], )
 Sort the results object from left to right and top to bottom, ignoring slight height difference
 
 ### Arguments
@@ -136,7 +138,7 @@ oGraphicSearch.resultSort(resultsObj)
 
 
 ## .resultSortDistance
-## .resultSortDistance(resultsObject [, x:=1, y:=1]) :id=definition {docsify-ignore}
+### .resultSortDistance(resultsObject [, x:=1, y:=1]) :id=definition {docsify-ignore}
 Sort the results objects by distance to a given x,y coordinate. A property "distance" is added to all elements in the returned result object
 
 ### Arguments
