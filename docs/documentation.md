@@ -96,6 +96,7 @@ optionsObj := {   "x1": 0
                 , "offsety": 1 }
 
 oGraphicSearch.search("|<tag>*165$22.03z", optionsObj)
+oGraphicSearch.search("|<tag>*165$22.03z", {"x2": 100, "y2": 100})
 ```
 
 ## .searchAgain

@@ -53,7 +53,23 @@
       },
       // end of searchbar
       
-      'flexible-alerts': { }
+      'flexible-alerts': { },
+
+      plugins: [
+        function(hook) {
+          var footer = [
+            '<hr/>',
+            '<footer>',
+            '<span>graphicsearch.ahk is a modernized fork of <a href="https://www.autohotkey.com/boards/viewtopic.php?f=6&t=17834" target="_blank">FindText</a></span>',
+            '<span> by <a href="https://github.com/Chunjee">Chunjee</a></span>',
+            '</footer>'
+          ].join('');
+
+          hook.afterEach(function(html) {
+            return html + footer;
+          });
+        }
+      ]
     }
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>

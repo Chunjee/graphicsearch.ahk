@@ -322,9 +322,11 @@ pre[data-lang] {
 .token.number {
   color: var(--code-theme-number);
 }
+.token.string {
+  color: var(--code-theme-string);
+}
 .token.selector,
 .token.attr-name,
-.token.string,
 .token.char,
 .token.builtin,
 .token.inserted {
@@ -2460,7 +2462,7 @@ body .sidebar {
   --code-theme-objects: #569cd6;
   --code-theme-function: #569cd6;
   --code-theme-string: #62d543;
-  --code-theme-selector: #62d543;
+  --code-theme-selector: #d7ba7d;
   --code-theme-background: #222;
   --code-theme-comment: #516e7a;
   --code-theme-keyword: #C586C0;
@@ -2473,7 +2475,7 @@ body .sidebar {
   --code-theme-selection: rgba(255, 255, 255, 0.2);
   --code-theme-text: #f3f3f3;
   --code-theme-variable: #f3f3f3;
-  --code-theme-property: #CE9178;
+  --code-theme-property: #4EC9B0;
 
   --code-theme-custom: #569cd6;
 }

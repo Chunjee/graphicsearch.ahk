@@ -35,7 +35,9 @@ See [**Generating Queries**](/generating-queries) for turning images into Graphi
 
 ## Examples
 
-In the following example, we search for an image and click on it.
+### These examples get progressively more complex
+
+In the first example, we search for an image and click on it.
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
@@ -45,6 +47,8 @@ if (resultObj) {
     ; click on the first graphic in the object
     Click, % resultObj[1].x, resultObj[1].y
 }
+var := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
+       , {1: 1215, 2: 407, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 ```
 
 In the next example, we search for two graphics; if more than four or more found, sort them and mouseover all of them in order
@@ -54,26 +58,29 @@ oGraphicSearch := new graphicsearch()
 resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z|<HumanReadableTag>*165$22.03z")
 ; check if more than one graphic was found
 if (resultObj.Count() >= 4) {
-    ; sort by the closest to the bottom of the screen
+    ; re-sort the result object
     resultObj2 := oGraphicSearch.resultSort(resultObj)
     ; Mouseover each of the graphics found
     for _, object in resultObj2 {
         MouseMove, % object.x, object.y, 50
-        sleep, 1000
+        Sleep, 1000
     }
 }
 ```
 
-For the last example, search for two images. If four or more found, sort them by the closest to the center of the monitor and click the third one.
+For the last example, search for two images in a specific area. If four or more found, sort them by the closest to the center of the monitor and click the third one.
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
-resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z||<spaghetti>*125$26.z")
+resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z||<spaghetti>*125$26.z", [{x2:2000},{y2:2000}])
 ; check if more than one graphic was found
 if (resultObj.Count() >= 4) {
-    ; sort by the closest to x,y point
-    resultObj2 := oGraphicSearch.resultSortDistance(resultObj)
-    ; click the 3rd graphic found
-    Click, % resultObj2[3].x, resultObj2[3].y
+    ; find the center of the screen by dividing the width and height by 2
+    centerX := A_ScreenWidth / 2
+    centerY := A_ScreenHeight / 2
+    ; create a new result object sorted by distance to the center
+    resultObj2 := oGraphicSearch.resultSortDistance(resultObj, centerX, centerY)
+    ; click the 2nd closest found
+    Click, % resultObj2[2].x, resultObj2[2].y
 }
 ```
