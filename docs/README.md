@@ -5,7 +5,7 @@ A fast, super powerful, and flexible alternative to AutoHotkey's ImageSearch
 
 ## What is it?
 
-> Can be thought of as an alternative to native [AHK Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) function. The native function requires saved graphic files, nearly identical image matching, can be difficult to troubleshoot, and performs in a relatively slow manner. GraphicSearch approaches searching differently. Think of ASCII art; GraphicSearch abstracts the screen's image into representative 0's and _'s. Because this is an abstraction, not a bit for bit comparison, it allows for faster matching and easier adjustments of fault tolerance. It can also check for several different graphics without recapturing the screen's image every time. In addition, it finds **all** instances of the graphic unlike AHK ImageSearch which only returns the first match. 
+> Can be thought of as an alternative to native [AHK Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) function. The native function requires saved graphic files, nearly identical image matching, can be difficult to troubleshoot, and performs in a relatively slow manner. GraphicSearch approaches searching differently. Think of ASCII art; GraphicSearch abstracts the screen's image into representative 0's and _'s. Because this is an abstraction, not a bit-for-bit comparison, it allows for faster matching and easier adjustments of fault tolerance. It can also check for several different graphics without recapturing the screen's image every time. In addition, it finds **all** instances of the graphic unlike AHK ImageSearch which only returns the first match. 
 
 
 ## Installation
