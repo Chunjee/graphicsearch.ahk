@@ -1,17 +1,20 @@
 class graphicsearch {
 
+    static noMatchVal := false ;the value to return when no matches were found
     static optionsObj := {    "x1": 0
                             , "y1": 0
                             , "x2": A_ScreenWidth
                             , "y2": A_ScreenHeight
-                            , "err0": 0
-                            , "err1": 0
+                            , "err1": 0 ;foreground
+                            , "err0": 0 ;background
                             , "screenshot": 1
                             , "findall": 1
                             , "joinstring": 1
                             , "offsetx": 0
                             , "offsety": 0 }
     static savedScreenshot := []
+
+    
 
     find(x1, y1, x2, y2, err1, err0, text, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10)
     {
@@ -23,7 +26,7 @@ class graphicsearch {
         , this.xywh2xywh(x, y, w, h, x, y, w, h, zx, zy, zw, zh)
         if (w < 1 || h < 1) {
             SetBatchLines, %savedBatchLines%
-            return false
+            return this.noMatchVal
         }
         bits := this.GetBitsFromScreen(x, y, w, h, ScreenShot, zx, zy, zw, zh)
         sx := x - zx, sy := y-zy, sw := w, sh := h, arr := [], info := []
@@ -32,7 +35,7 @@ class graphicsearch {
             info.Push(j)
         if (!(num := info.MaxIndex()) || !bits.1) {
             SetBatchLines, %savedBatchLines%
-            return false
+            return this.noMatchVal
         }
         VarSetCapacity(input, num*7*4), k := 0
         loop, % num
@@ -106,6 +109,12 @@ class graphicsearch {
                 break
             }
         }
+        ; return this.noMatchVal if no results found
+        if (arr.Count() == 0) {
+            SetBatchLines, %savedBatchLines%
+            return this.noMatchVal
+        }
+        ; return array of found elements if more than 0 found
         SetBatchLines, %savedBatchLines%
         return arr
     }
@@ -130,9 +139,16 @@ class graphicsearch {
     }
 
 
-    scan(param_graphicsearchstring, x1:=1, y1:=1, x2:=A_ScreenWidth, y2:=A_ScreenHeight, err1:=0, err0:=0, screenshot:=1
+    scan(param_graphicsearchstring, x1:=0, y1:=0, x2:="", y2:="", err1:=0, err0:=0, screenshot:=1
         , findall:=1, jointext:=0, offsetx:=20, offsety:=10)
     {
+        if (x2 == "") {
+            x2 := A_ScreenWidth
+        }
+        if (y2 == "") {
+            y2 := A_ScreenHeight
+        }
+
         ; pass the parameters to .find and return
         return this.find(x1, y1, x2, y2, err1, err0, param_graphicsearchstring, screenshot, findall, jointext, offsetx, offsety)
     }
@@ -190,64 +206,59 @@ class graphicsearch {
         local
         static hBM := "", bits := [], Ptr := A_PtrSize ? "UPtr" : "UInt"
         static init := !this.GetBitsFromScreen(0,0,0,0,1)
-        if (!ScreenShot)
-        {
-        zx := bits.3, zy := bits.4, zw := bits.5, zh := bits.6
-        return bits
+        if (!ScreenShot) {
+            zx := bits.3, zy := bits.4, zw := bits.5, zh := bits.6
+            return bits
         }
-        bch := A_BatchLines, cri := A_IsCritical
+        savedBatchLines := A_BatchLines, savedIsCritical := A_IsCritical
         Critical
-        if (zw<1 or zh<1)
-        {
-        SysGet, zx, 76
-        SysGet, zy, 77
-        SysGet, zw, 78
-        SysGet, zh, 79
+        if (zw<1 or zh<1) {
+            SysGet, zx, 76
+            SysGet, zy, 77
+            SysGet, zw, 78
+            SysGet, zh, 79
         }
-        if (zw>bits.5 or zh>bits.6 or !hBM)
-        {
-        DllCall("DeleteObject", Ptr,hBM), hBM := "", bpp := 32
-        VarSetCapacity(bi, 40, 0), NumPut(40, bi, 0, "int")
-        NumPut(zw, bi, 4, "int"), NumPut(-zh, bi, 8, "int")
-        NumPut(1, bi, 12, "short"), NumPut(bpp, bi, 14, "short")
-        hBM := DllCall("CreateDIBSection", Ptr,0, Ptr,&bi
-            , "int",0, Ptr "*",ppvBits := 0, Ptr,0, "int",0, Ptr)
-        Scan0 := (!hBM ? 0:ppvBits), Stride := ((zw*bpp+31)//32)*4
-        bits.1 := Scan0, bits.2 := Stride
-        bits.3 := zx, bits.4 := zy, bits.5 := zw, bits.6 := zh
-        x := zx, y := zy, w := zw, h := zh
+        if (zw>bits.5 or zh>bits.6 or !hBM) {
+            DllCall("DeleteObject", Ptr,hBM), hBM := "", bpp := 32
+            VarSetCapacity(bi, 40, 0), NumPut(40, bi, 0, "int")
+            NumPut(zw, bi, 4, "int"), NumPut(-zh, bi, 8, "int")
+            NumPut(1, bi, 12, "short"), NumPut(bpp, bi, 14, "short")
+            hBM := DllCall("CreateDIBSection", Ptr,0, Ptr,&bi
+                , "int",0, Ptr "*",ppvBits := 0, Ptr,0, "int",0, Ptr)
+            Scan0 := (!hBM ? 0:ppvBits), Stride := ((zw*bpp+31)//32)*4
+            bits.1 := Scan0, bits.2 := Stride
+            bits.3 := zx, bits.4 := zy, bits.5 := zw, bits.6 := zh
+            x := zx, y := zy, w := zw, h := zh
         }
-        if (hBM) and !(w<1 or h<1)
-        {
-        win := DllCall("GetDesktopWindow", Ptr)
-        hDC := DllCall("GetWindowDC", Ptr,win, Ptr)
-        mDC := DllCall("CreateCompatibleDC", Ptr,hDC, Ptr)
-        oBM := DllCall("SelectObject", Ptr,mDC, Ptr,hBM, Ptr)
-        DllCall("BitBlt",Ptr,mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
-            , Ptr,hDC, "int",x, "int",y, "uint",0x00CC0020|0x40000000)
-        DllCall("ReleaseDC", Ptr,win, Ptr,hDC)
-        if (id := this.BindWindow(0,0,1))
-            WinGet, id, ID, ahk_id %id%
-        if (id)
-        {
-            WinGetPos, wx, wy, ww, wh, ahk_id %id%
-            left := x, right := x+w-1, up := y, down := y+h-1
-            left := left<wx ? wx:left, right := right>wx+ww-1 ? wx+ww-1:right
-            up := up<wy ? wy:up, down := down>wy+wh-1 ? wy+wh-1:down
-            x := left, y := up, w := right-left+1, h := down-up+1
-        }
-        if (id) and !(w<1 or h<1)
-        {
-            hDC2 := DllCall("GetDCEx", Ptr,id, Ptr,0, "int",3, Ptr)
+        if (hBM) and !(w<1 or h<1) {
+            win := DllCall("GetDesktopWindow", Ptr)
+            hDC := DllCall("GetWindowDC", Ptr,win, Ptr)
+            mDC := DllCall("CreateCompatibleDC", Ptr,hDC, Ptr)
+            oBM := DllCall("SelectObject", Ptr,mDC, Ptr,hBM, Ptr)
             DllCall("BitBlt",Ptr,mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
-            , Ptr,hDC2, "int",x-wx, "int",y-wy, "uint",0x00CC0020|0x40000000)
-            DllCall("ReleaseDC", Ptr,id, Ptr,hDC2)
+                , Ptr,hDC, "int",x, "int",y, "uint",0x00CC0020|0x40000000)
+            DllCall("ReleaseDC", Ptr,win, Ptr,hDC)
+            if (id := this.BindWindow(0,0,1)) {
+                WinGet, id, ID, ahk_id %id%
+            }
+            if (id) {
+                WinGetPos, wx, wy, ww, wh, ahk_id %id%
+                left := x, right := x+w-1, up := y, down := y+h-1
+                left := left<wx ? wx:left, right := right>wx+ww-1 ? wx+ww-1:right
+                up := up<wy ? wy:up, down := down>wy+wh-1 ? wy+wh-1:down
+                x := left, y := up, w := right-left+1, h := down-up+1
+            }
+            if (id) and !(w<1 or h<1) {
+                hDC2 := DllCall("GetDCEx", Ptr,id, Ptr,0, "int",3, Ptr)
+                DllCall("BitBlt",Ptr,mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
+                , Ptr,hDC2, "int",x-wx, "int",y-wy, "uint",0x00CC0020|0x40000000)
+                DllCall("ReleaseDC", Ptr,id, Ptr,hDC2)
+            }
+            DllCall("SelectObject", Ptr,mDC, Ptr,oBM)
+            DllCall("DeleteDC", Ptr,mDC)
         }
-        DllCall("SelectObject", Ptr,mDC, Ptr,oBM)
-        DllCall("DeleteDC", Ptr,mDC)
-        }
-        Critical, %cri%
-        SetBatchLines, %bch%
+        Critical, %savedIsCritical%
+        SetBatchLines, %savedBatchLines%
         return bits
     }
 
