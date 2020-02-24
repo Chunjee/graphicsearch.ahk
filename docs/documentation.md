@@ -1,7 +1,7 @@
 # Main Methods
 
 ## .find
-`oGraphicSearch.fisnd(x1, y1, x2, y2, err1, err2, text [, screenshot, findall, jointext, offsetx, offsety])`
+## .find(x1, y1, x2, y2, err1, err0, text [, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
 
 ### Arguments
 #### x1, y1                
@@ -11,16 +11,16 @@
 > the search scope's lower right corner coordinates
 
 #### err1, err0
-> Fault tolerance percentage of text and background (0.1=10%)
+> A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
 #### text
 > GraphicsSearch queries as strings. Can be multiple queries separated by `|`
 
 #### screenshot
-> if the value is 0, the last ScreenShot will be used
+> if the value is 1, a new capture of the screen will be used; else it will use the last capture
 
 #### findall
-> if the value is 0, Just find one result and return
+> if the value is 1, graphicsearch will find all instances
 
 #### jointext
 > if the value is 1, Join all Text for combination lookup
@@ -41,16 +41,16 @@ oGraphicSearch.search(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenSho
 
 
 ## .findAgain
-performs the last .find again with the last arguments supplied
-
+performs the last .find with the last arguments supplied
 
 
 
 ## .search
+## .search(graphicquery [, options:={}]) :id=definition {docsify-ignore}
 functionally identicle to `.find` but uses an options object instead of many arguments
 
 ### Arguments
-#### [string:=""] (string)
+#### [text:=""] (string)
 > The GraphicSearch string(s) to search. Must be concatinated with `|` if searching multiple graphics
 
 #### [options:={}] (object)
@@ -100,9 +100,16 @@ oGraphicSearch.search("|<tag>*165$22.03z", {"x2": 100, "y2": 100})
 ```
 
 ## .searchAgain
-performs the last .search again with the last arguments supplied
+### .searchAgain([graphicquery]) :id=definition {docsify-ignore}
+performs the last .search with the last arguments supplied
 
+### Example
+```autohotkey
 
+oGraphicSearch.search("|<tag>*165$22.03z", {"x2": 1028, "y2": 720})
+; => 
+oGraphicSearch.searchAgain("|<tag>*165$22.03z", )
+```
 
 
 # Sorting Methods
@@ -119,17 +126,18 @@ Sort the results object from left to right and top to bottom, ignoring slight he
 
 ### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x":2000, "y":2000}
-              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x":1226, "y":412}]
+resultsObj := [ {1: 2000, 2:2000, 3:22, 4: 10, id: "HumanReadableTag", x:2000, y:2000}
+              , {1: 1215, 2:407, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}]
 
 oGraphicSearch.resultSort(resultsObj)
-; => [1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x":1226, "y":412}, {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x":2000, "y":2000}]
+; => [1: 1215, 2: 407, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}, {1:2000, 2: 2000, 3:22, 4:10, id:"HumanReadableTag", x:2000, y:2000}]
 ```
 
 
 
 ## .resultSortDistance
-Sort the results objects by distance to a given x,y coordinate. A property "distance" is added to all elements of the result object
+## .resultSortDistance(resultsObject [, x:=1, y:=1]) :id=definition {docsify-ignore}
+Sort the results objects by distance to a given x,y coordinate. A property "distance" is added to all elements in the returned result object
 
 ### Arguments
 #### resultsObject (Object)
@@ -146,18 +154,18 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 
 ### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x": 2000, "y": 2000}
-              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x": 1226, "y": 412}]
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", x: 2000, y: 2000}
+              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", x: 1226, y: 412}]
 
 oGraphicSearch.resultSort(resultsObj, 2000, 2000)
 /* 
-[ {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "12.08", "id":"HumanReadableTag", "x":2000, "y": 2000}
-, {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1766.58", "id":"HumanReadableTag", "x":1226, "y": 412}]
+[ {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "12.08", "id":"HumanReadableTag", x:2000, y: 2000}
+, {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1766.58", "id":"HumanReadableTag", x:1226, y: 412}]
 */
 
 oGraphicSearch.resultSort(resultsObj)
 /* 
-[ {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", "x":1226, "y": 412}
-, {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "2838.33", "id": "HumanReadableTag", "x":2000, "y": 2000}]
+[ {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", x:1226, y: 412}
+, {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "2838.33", "id": "HumanReadableTag", x:2000, y: 2000}]
 */
 ```

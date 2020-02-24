@@ -1,18 +1,24 @@
 class graphicsearch {
 
     static noMatchVal := false ;the value to return when no matches were found
-    static optionsObj := {    "x1": 0
-                            , "y1": 0
-                            , "x2": A_ScreenWidth
-                            , "y2": A_ScreenHeight
-                            , "err1": 0 ;foreground
-                            , "err0": 0 ;background
-                            , "screenshot": 1
-                            , "findall": 1
-                            , "joinstring": 1
-                            , "offsetx": 0
-                            , "offsety": 0 }
+    static defaultOptionsObj := {    "x1": 0
+                                   , "y1": 0
+                                   , "x2": A_ScreenWidth
+                                   , "y2": A_ScreenHeight
+                                   , "err1": 0 ;foreground
+                                   , "err0": 0 ;background
+                                   , "screenshot": 1
+                                   , "findall": 1
+                                   , "joinstring": 1
+                                   , "offsetx": 0
+                                   , "offsety": 0 }
     static savedScreenshot := []
+
+    ; .search
+    static lastSearchQuery      := ""
+    static lastSearchOptions    := {}
+
+    ; .find
 
     
 
@@ -110,7 +116,7 @@ class graphicsearch {
             }
         }
         ; return this.noMatchVal if no results found
-        if (arr.Count() == 0) {
+        if (arr.Count() = 0) {
             SetBatchLines, %savedBatchLines%
             return this.noMatchVal
         }
@@ -124,10 +130,10 @@ class graphicsearch {
     {
         ; create default if needed
         if (!IsObject(param_obj)) {
-            param_obj := this.optionsObj.Clone()
+            param_obj := this.defaultOptionsObj.Clone()
         }
         ; merge with default for any blank parameters
-        for Key, Value in this.optionsObj {
+        for Key, Value in this.defaultOptionsObj {
             if (!param_obj.HasKey(Key)) { ; if the key is not already in use
                 param_obj[Key] := Value
             }
