@@ -27,11 +27,11 @@ finds GraphicSearch queries on the screen
 #### [options.findall:=1] (number)
 > Wether or not to find all instances or just one.
 
-#### [options.joinstring:=1] (number)
-> Join all Text for combination lookup.
+#### [options.joinqueries:=1] (number)
+> Join all GraphicsSearch queries for combination lookup.
 
 #### [options.offsetx:=1] (number), [options.offsety:=0] (number)
-> Set the Max text offset for combination lookup
+> Set the Max offset for combination lookup
 
 
 ### Return
@@ -47,7 +47,7 @@ optionsObj := {   x1: 0
                 , err0: 0
                 , screenshot: 1
                 , findall: 1
-                , joinstring: 1
+                , joinqueries: 1
                 , offsetx: 1
                 , offsety: 1 }
 
@@ -77,7 +77,7 @@ oGraphicSearch.searchAgain()
 
 <!-- .scan -->
 ## .scan
-### .scan(graphicsearch_query [, y1, x2, y2, err1, err0, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
+### .scan(graphicsearch_query [, y1, x2, y2, err1, err0, screenshot, findall, joinqueries, offsetx, offsety]) :id=definition {docsify-ignore}
 finds GraphicSearch queries on the screen
 
 ### Arguments
@@ -99,11 +99,11 @@ finds GraphicSearch queries on the screen
 #### findall
 > if the value is 1, graphicsearch will find all matches. for 0, only return one match
 
-#### jointext
-> if the value is 1, Join all Text for combination lookup
+#### joinqueries
+> if the value is 1, Join all GraphicsSearch queries for combination lookup
 
 #### offsetx, offsety
-> Set the Max text offset for combination lookup
+> Set the Max offset for combination lookup
 
 
 ### Return
@@ -138,7 +138,7 @@ oGraphicSearch.scanAgain()
 
 <!-- .find -->
 ## .find
-### .find(x1, y1, x2, y2, err1, err0, text [, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
+### .find(x1, y1, x2, y2, err1, err0, graphicsearch_query [, screenshot, findall, joinqueries, offsetx, offsety]) :id=definition {docsify-ignore}
 functionally identicle to `.scan` but uses legacy argument order as a convience for old scripts
 
 ### Arguments
@@ -151,7 +151,7 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 #### err1, err0
 > A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
-#### text
+#### graphicsearch_query
 > GraphicsSearch queries as strings. Can be multiple queries separated by `|`
 
 #### screenshot
@@ -160,11 +160,11 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 #### findall
 > if the value is 1, graphicsearch will find all matches. for 0, only return one match
 
-#### jointext
-> if the value is 1, Join all Text for combination lookup
+#### joinqueries
+> if the value is 1, Join all GraphicsSearch queries for combination lookup
 
 #### offsetx, offsety
-> Set the Max text offset for combination lookup
+> Set the Max offset for combination lookup
 
 
 ### Return
@@ -174,7 +174,7 @@ Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:t
 
 ### Example
 ```autohotkey
-oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
+oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20, 10)
 ; => [{1: 1215, 2: 400, 3: 22, 4: 10, id: "tag", x: 1226, y: 412}]
 ```
 <!-- end of .find -->

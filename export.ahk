@@ -22,7 +22,7 @@ class graphicsearch {
     static lastScanOptions    := {}
     
 
-    find(x1, y1, x2, y2, err1, err0, query, ScreenShot:=1, findall:=1, jointext:=0, offsetx:=20, offsety:=10)
+    find(x1, y1, x2, y2, err1, err0, query, ScreenShot:=1, findall:=1, joinqueries:=0, offsetx:=20, offsety:=10)
     {
         savedBatchLines := A_BatchLines
         SetBatchLines, -1
@@ -55,7 +55,7 @@ class graphicsearch {
             if (err1 = 0 && err0 = 0) && (num > 1 || A_Index>1) {
                 err1 := 0.1, err0 := 0.05
             }
-            if (jointext) {
+            if (joinqueries) {
                 j := info[1], mode := j.8, color := j.9, n := j.10
                 , w1 := -1, h1 := j.3, comment := "", v := "", i := 0
                 loop, % num
@@ -141,7 +141,7 @@ class graphicsearch {
 
         ; pass the parameters to .find and return
         return this.find(param_obj.x1, param_obj.y1, param_obj.x2, param_obj.y2, param_obj.err1, param_obj.err0, param_query
-            , param_obj.screenshot, param_obj.findall, param_obj.joinstring, param_obj.offsetx, param_obj.offsety)
+            , param_obj.screenshot, param_obj.findall, param_obj.joinqueries, param_obj.offsetx, param_obj.offsety)
     }
 
 
