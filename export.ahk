@@ -1,46 +1,32 @@
 class graphicsearch {
 
     static noMatchVal := false ;the value to return when no matches were found
-    static defaultOptionsObj := {    "x1": 0
-                                   , "y1": 0
-                                   , "x2": A_ScreenWidth
-                                   , "y2": A_ScreenHeight
-                                   , "err1": 0 ;foreground
-                                   , "err0": 0 ;background
-                                   , "screenshot": 1
-                                   , "findall": 1
-                                   , "joinstring": 1
-                                   , "offsetx": 0
-                                   , "offsety": 0 }
+    static defaultOptionsObj := { "x1": 0
+                                , "y1": 0
+                                , "x2": A_ScreenWidth
+                                , "y2": A_ScreenHeight
+                                , "err1": 0 ;foreground
+                                , "err0": 0 ;background
+                                , "screenshot": 1
+                                , "findall": 1
+                                , "joinstring": 1
+                                , "offsetx": 0
+                                , "offsety": 0 }
     static savedScreenshot := []
 
     ; .search
     static lastSearchQuery      := ""
     static lastSearchOptions    := {}
-
-    ; .find
-    static lastFindQuery        := ""
-    static lastFindOptions      := {}
+    ; .scan
+    static lastScanQuery      := ""
+    static lastScanOptions    := {}
     
 
-    find(x1, y1, x2, y2, err1, err0, text, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10)
+    find(x1, y1, x2, y2, err1, err0, query, ScreenShot:=1, findall:=1, jointext:=0, offsetx:=20, offsety:=10)
     {
         savedBatchLines := A_BatchLines
         SetBatchLines, -1
 
-        OptionsObj := { "x1": x1
-                      , "y1": y1
-                      , "x2": x2
-                      , "y2": y2
-                      , "err1": err1
-                      , "err0": err0
-                      , "screenshot": ScreenShot
-                      , "findall": FindAll
-                      , "joinstring": JoinText
-                      , "offsetx": offsetX
-                      , "offsety": offsetY }
-        this.lastFindQuery := text
-        this.lastFindOptions := OptionsObj
         x := (x1 < x2 ? x1:x2), y := (y1 < y2 ? y1:y2)
         , w := Abs(x2 - x1)+1, h := Abs(y2 - y1)+1
         , this.xywh2xywh(x, y, w, h, x, y, w, h, zx, zy, zw, zh)
@@ -50,7 +36,7 @@ class graphicsearch {
         }
         bits := this.GetBitsFromScreen(x, y, w, h, ScreenShot, zx, zy, zw, zh)
         sx := x - zx, sy := y-zy, sw := w, sh := h, arr := [], info := []
-        loop, Parse, text, |
+        loop, Parse, query, |
         if IsObject(j := this.PicInfo(A_LoopField))
             info.Push(j)
         if (!(num := info.MaxIndex()) || !bits.1) {
@@ -62,14 +48,14 @@ class graphicsearch {
             k+=Round(info[A_Index].2 * info[A_Index].3)
             VarSetCapacity(s1, k * 4), VarSetCapacity(s0, k * 4)
             , VarSetCapacity(gs, sw * sh), VarSetCapacity(ss, sw * sh)
-            , allpos_max := (FindAll ? 1024 : 1)
+            , allpos_max := (findall ? 1024 : 1)
             , VarSetCapacity(allpos, allpos_max*4)
         loop, 2
         {
             if (err1 = 0 && err0 = 0) && (num > 1 || A_Index>1) {
                 err1 := 0.1, err0 := 0.05
             }
-            if (JoinText) {
+            if (jointext) {
                 j := info[1], mode := j.8, color := j.9, n := j.10
                 , w1 := -1, h1 := j.3, comment := "", v := "", i := 0
                 loop, % num
@@ -84,7 +70,7 @@ class graphicsearch {
                     }
                     v .= j.1
                 }
-                ok := this.PicFind( mode, color, n, offsetX, offsetY
+                ok := this.PicFind( mode, color, n, offsetx, offsety
                 , bits, sx, sy, sw, sh, gs, ss, v, s1, s0
                 , input,num*7, allpos, allpos_max )
                 loop, % ok
@@ -103,7 +89,7 @@ class graphicsearch {
                         : A_Index=6 && err1 && !j.12 ? Round(j.4*err1)
                         : A_Index=7 && err0 && !j.12 ? Round(j.5*err0)
                         : j[A_Index]), input, 4*(A_Index-1), "int")
-                    ok := this.PicFind( mode,color,n,offsetX,offsetY
+                    ok := this.PicFind( mode,color,n,offsetx,offsety
                     , bits,sx,sy,sw,sh,gs,ss,v,s1,s0
                     , input,7,allpos,allpos_max )
                     loop, % ok
@@ -111,7 +97,7 @@ class graphicsearch {
                         , rx := (pos&0xFFFF)+zx, ry := (pos>>16)+zy
                         , arr.Push( {1:rx, 2:ry, 3:w1, 4:h1
                         , x:rx+w1//2, y:ry+h1//2, id:comment} )
-                    if (ok && !FindAll) {
+                    if (ok && !findall) {
                         break
                     }
                 }
@@ -140,7 +126,7 @@ class graphicsearch {
     }
     
 
-    search(param_string, param_obj:=0)
+    main_search(param_query, param_obj:="")
     {
         ; create default if needed
         if (!IsObject(param_obj)) {
@@ -154,25 +140,45 @@ class graphicsearch {
         }
 
         ; pass the parameters to .find and return
-        return this.find(param_obj.x1, param_obj.y1, param_obj.x2, param_obj.y2, param_obj.err1, param_obj.err0, param_string
+        return this.find(param_obj.x1, param_obj.y1, param_obj.x2, param_obj.y2, param_obj.err1, param_obj.err0, param_query
             , param_obj.screenshot, param_obj.findall, param_obj.joinstring, param_obj.offsetx, param_obj.offsety)
     }
 
 
-    findAgain() {
-        ; pass saved arguments to .search and return
-        return this.search(this.lastFindQuery, this.lastFindOptions)
+    search(param_query, param_obj:="")
+    {
+        ; create default if needed
+        if (!IsObject(param_obj)) {
+            param_obj := this.defaultOptionsObj.Clone()
+        }
+        ; merge with default for any blank parameters
+        for Key, Value in this.defaultOptionsObj {
+            if (!param_obj.HasKey(Key)) { ; if the key is not already in use
+                param_obj[Key] := Value
+            }
+        }
+        ; save parameters for use in future
+        this.lastSearchQuery := param_query
+        this.lastSearchOptions := param_obj
+
+        ; pass the parameters to .find and return
+        return this.main_search(param_query, param_obj)
     }
 
 
-    searchAgain() {
+    searchAgain(param_query:="") 
+    {
+        ; save new query if entered
+        if (param_query != "") {
+            this.lastSearchQuery := param_query
+        }
         ; pass saved arguments to .search and return
-        return this.search(this.lastSearchQuery, this.lastSearchOptions)
+        return this.main_search(this.lastSearchQuery, this.lastSearchOptions)
     }
 
 
-    scan(param_graphicsearchstring, x1:=0, y1:=0, x2:="", y2:="", err1:=0, err0:=0, screenshot:=1
-        , findall:=1, jointext:=0, offsetx:=20, offsety:=10)
+    scan(param_query, x1:=0, y1:=0, x2:="", y2:="", err1:=0, err0:=0, screenshot:=1
+        , findall:=1, joinqueries:=0, offsetx:=20, offsety:=10)
     {
         if (x2 == "") {
             x2 := A_ScreenWidth
@@ -181,8 +187,31 @@ class graphicsearch {
             y2 := A_ScreenHeight
         }
 
+        ; save parameters for use in future and build search object
+        this.lastScanQuery := param_query
+        this.lastScanOptions := { "x1": x1
+                                , "y1": y1
+                                , "x2": x2
+                                , "y2": y2
+                                , "err1": err1
+                                , "err0": err0
+                                , "screenshot": screenshot
+                                , "findall": findall
+                                , "joinqueries": joinqueries
+                                , "offsetx": offsetx
+                                , "offsety": offsety }
         ; pass the parameters to .find and return
-        return this.find(x1, y1, x2, y2, err1, err0, param_graphicsearchstring, screenshot, findall, jointext, offsetx, offsety)
+        return this.main_search(param_query, this.lastScanOptions)
+    }
+
+    scanAgain(param_query:="") 
+    {
+        ; save new query if entered
+        if (param_query != "") {
+            this.lastScanQuery := param_query
+        }
+        ; pass saved arguments to .search and return
+        return this.main_search(this.lastSearchQuery, this.lastSearchOptions)
     }
 
 

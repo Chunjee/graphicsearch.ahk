@@ -1,58 +1,13 @@
 # Main Methods
 
-## .find
-### .find(x1, y1, x2, y2, err1, err0, text [, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
+<!-- .search -->
+## .search
+### .search(graphicsearch_query [, options:={}]) :id=definition {docsify-ignore}
 finds GraphicSearch queries on the screen
 
 ### Arguments
-#### x1, y1                
-> the search scope's upper left corner coordinates
-
-#### x2, y2
-> the search scope's lower right corner coordinates
-
-#### err1, err0
-> A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
-
-#### text
-> GraphicsSearch queries as strings. Can be multiple queries separated by `|`
-
-#### screenshot
-> if the value is 1, a new capture of the screen will be used; else it will use the last capture
-
-#### findall
-> if the value is 1, graphicsearch will find all instances
-
-#### jointext
-> if the value is 1, Join all Text for combination lookup
-
-#### offsetx, offsety
-> Set the Max text offset for combination lookup
-
-
-### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:Comment}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
-
-### Example
-
-```autohotkey
-oGraphicSearch.search(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
-```
-
-
-## .findAgain
-performs the last .find with the last arguments supplied
-
-
-
-## .search
-### .search(graphicquery [, options:={}]) :id=definition {docsify-ignore}
-functionally identicle to `.find` but uses an options object instead of many arguments
-
-### Arguments
-#### [text:=""] (string)
-> The GraphicSearch string(s) to search. Must be concatinated with `|` if searching multiple graphics
+#### graphicsearch_query (string)
+> The GraphicSearch query(s) to search. Must be concatinated with `|` if searching multiple graphics
 
 #### [options:={}] (object)
 > The options object
@@ -99,9 +54,13 @@ optionsObj := {   "x1": 0
 oGraphicSearch.search("|<tag>*165$22.03z", optionsObj)
 oGraphicSearch.search("|<tag>*165$22.03z", {"x2": 100, "y2": 100})
 ```
+<!-- End of .search -->
 
+
+
+<!-- .searchAgain -->
 ## .searchAgain
-### .searchAgain([graphicquery]) :id=definition {docsify-ignore}
+### .searchAgain([graphicsearch_query]) :id=definition {docsify-ignore}
 performs the last .search with the last arguments supplied
 
 ### Example
@@ -109,8 +68,117 @@ performs the last .search with the last arguments supplied
 
 oGraphicSearch.search("|<tag>*165$22.03z", {"x2": 1028, "y2": 720})
 ; => 
-oGraphicSearch.searchAgain("|<tag>*165$22.03z", )
+oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
+oGraphicSearch.searchAgain()
 ```
+<!-- End of .searchAgain -->
+
+
+
+<!-- .scan -->
+## .scan
+### .scan(graphicsearch_query [, y1, x2, y2, err1, err0, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
+finds GraphicSearch queries on the screen
+
+### Arguments
+#### graphicsearch_query
+> GraphicsSearch queries as strings. Can be multiple queries separated by `|`
+
+#### x1, y1
+> the search scope's upper left corner coordinates
+
+#### x2, y2
+> the search scope's lower right corner coordinates
+
+#### err1, err0
+> A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
+
+#### screenshot
+> if the value is 1, a new capture of the screen will be used; else it will use the last capture
+
+#### findall
+> if the value is 1, graphicsearch will find all matches. for 0, only return one match
+
+#### jointext
+> if the value is 1, Join all Text for combination lookup
+
+#### offsetx, offsety
+> Set the Max text offset for combination lookup
+
+
+### Return
+(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
+
+### Example
+```autohotkey
+oGraphicSearch.scan("|<tag>*165$22.03z", 1, 1, 1028, 720, .1, .1, 1, 1, 1, 0, 0)
+; => [{1: 1215, 2: 400, 3:22, 4: 10, id: "tag", x:1226, y:412}]
+```
+<!-- End of .scan -->
+
+
+
+<!-- .scanAgain -->
+## .scanAgain
+### .scanAgain([graphicsearch_query]) :id=definition {docsify-ignore}
+performs the last .search with the last arguments supplied
+
+### Example
+```autohotkey
+oGraphicSearch.scan("|<tag>*165$22.03z", {"x2": 1028, "y2": 720})
+
+oGraphicSearch.scanAgain("|<tag>*165$22.03z")
+oGraphicSearch.scanAgain()
+```
+<!-- End of .scanAgain -->
+
+
+
+<!-- .find -->
+## .find
+### .find(x1, y1, x2, y2, err1, err0, text [, screenshot, findall, jointext, offsetx, offsety]) :id=definition {docsify-ignore}
+functionally identicle to `.scan` but uses legacy argument order as a convience for old scripts
+
+### Arguments
+#### x1, y1
+> the search scope's upper left corner coordinates
+
+#### x2, y2
+> the search scope's lower right corner coordinates
+
+#### err1, err0
+> A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
+
+#### text
+> GraphicsSearch queries as strings. Can be multiple queries separated by `|`
+
+#### screenshot
+> if the value is 1, a new capture of the screen will be used; else it will use the last capture
+
+#### findall
+> if the value is 1, graphicsearch will find all matches. for 0, only return one match
+
+#### jointext
+> if the value is 1, Join all Text for combination lookup
+
+#### offsetx, offsety
+> Set the Max text offset for combination lookup
+
+
+### Return
+(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
+
+### Example
+```autohotkey
+oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
+; => [{1: 1215, 2: 400, 3:22, 4: 10, id: "tag", x:1226, y:412}]
+```
+<!-- end of .find -->
+
 
 
 # Sorting Methods
@@ -129,10 +197,10 @@ Sort the results object from left to right and top to bottom, ignoring slight he
 ### Example
 ```autohotkey
 resultsObj := [ {1: 2000, 2:2000, 3:22, 4: 10, id: "HumanReadableTag", x:2000, y:2000}
-              , {1: 1215, 2:407, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}]
+              , {1: 1215, 2:400, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}]
 
 oGraphicSearch.resultSort(resultsObj)
-; => [1: 1215, 2: 407, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}, {1:2000, 2: 2000, 3:22, 4:10, id:"HumanReadableTag", x:2000, y:2000}]
+; => [{1: 1215, 2: 400, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}, {1:2000, 2: 2000, 3:22, 4:10, id:"HumanReadableTag", x:2000, y:2000}]
 ```
 
 
@@ -157,17 +225,17 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 ### Example
 ```autohotkey
 resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", x: 2000, y: 2000}
-              , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", x: 1226, y: 412}]
+              , {1: 1215, 2: 400, 3: 22, 4: 10, "id": "HumanReadableTag", x: 1226, y: 412}]
 
 oGraphicSearch.resultSort(resultsObj, 2000, 2000)
 /* 
 [ {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "12.08", "id":"HumanReadableTag", x:2000, y: 2000}
-, {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1766.58", "id":"HumanReadableTag", x:1226, y: 412}]
+, {1: 1215, 2: 400, 3: 22, 4: 10, "distance": "1766.58", "id":"HumanReadableTag", x:1226, y: 412}]
 */
 
 oGraphicSearch.resultSort(resultsObj)
 /* 
-[ {1: 1215, 2: 407, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", x:1226, y: 412}
+[ {1: 1215, 2: 400, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", x:1226, y: 412}
 , {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "2838.33", "id": "HumanReadableTag", x:2000, y: 2000}]
 */
 ```
