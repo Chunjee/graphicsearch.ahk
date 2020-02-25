@@ -2466,13 +2466,13 @@ body .sidebar {
   --code-theme-background: #222;
   --code-theme-comment: #516e7a;
   --code-theme-keyword: #C586C0;
-  --code-theme-constant: #4EC9B0;
+  --code-theme-constant: #c97b4e;
   --code-theme-boolean: #4EC9B0;
   --code-theme-number: #ffe600;
   --code-theme-operator: #ffe600;
   --code-theme-tag: #ffe600;
   --code-theme-punctuation: #f3f3f3;
-  --code-theme-selection: rgba(255, 255, 255, 0.2);
+  --code-theme-selection: #ffffff33;
   --code-theme-text: #f3f3f3;
   --code-theme-variable: #f3f3f3;
   --code-theme-property: #4EC9B0;
