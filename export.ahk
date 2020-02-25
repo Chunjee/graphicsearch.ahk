@@ -9,7 +9,7 @@ class graphicsearch {
                                 , "err0": 0 ;background
                                 , "screenshot": 1
                                 , "findall": 1
-                                , "joinstring": 1
+                                , "joinqueries": 1
                                 , "offsetx": 0
                                 , "offsety": 0 }
     static savedScreenshot := []
