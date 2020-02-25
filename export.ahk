@@ -862,7 +862,7 @@ class graphicsearch {
 
 
     ; Sort the results objects from left to right and top to bottom, ignoring slight height difference
-    resultSort(param_resultObj, param_ydistance := 10)
+    resultSort(param_resultObj, param_ydistance:=10)
     {
         resultObj := param_resultObj.clone()
         ypos := []

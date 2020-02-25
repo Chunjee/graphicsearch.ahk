@@ -2,7 +2,7 @@
 
 <!-- .search -->
 ## .search
-### .search(graphicsearch_query [, options:={}]) :id=definition {docsify-ignore}
+### .search(graphicsearch_query [, options]) :id=definition {docsify-ignore}
 finds GraphicSearch queries on the screen
 
 ### Arguments
@@ -21,13 +21,13 @@ finds GraphicSearch queries on the screen
 #### [options.err1:=1] (number), [options.err0:=0] (number)
 > Fault tolerance of graphic and background (0.1=10%)
 
-#### [options.screenshot:=1] (number)
+#### [options.screenshot:=1] (boolean)
 > Wether or not to capture a new screenshot or not. If the value is 0, the last captured screenhhot will be used
 
-#### [options.findall:=1] (number)
+#### [options.findall:=1] (boolean)
 > Wether or not to find all instances or just one.
 
-#### [options.joinqueries:=1] (number)
+#### [options.joinqueries:=1] (boolean)
 > Join all GraphicsSearch queries for combination lookup.
 
 #### [options.offsetx:=1] (number), [options.offsety:=0] (number)
@@ -81,28 +81,28 @@ oGraphicSearch.searchAgain()
 finds GraphicSearch queries on the screen
 
 ### Arguments
-#### graphicsearch_query
+#### graphicsearch_query (string)
 > GraphicsSearch queries as strings. Can be multiple queries separated by `|`
 
-#### x1, y1
+#### [x1:=0, y1:=0] (number)
 > the search scope's upper left corner coordinates
 
-#### x2, y2
+#### [x2:=0, y2:=0] (number)
 > the search scope's lower right corner coordinates
 
-#### err1, err0
+#### [err1:=0, err0:=0] (number)
 > A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
-#### screenshot
+#### [screenshot:=1] (boolean)
 > if the value is 1, a new capture of the screen will be used; else it will use the last capture
 
-#### findall
+#### [findall:=1] (boolean)
 > if the value is 1, graphicsearch will find all matches. for 0, only return one match
 
-#### joinqueries
+#### [joinqueries:=1] (boolean)
 > if the value is 1, Join all GraphicsSearch queries for combination lookup
 
-#### offsetx, offsety
+#### [offsetx:=0, offsety:=0] (number)
 > Set the Max offset for combination lookup
 
 
@@ -142,28 +142,28 @@ oGraphicSearch.scanAgain()
 functionally identicle to `.scan` but uses legacy argument order as a convience for old scripts
 
 ### Arguments
-#### x1, y1
+#### x1, y1 (number)
 > the search scope's upper left corner coordinates
 
-#### x2, y2
+#### x2, y2 (number)
 > the search scope's lower right corner coordinates
 
-#### err1, err0
+#### err1, err0 (number)
 > A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
-#### graphicsearch_query
+#### graphicsearch_query (string)
 > GraphicsSearch queries as strings. Can be multiple queries separated by `|`
 
-#### screenshot
+#### [screenshot:=1] (boolean)
 > if the value is 1, a new capture of the screen will be used; else it will use the last capture
 
-#### findall
+#### [findall:=1] (boolean)
 > if the value is 1, graphicsearch will find all matches. for 0, only return one match
 
-#### joinqueries
+#### [joinqueries:=1] (boolean)
 > if the value is 1, Join all GraphicsSearch queries for combination lookup
 
-#### offsetx, offsety
+#### [offsetx:=20, offsety:=10] (number)
 > Set the Max offset for combination lookup
 
 
@@ -184,12 +184,14 @@ oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20
 # Sorting Methods
 
 ## .resultSort
-## .resultSort([resultsObject], )
+## .resultSort(resultsObject], ydistance) :id=definition {docsify-ignore}
 Sort the results object from left to right and top to bottom, ignoring slight height difference
 
 ### Arguments
 #### [resultsobject] (Object)
 > The GraphicSearch results object to sort
+#### [ydistance:=10] (number)
+> The ammount of height difference to ingnore in pixels
 
 ### Return
 (Array) Return an array of objects containing all lookup results
@@ -206,7 +208,7 @@ oGraphicSearch.resultSort(resultsObj)
 
 
 ## .resultSortDistance
-### .resultSortDistance(resultsObject [, x:=1, y:=1]) :id=definition {docsify-ignore}
+### .resultSortDistance(resultsObject [, x, y]) :id=definition {docsify-ignore}
 Sort the results objects by distance to a given x,y coordinate. A property "distance" is added to all elements in the returned result object
 
 ### Arguments
