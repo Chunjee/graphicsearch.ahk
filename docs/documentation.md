@@ -65,11 +65,10 @@ performs the last .search with the last arguments supplied
 
 ### Example
 ```autohotkey
-
 oGraphicSearch.search("|<tag>*165$22.03z", {x2: 1028, y2: 720})
-; => 
-oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
+
 oGraphicSearch.searchAgain()
+oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
 ```
 <!-- End of .searchAgain -->
 
@@ -129,8 +128,8 @@ performs the last .search with the last arguments supplied
 ```autohotkey
 oGraphicSearch.scan("|<tag>*165$22.03z", {x2: 1028, y2: 720})
 
-oGraphicSearch.scanAgain("|<HumanReadableTag>*99$26.z7z")
 oGraphicSearch.scanAgain()
+oGraphicSearch.scanAgain("|<HumanReadableTag>*99$26.z7z")
 ```
 <!-- End of .scanAgain -->
 
