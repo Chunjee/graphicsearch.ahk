@@ -24,7 +24,7 @@ oGraphicSearch := new graphicsearch()
 result := oGraphicSearch.search("|<HumanReadableTag>*165$22.03z")
 ; => [{1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
 ```
-You may also review or copy the library from [./export.ahk on GitHub](https://github.com/Chunjee/graphicsearch.ahk/blob/master/export.ahk)
+You may also review or copy the library from [./export.ahk on GitHub](https://github.com/Chunjee/graphicsearch.ahk)
 
 ## Documentation
 
