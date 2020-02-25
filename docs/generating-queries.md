@@ -1,8 +1,4 @@
-# What is a GraphicSearch query
-
-GraphicSearch queries are images that have been turned into strings. Unlike Imagesearch, there are only two colors taken into account; a foreground color, and a background color.
-
-## Generation
+## Generating GraphicSearch Queries
 
 Open graphicsearch_gui.ahk
 

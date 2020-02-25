@@ -28,9 +28,15 @@ You may also review or copy the library from [./export.ahk on GitHub](https://gi
 
 ## Documentation
 
-See [**Documentation**](/documentation) for methods.
+See [Documentation](/documentation) for all methods.
 
-See [**Generating Queries**](/generating-queries) for turning images into GraphicSearch queries.
+## GraphicSearch Queries
+
+GraphicSearch queries are images that have been turned into strings. Unlike Imagesearch, there are only two colors taken into account; a foreground color, and a background color.
+
+Launch the included graphicsearch_gui.ahk to capture and convert screen images into GraphicSearch queries.
+
+See [Generating Queries](/generating-queries) for more guidance.
 
 
 ## Examples
