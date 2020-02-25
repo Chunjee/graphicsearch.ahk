@@ -39,20 +39,20 @@ finds GraphicSearch queries on the screen
 
 ### Example
 ```autohotkey
-optionsObj := {   "x1": 0
-                , "y1": 0
-                , "x2": A_ScreenWidth
-                , "y2": A_ScreenHeight
-                , "err1": 0
-                , "err0": 0
-                , "screenshot": 1
-                , "findall": 1
-                , "joinstring": 1
-                , "offsetx": 1
-                , "offsety": 1 }
+optionsObj := {   x1: 0
+                , y1: 0
+                , x2: A_ScreenWidth
+                , y2: A_ScreenHeight
+                , err1: 0
+                , err0: 0
+                , screenshot: 1
+                , findall: 1
+                , joinstring: 1
+                , offsetx: 1
+                , offsety: 1 }
 
 oGraphicSearch.search("|<tag>*165$22.03z", optionsObj)
-oGraphicSearch.search("|<tag>*165$22.03z", {"x2": 100, "y2": 100})
+oGraphicSearch.search("|<tag>*165$22.03z", {x2: 100, y2: 100})
 ```
 <!-- End of .search -->
 
@@ -66,7 +66,7 @@ performs the last .search with the last arguments supplied
 ### Example
 ```autohotkey
 
-oGraphicSearch.search("|<tag>*165$22.03z", {"x2": 1028, "y2": 720})
+oGraphicSearch.search("|<tag>*165$22.03z", {x2: 1028, y2: 720})
 ; => 
 oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
 oGraphicSearch.searchAgain()
@@ -127,9 +127,9 @@ performs the last .search with the last arguments supplied
 
 ### Example
 ```autohotkey
-oGraphicSearch.scan("|<tag>*165$22.03z", {"x2": 1028, "y2": 720})
+oGraphicSearch.scan("|<tag>*165$22.03z", {x2: 1028, y2: 720})
 
-oGraphicSearch.scanAgain("|<tag>*165$22.03z")
+oGraphicSearch.scanAgain("|<HumanReadableTag>*99$26.z7z")
 oGraphicSearch.scanAgain()
 ```
 <!-- End of .scanAgain -->
@@ -175,7 +175,7 @@ Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:t
 ### Example
 ```autohotkey
 oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", ScreenShot := 1, FindAll := 1, JoinText := 0, offsetX := 20, offsetY := 10)
-; => [{1: 1215, 2: 400, 3:22, 4: 10, id: "tag", x:1226, y:412}]
+; => [{1: 1215, 2: 400, 3: 22, 4: 10, id: "tag", x: 1226, y: 412}]
 ```
 <!-- end of .find -->
 
@@ -196,11 +196,11 @@ Sort the results object from left to right and top to bottom, ignoring slight he
 
 ### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2:2000, 3:22, 4: 10, id: "HumanReadableTag", x:2000, y:2000}
-              , {1: 1215, 2:400, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}]
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
+              , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 
 oGraphicSearch.resultSort(resultsObj)
-; => [{1: 1215, 2: 400, 3:22, 4: 10, id: "HumanReadableTag", x:1226, y:412}, {1:2000, 2: 2000, 3:22, 4:10, id:"HumanReadableTag", x:2000, y:2000}]
+; => [{1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x:1226, y:412}, {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}]
 ```
 
 
@@ -224,18 +224,12 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 
 ### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", x: 2000, y: 2000}
-              , {1: 1215, 2: 400, 3: 22, 4: 10, "id": "HumanReadableTag", x: 1226, y: 412}]
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
+              , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 
-oGraphicSearch.resultSort(resultsObj, 2000, 2000)
+oGraphicSearch.resultSortDistance(resultsObj, 2000, 2000)
 /* 
-[ {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "12.08", "id":"HumanReadableTag", x:2000, y: 2000}
-, {1: 1215, 2: 400, 3: 22, 4: 10, "distance": "1766.58", "id":"HumanReadableTag", x:1226, y: 412}]
-*/
-
-oGraphicSearch.resultSort(resultsObj)
-/* 
-[ {1: 1215, 2: 400, 3: 22, 4: 10, "distance": "1292.11", "id": "HumanReadableTag", x:1226, y: 412}
-, {1: 2000, 2: 2000, 3: 22, 4: 10, "distance": "2838.33", "id": "HumanReadableTag", x:2000, y: 2000}]
+[ {1: 2000, 2: 2000, 3: 22, 4: 10, distance: "12.08", id: "HumanReadableTag", x: 2000, y: 2000}
+, {1: 1215, 2: 400, 3: 22, 4: 10, distance: "1766.58", id: "HumanReadableTag", x: 1226, y: 412}]
 */
 ```
