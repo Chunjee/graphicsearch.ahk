@@ -116,7 +116,7 @@ gs_Gui(cmd)
     ;--------------
     Gui, Add, Button, xm vReset ggs_Run, Reset
     Gui, Add, Checkbox, x+15 yp+5 vModify ggs_Run, Modify
-    Gui, Add, Text,   x+30, Comment
+    Gui, Add, Text,   x+30, Tag
     Gui, Add, Edit,   x+5 yp-2 w150 vComment
     Gui, Add, Button, x+30 yp-3 vSplitAdd ggs_Run, SplitAdd
     Gui, Add, Button, x+10 vAllAdd ggs_Run, AllAdd
@@ -840,7 +840,9 @@ gs_Gui(cmd)
       return gs_Off(cri,bch)
     }
     wz:=Format("{:d}",InStr(wz,"`n")-1) "." bit2base64(wz)
-    s:="`nText.=""|<" Comment ">" color "$" wz """`n"
+    s:="""|<" Comment ">" color "$" wz """`n"
+    clipboard := s
+    s:= "`nGraphicSearch_query := " s
     if (cmd="AllAdd")
     {
       Event:=cmd, Result:=s
