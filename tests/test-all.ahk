@@ -23,15 +23,18 @@ centerPoint :=  "|<center>*193$17.zzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzTzwzztzzXzy3zU1
 centerObj := {"x": 1328, "y": 752}
 
 ; Perform the searches
-sleep, 1000
+sleep, 400
 result1 := oGraphicSearch.search(pizzaGraphic)
-result2 := oGraphicSearch.find(0, 0, A_ScreenWidth, A_ScreenHeight, 0, 0, spaggGraphic)
+result2 := oGraphicSearch.scan(spaggGraphic, 0, 0, A_ScreenWidth, A_ScreenHeight, 0, 0)
+resultlegacyfind := oGraphicSearch.find(0, 0, A_ScreenWidth, A_ScreenHeight, 0, 0, spaggGraphic)
 if (result1) {
     ; test number of results
     assert.label("search")
     assert.test(result1.Count(), 5)
     assert.test(result2.Count(), 2)
 
+    assert.label("find")
+    assert.test(result2, resultlegacyfind)
 
     ; test resultSort
     assert.label("resultSort")
