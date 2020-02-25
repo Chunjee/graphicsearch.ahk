@@ -151,12 +151,6 @@ class graphicsearch {
         if (!IsObject(param_obj)) {
             param_obj := this.defaultOptionsObj.Clone()
         }
-        ; merge with default for any blank parameters
-        for Key, Value in this.defaultOptionsObj {
-            if (!param_obj.HasKey(Key)) { ; if the key is not already in use
-                param_obj[Key] := Value
-            }
-        }
         ; save parameters for use in future
         this.lastSearchQuery := param_query
         this.lastSearchOptions := param_obj
