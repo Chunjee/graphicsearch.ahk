@@ -256,7 +256,7 @@ class graphicsearch {
     }
 
 
-    GetBitsFromScreen(x, y, w, h, ScreenShot:=1, zx"", zy"", zw"", zh"")
+    GetBitsFromScreen(x, y, w, h, ScreenShot:=1, zx:="", zy:="", zw:="", zh:="")
     {
         local
         static hBM := "", bits := [], Ptr := A_PtrSize ? "UPtr" : "UInt"
