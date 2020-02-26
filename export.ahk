@@ -45,7 +45,7 @@ class graphicsearch {
         }
         VarSetCapacity(input, num*7*4), k := 0
         loop, % num
-            k+=Round(info[A_Index].2 * info[A_Index].3)
+            k += Round(info[A_Index].2 * info[A_Index].3)
             VarSetCapacity(s1, k * 4), VarSetCapacity(s0, k * 4)
             , VarSetCapacity(gs, sw * sh), VarSetCapacity(ss, sw * sh)
             , allpos_max := (findall ? 1024 : 1)
@@ -70,10 +70,10 @@ class graphicsearch {
                     }
                     v .= j.1
                 }
-                ok := this.PicFind( mode, color, n, offsetx, offsety
+                ResultObj := this.PicFind( mode, color, n, offsetx, offsety
                 , bits, sx, sy, sw, sh, gs, ss, v, s1, s0
                 , input,num*7, allpos, allpos_max )
-                loop, % ok
+                loop, % ResultObj
                 {
                     pos := NumGet(allpos, 4*(A_Index-1), "uint")
                     , rx := (pos&0xFFFF)+zx, ry := (pos>>16)+zy
@@ -89,15 +89,15 @@ class graphicsearch {
                         : A_Index=6 && err1 && !j.12 ? Round(j.4*err1)
                         : A_Index=7 && err0 && !j.12 ? Round(j.5*err0)
                         : j[A_Index]), input, 4*(A_Index-1), "int")
-                    ok := this.PicFind( mode,color,n,offsetx,offsety
+                    ResultObj := this.PicFind( mode,color,n,offsetx,offsety
                     , bits,sx,sy,sw,sh,gs,ss,v,s1,s0
                     , input,7,allpos,allpos_max )
-                    loop, % ok
+                    loop, % ResultObj
                         pos := NumGet(allpos, 4*(A_Index-1), "uint")
                         , rx := (pos&0xFFFF)+zx, ry := (pos>>16)+zy
                         , arr.Push( {1:rx, 2:ry, 3:w1, 4:h1
                         , x:rx+w1//2, y:ry+h1//2, id:comment} )
-                    if (ok && !findall) {
+                    if (ResultObj && !findall) {
                         break
                     }
                 }
@@ -242,7 +242,7 @@ class graphicsearch {
     }
 
 
-    xywh2xywh(x1,y1,w1,h1, ByRef x,ByRef y,ByRef w,ByRef h, ByRef zx := "", ByRef zy := "", ByRef zw := "", ByRef zh := "")
+    xywh2xywh(x1,y1,w1,h1, ByRef x,ByRef y,ByRef w,ByRef h, ByRef zx:="", ByRef zy:="", ByRef zw:="", ByRef zh:="")
     {
         local
         SysGet, zx, 76
@@ -256,7 +256,7 @@ class graphicsearch {
     }
 
 
-    GetBitsFromScreen(x, y, w, h, ScreenShot := 1, ByRef zx := "", ByRef zy := "", ByRef zw := "", ByRef zh := "")
+    GetBitsFromScreen(x, y, w, h, ScreenShot:=1, zx"", zy"", zw"", zh"")
     {
         local
         static hBM := "", bits := [], Ptr := A_PtrSize ? "UPtr" : "UInt"
@@ -780,17 +780,18 @@ class graphicsearch {
     }
 
 
-    ; ScreenShot and retained as the last this.ScreenShot.
+    ; ScreenShot and retained as the last ScreenShot.
     ScreenShot(x1 := "", y1 := "", x2 := "", y2 := "")
     {
         local
-        if (x1+y1+x2+y2="")
-        n := 150000, x := y:=-n, w := h:=2*n
-        else
-        x := (x1<x2 ? x1:x2), y := (y1<y2 ? y1:y2)
-        , w := Abs(x2-x1)+1, h := Abs(y2-y1)+1
-        this.xywh2xywh(x,y,w,h,x,y,w,h,zx,zy,zw,zh)
-        this.GetBitsFromScreen(x,y,w,h,1,zx,zy,zw,zh)
+        if (x1+y1+x2+y2="") {
+            n := 150000, x := y:=-n, w := h:=2*n
+        } else {
+            x := (x1<x2 ? x1:x2), y := (y1<y2 ? y1:y2)
+            , w := Abs(x2-x1)+1, h := Abs(y2-y1)+1
+            this.xywh2xywh(x,y,w,h,x,y,w,h,zx,zy,zw,zh)
+            this.GetBitsFromScreen(x,y,w,h,1,zx,zy,zw,zh)
+        }
     }
 
 
@@ -904,10 +905,9 @@ class graphicsearch {
     MouseTip(x := "", y := "")
     {
         local
-        if (x="")
-        {
-        VarSetCapacity(pt,16,0), DllCall("GetCursorPos","ptr",&pt)
-        x := NumGet(pt,0,"uint"), y := NumGet(pt,4,"uint")
+        if (x="") {
+            VarSetCapacity(pt,16,0), DllCall("GetCursorPos","ptr",&pt)
+            x := NumGet(pt,0,"uint"), y := NumGet(pt,4,"uint")
         }
         x := Round(x-10), y := Round(y-10), w := h:=2*10+1
         ;-------------------------
@@ -925,8 +925,8 @@ class graphicsearch {
         Gui, _MouseTip_: Show, NA x%x% y%y%
         loop, 4
         {
-        Gui, _MouseTip_: Color, % A_Index & 1 ? "Red" : "Blue"
-        Sleep, 500
+            Gui, _MouseTip_: Color, % A_Index & 1 ? "Red" : "Blue"
+            Sleep, 500
         }
         Gui, _MouseTip_: Destroy
     }
