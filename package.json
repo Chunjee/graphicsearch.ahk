@@ -19,6 +19,11 @@
   "devDependencies": {
     "unit-testing.ahk": "github:chunjee/unit-testing.ahk"
   },
+  "contributors": [
+    {
+      "name": "FeiYue"
+    }
+  ],
   "author": "Shawn Brooker",
   "license": "MIT",
   "bugs": {
