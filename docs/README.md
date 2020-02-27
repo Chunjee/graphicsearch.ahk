@@ -7,6 +7,10 @@ A fast, super powerful, and flexible alternative to AutoHotkey's ImageSearch
 
 > Can be thought of as an alternative to native [AHK Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) function. The native function requires saved graphic files, nearly identical image matching, can be difficult to troubleshoot, and performs in a relatively slow manner. GraphicSearch approaches searching differently. Think of ASCII art; GraphicSearch abstracts the screen's image into representative 0's and _'s. Because this is an abstraction, not a bit-for-bit comparison, it allows for faster matching and easier adjustments of fault tolerance. It can also check for several different graphics without recapturing the screen's image every time. In addition, it finds **all** instances of the graphic unlike AHK ImageSearch which only returns the first match. 
 
+<br>
+
+> GraphicSearch would not be possible without [FindText()](https://www.autohotkey.com/boards/viewtopic.php?f=6&t=17834) and it's associatied functions by FeiYue. Documentation here will apply in general to those functions.
+
 
 ## Installation
 
@@ -78,7 +82,7 @@ For the last example, search for two images in a specific area. If four or more 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
-resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z||<spaghetti>*125$26.z", [{x2:2000},{y2:2000}])
+resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z||<spaghetti>*125$26.z", [{x2:A_ScreenWidth},{y2:A_ScreenHeight}])
 ; check if more than one graphic was found
 if (resultObj.Count() >= 4) {
     ; find the center of the screen by dividing the width and height by 2
@@ -86,7 +90,10 @@ if (resultObj.Count() >= 4) {
     centerY := A_ScreenHeight / 2
     ; create a new result object sorted by distance to the center
     resultObj2 := oGraphicSearch.resultSortDistance(resultObj, centerX, centerY)
-    ; click the 2nd closest found
-    Click, % resultObj2[2].x, resultObj2[2].y
+
+    ; loop through the sorted resultObj2 and mouseover each found graphic
+    loop, % resultObj2.Count() {
+        MouseMove, % resultObj2[A_Index].x, resultObj2[A_Index].y
+    }    
 }
 ```
