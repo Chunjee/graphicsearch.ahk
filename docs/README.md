@@ -57,8 +57,6 @@ if (resultObj) {
     ; click on the first graphic in the object
     Click, % resultObj[1].x, resultObj[1].y
 }
-var := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
-       , {1: 1215, 2: 407, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 ```
 
 In the next example, we search for two graphics; if more than four or more found, sort them and mouseover all of them in order
