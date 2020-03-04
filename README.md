@@ -1,6 +1,6 @@
 ## GraphicSearch
 
-A fast, super powerful, and flexible alternative to AutoHotkey's ImageSearch
+A fast, super powerful, and flexible screen searching library for AHK
 
 
 ## What is it?
