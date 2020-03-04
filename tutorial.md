@@ -22,8 +22,7 @@ If we want to search for all the pizzas we can perform the following to msgbox t
 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
-allQueries := pizzaGraphic beerGraphic 
-resultObj := oGraphicSearch.search(allQueries)
+resultObj := oGraphicSearch.search(pizzaGraphic)
 
 if (resultObj) {
     loop, % resultObj.Count() {
@@ -38,7 +37,7 @@ If we wanted to search for two (or more) items in one search that can be accompl
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 allQueries := pizzaGraphic beerGraphic 
-resultObj := oGraphicSearch.search(pizzaGraphic)
+resultObj := oGraphicSearch.search(allQueries)
 
 if (resultObj) {
     loop, % resultObj.Count() {
