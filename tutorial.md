@@ -101,7 +101,7 @@ while (foundBothGate != true) {
 
 <br>
 
-Let's imagine we want to click the pizza closet to the center, `.sortDistance` will sort a resultsObject by proximity to an x,y coord. A real smart app might even use GraphicSearch to find the center <img src = 'assets/emojii/smart.png'>
+Let's imagine we want to click the pizza closet to the center, `.resultSortDistance` will sort a resultsObject by proximity to an x,y coord. A real smart app might even use GraphicSearch to find the center <img src = 'assets/emojii/smart.png'>
 
 For simplicity we'll say we already know the center is always it's at 300,300
 
@@ -113,7 +113,7 @@ oGraphicSearch := new graphicsearch()
 
 resultObj := oGraphicSearch.search(pizzaGraphic)
 if (resultObj) {
-    sortedResults := oGraphicSearch.sortDistance(resultObj, 300, 300)
+    sortedResults := oGraphicSearch.resultSortDistance(resultObj, 300, 300)
     loop, % sortedResults.Count() {
         msgbox, % "x: " sortedResults[A_Index].x ", y: " sortedResults[A_Index].y
     }
@@ -121,14 +121,14 @@ if (resultObj) {
 }
 ```
 
-`.sortDistance` adds a property "distance" to each element in the ResultObject. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the raduis of the circle (350ish)
+`.resultSortDistance` adds a property "distance" to each element in the ResultObject. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the raduis of the circle (350ish)
 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
 resultObj := oGraphicSearch.search(pizzaGraphic)
 if (resultObj) {
-    sortedResults := oGraphicSearch.sortDistance(resultObj)
+    sortedResults := oGraphicSearch.resultSortDistance(resultObj)
     loop, % sortedResults.Count() {
         if (sortedResults[A_Index].distance > 350) {
             msgbox, % "x: " sortedResults[A_Index].x ", y: " sortedResults[A_Index].y " is outside the circle"
