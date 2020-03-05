@@ -26,7 +26,7 @@ In your code:
 
 oGraphicSearch := new graphicsearch()
 result := oGraphicSearch.search("|<HumanReadableTag>*165$22.03z")
-; => [{1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
+; => [{1: 1215, 2: 407, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 ```
 You may also review or copy the library from [./export.ahk on GitHub](https://github.com/Chunjee/graphicsearch.ahk)
 
@@ -80,7 +80,7 @@ For the last example, search for two images in a specific area. If four or more 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 
-resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z||<spaghetti>*125$26.z", [{x2:A_ScreenWidth},{y2:A_ScreenHeight}])
+resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z|<spaghetti>*125$26.z", [{x2:A_ScreenWidth},{y2:A_ScreenHeight}])
 ; check if more than one graphic was found
 if (resultObj.Count() >= 4) {
     ; find the center of the screen by dividing the width and height by 2
@@ -92,6 +92,6 @@ if (resultObj.Count() >= 4) {
     ; loop through the sorted resultObj2 and mouseover each found graphic
     loop, % resultObj2.Count() {
         MouseMove, % resultObj2[A_Index].x, resultObj2[A_Index].y
-    }    
+    }
 }
 ```
