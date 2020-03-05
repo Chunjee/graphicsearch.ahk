@@ -5,7 +5,8 @@ Assume the following is a snapshot of game and we want to figure out how Graphic
 ![Main stage tutorial image](assets/tutorial-1.png)
 
 <br>
-We'll use the followng capture regions. It's very important to capture the smallest region possible, while also being unique to the graphic so it doesn't match other similar things. For distance calcilations it might be useful to search for the center of each graphic. Since Graphicsearch really cares about differences in color, it is highly benifitial to grab an area that is not all the same color.
+
+We'll use the followng capture regions. It's very important to capture the smallest region possible, while also being unique to the graphic so it doesn't match other similar things. For distance calcilations it might be useful to search for the center of each graphic. Since GraphicSearch really cares about differences in color, it is highly benifitial to grab an area that is not all the same color.
 
 ![GraphicSearch capture](assets/tutorial-2.png)
 
@@ -18,6 +19,7 @@ beerGraphic :=       "|<Beer>#418@0.61$44.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz3z
 ```
 
 <br>
+
 If we want to search for all the pizzas we can perform the following to msgbox the x,y location of each match
 
 ```autohotkey
@@ -31,7 +33,9 @@ if (resultObj) {
 }
 ```
 
+
 <br>
+
 If we wanted to search for two (or more) items in one search that can be accomplished by joining both queries into one long string and performing the same search
 
 ```autohotkey
@@ -48,6 +52,7 @@ if (resultObj) {
 
 
 <br>
+
 GraphicSearch's most verbose method is `find`. It requires **seven** arguments and has **five** more optional arguments. 
 To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an object with all the same options as properties.
 
@@ -61,6 +66,7 @@ oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, 0)
 
 
 <br>
+
 There may be things we want to search for repeatedly but don't want to juggle arguments constantly, you can create instances of GraphicSearch that are responsible for finding individual graphics.
 
 `.searchAgain` is a method that performs the same search with the arguments supplied the last time `.search` was used. Lets create a pizza GraphicSearch and a beer GraphicSearch. Our script will loop and search till they are both found symataneously.
@@ -94,7 +100,10 @@ while (foundBothGate != true) {
 ```
 
 <br>
-Let's imagine we want to click the pizza closet to the center, `.sortDistance` will sort a resultsObject by proximity to an x,y coord. A real :smart: app might even GraphicSearch for the center, but let's pretend we already know it's at 300, 300
+
+Let's imagine we want to click the pizza closet to the center, `.sortDistance` will sort a resultsObject by proximity to an x,y coord. A real smart app might even use GraphicSearch to find the center <img src = 'assets/emojii/smart.png'>
+
+For simplicity we'll say we already know the center is always it's at 300,300
 
 > [!Note]
 > Graphicsearch doesn't mutate arguments it's given, notice that the sorted and unsorted ResultObjects are different in this example.
