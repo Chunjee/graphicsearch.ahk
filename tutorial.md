@@ -6,7 +6,7 @@ Assume the following is a snapshot of game and we want to figure out how Graphic
 
 <br>
 
-We'll use the followng capture regions. It's very important to capture the smallest region possible, while also being unique to the graphic so it doesn't match other similar things. For distance calcilations it might be useful to search for the center of each graphic. Since GraphicSearch really cares about differences in color, it is highly benifitial to grab an area that is not all the same color.
+We'll use the followng capture regions. It's very important to capture the smallest region possible, while also being unique to the graphic so it doesn't match other similar things. For distance calculations it might be useful to search for the center of each graphic. Since GraphicSearch really cares about differences in color, it is highly benifitial to grab an area that is not all the same color.
 
 ![GraphicSearch capture](assets/tutorial-2.png)
 
@@ -56,7 +56,7 @@ if (resultObj) {
 GraphicSearch's most verbose method is `find`. It requires **seven** arguments and has **five** more optional arguments. 
 To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an object with all the same options as properties.
 
-The following are all functionally identicle, They search a region of the screen (0,0 -> 600,600) and only return one found match (the first match)
+The following are all functionally identical, They search a region of the screen (0,0 -> 600,600) and only return one found match (the first match)
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 oGraphicSearch.search(pizzaGraphic, {x2: 600, y2: 600, findall: false})
@@ -69,7 +69,7 @@ oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, 0)
 
 There may be things we want to search for repeatedly but don't want to juggle arguments constantly, you can create instances of GraphicSearch that are responsible for finding individual graphics.
 
-`.searchAgain` is a method that performs the same search with the arguments supplied the last time `.search` was used. Lets create a pizza GraphicSearch and a beer GraphicSearch. Our script will loop and search till they are both found symataneously.
+`.searchAgain` is a method that performs the same search with the arguments supplied the last time `.search` was used. Lets create a pizza GraphicSearch and a beer GraphicSearch. Our script will loop and search till they are both found simultaneously.
 
 ```autohotkey
 oPizzaSearch := new graphicsearch()
@@ -103,7 +103,7 @@ while (foundBothGate != true) {
 
 Let's imagine we want to click the pizza closet to the center, `.resultSortDistance` will sort a resultsObject by proximity to an x,y coord. A real smart app might even use GraphicSearch to find the center <img src = 'assets/emojii/smart.png'>
 
-For simplicity we'll say we already know the center is always it's at 300,300
+For simplicity we'll say we already know the center is always at 300,300
 
 > [!Note]
 > Graphicsearch doesn't mutate arguments it's given, notice that the sorted and unsorted ResultObjects are different in this example.
@@ -121,7 +121,7 @@ if (resultObj) {
 }
 ```
 
-`.resultSortDistance` adds a property "distance" to each element in the ResultObject. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the raduis of the circle (350ish)
+`.resultSortDistance` adds a property "distance" to each element in the ResultObject. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the radius of the circle (350ish)
 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
