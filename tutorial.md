@@ -54,9 +54,12 @@ if (resultObj) {
 <br>
 
 GraphicSearch's most verbose method is `find`. It requires **seven** arguments and has **five** more optional arguments. 
-To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an object with all the same options as properties.
+To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an optional object with all the same options as properties.
 
 The following are all functionally identical, They search a region of the screen (0,0 -> 600,600) and only return one found match (the first match)
+
+See [Documentation](/documentation) for more details on all methods.
+
 ```autohotkey
 oGraphicSearch := new graphicsearch()
 oGraphicSearch.search(pizzaGraphic, {x2: 600, y2: 600, findall: false})
