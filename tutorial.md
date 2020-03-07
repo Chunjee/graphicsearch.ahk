@@ -1,6 +1,6 @@
 ## Tutorial
 
-Assume the following is a snapshot of game and we want to figure out how GraphicSearch can help our script make determinations about what is going on 
+Assume the following is a snapshot of game and we want to use GraphicSearch to translate to parse where things are on screen. 
 
 ![Main stage tutorial image](assets/tutorial-1.png)
 
@@ -53,7 +53,7 @@ if (resultObj) {
 
 <br>
 
-GraphicSearch's most verbose method is `find`. It requires **seven** arguments and has **five** more optional arguments. 
+GraphicSearch's most verbose method is `.find`. It requires **seven** arguments and has **five** more optional arguments. 
 To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an optional object with all the same options as properties.
 
 The following are all functionally identical, They search a region of the screen (0,0 -> 600,600) and only return one found match (the first match)
@@ -106,7 +106,7 @@ while (foundBothGate != true) {
 
 Let's imagine we want to click the pizza closet to the center, `.resultSortDistance` will sort a resultsObject by proximity to an x,y coord. A real smart app might even use GraphicSearch to find the center <img src = 'assets/emojii/smart.png'>
 
-For simplicity we'll say we already know the center is always at 300,300
+For example simplicity we'll say we already know the center is always at 300,300
 
 > [!Note]
 > Graphicsearch doesn't mutate arguments it's given, notice that the sorted and unsorted ResultObjects are different in this example.
@@ -124,7 +124,7 @@ if (resultObj) {
 }
 ```
 
-`.resultSortDistance` adds a property "distance" to each element in the ResultObject. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the radius of the circle (350ish)
+`.resultSortDistance` returns with an additional a property "distance" to each element in the ResultObject. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the radius of the circle (350ish)
 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
