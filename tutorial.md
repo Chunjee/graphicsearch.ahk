@@ -106,7 +106,7 @@ while (foundBothGate != true) {
 
 Let's imagine we want to click the pizza closet to the center, `.resultSortDistance` will sort a resultsObject by proximity to an x,y coord. A real smart app might even use GraphicSearch to find the center <img src = 'assets/emojii/smart.png'>
 
-For example simplicity we'll say we already know the center is always at 300,300
+For example simplicity we'll say we already know the center is at 300,300
 
 > [!Note]
 > Graphicsearch doesn't mutate arguments it's given, notice that the sorted and unsorted ResultObjects are different in this example.
@@ -124,7 +124,7 @@ if (resultObj) {
 }
 ```
 
-`.resultSortDistance` returns with an additional a property "distance" to each element in the ResultObject. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the radius of the circle (350ish)
+`.resultSortDistance` returns a Result Object with an additional a property "distance" for each match element. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the radius of the circle (350ish)
 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
