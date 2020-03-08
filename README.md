@@ -32,8 +32,7 @@ You may also review or copy the library from [./export.ahk on GitHub](https://gi
 # Main Methods
 
 <!-- .search -->
-## .search
-### .search(graphicsearch_query [, options]) :id=definition {docsify-ignore}
+## .search(graphicsearch_query [, options])
 finds GraphicSearch queries on the screen
 
 ### Arguments
@@ -90,8 +89,7 @@ oGraphicSearch.search("|<tag>*165$22.03z", {x2: 100, y2: 100})
 
 
 <!-- .searchAgain -->
-## .searchAgain
-### .searchAgain([graphicsearch_query]) :id=definition {docsify-ignore}
+## .searchAgain([graphicsearch_query])
 performs the last .search with the last arguments supplied
 
 ### Example
@@ -106,8 +104,7 @@ oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
 
 
 <!-- .scan -->
-## .scan
-### .scan(graphicsearch_query [, y1, x2, y2, err1, err0, screenshot, findall, joinqueries, offsetx, offsety]) :id=definition {docsify-ignore}
+## .scan(graphicsearch_query [, y1, x2, y2, err1, err0, screenshot, findall, joinqueries, offsetx, offsety])
 finds GraphicSearch queries on the screen
 
 ### Arguments
@@ -151,8 +148,7 @@ oGraphicSearch.scan("|<tag>*165$22.03z", 1, 1, 1028, 720, .1, .1, 1, 1, 1, 0, 0)
 
 
 <!-- .scanAgain -->
-## .scanAgain
-### .scanAgain([graphicsearch_query]) :id=definition {docsify-ignore}
+## .scanAgain([graphicsearch_query])
 performs the last .search with the last arguments supplied
 
 ### Example
@@ -167,8 +163,7 @@ oGraphicSearch.scanAgain("|<HumanReadableTag>*99$26.z7z")
 
 
 <!-- .find -->
-## .find
-### .find(x1, y1, x2, y2, err1, err0, graphicsearch_query [, screenshot, findall, joinqueries, offsetx, offsety]) :id=definition {docsify-ignore}
+## .find(x1, y1, x2, y2, err1, err0, graphicsearch_query [, screenshot, findall, joinqueries, offsetx, offsety])
 functionally identicle to `.scan` but uses legacy argument order as a convience for old scripts
 
 ### Arguments
@@ -213,13 +208,13 @@ oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20
 
 # Sorting Methods
 
-## .resultSort
-## .resultSort(resultsObject], ydistance) :id=definition {docsify-ignore}
+## .resultSort(resultsObject], ydistance)
 Sort the results object from left to right and top to bottom, ignoring slight height difference
 
 ### Arguments
 #### [resultsobject] (Object)
 > The GraphicSearch results object to sort
+
 #### [ydistance:=10] (number)
 > The ammount of height difference to ingnore in pixels
 
@@ -237,8 +232,7 @@ oGraphicSearch.resultSort(resultsObj)
 
 
 
-## .resultSortDistance
-### .resultSortDistance(resultsObject [, x, y]) :id=definition {docsify-ignore}
+## .resultSortDistance(resultsObject [, x, y])
 Sort the results objects by distance to a given x,y coordinate. A property "distance" is added to all elements in the returned result object
 
 ### Arguments
