@@ -1,5 +1,3 @@
-## Tutorial
-
 Assume the following is a snapshot of game and we want to use GraphicSearch to translate to parse where things are on screen. 
 
 ![Main stage tutorial image](assets/tutorial-1.png)
@@ -64,7 +62,7 @@ See [Documentation](/documentation) for more details on all methods.
 oGraphicSearch := new graphicsearch()
 oGraphicSearch.search(pizzaGraphic, {x2: 600, y2: 600, findall: false})
 oGraphicSearch.scan(pizzaGraphic, 0, 0, 600, 600, false)
-oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, 0)
+oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, false)
 ```
 
 

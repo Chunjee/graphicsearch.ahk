@@ -30,9 +30,11 @@ result := oGraphicSearch.search("|<HumanReadableTag>*165$22.03z")
 ```
 You may also review or copy the library from [./export.ahk on GitHub](https://github.com/Chunjee/graphicsearch.ahk)
 
+
 ## Documentation
 
 See [Documentation](/documentation) for all methods.
+
 
 ## GraphicSearch Queries
 
@@ -41,6 +43,11 @@ GraphicSearch queries are images that have been turned into strings. Unlike Imag
 Launch the included graphicsearch_gui.ahk to capture and convert screen images into GraphicSearch queries.
 
 See [Generating Queries](/generating-queries) for more guidance.
+
+
+## Tutorial
+
+See a getting started [Tutorial](/tutorial) for step-by-step.
 
 
 ## Examples
