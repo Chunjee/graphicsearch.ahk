@@ -60,7 +60,7 @@ oGraphicSearch.search("|<tag>*165$22.03z", {x2: 100, y2: 100})
 
 <!-- .searchAgain -->
 ## .searchAgain
-### .searchAgain([graphicsearch_query]) :id=definition {docsify-ignore}
+### .searchAgain([graphicsearch_query, options]) :id=definition {docsify-ignore}
 performs the last .search with the last arguments supplied
 
 ### Example
@@ -121,7 +121,7 @@ oGraphicSearch.scan("|<tag>*165$22.03z", 1, 1, 1028, 720, .1, .1, 1, 1, 1, 0, 0)
 
 <!-- .scanAgain -->
 ## .scanAgain
-### .scanAgain([graphicsearch_query]) :id=definition {docsify-ignore}
+### .scanAgain([graphicsearch_query, options]) :id=definition {docsify-ignore}
 performs the last .search with the last arguments supplied
 
 ### Example
@@ -193,7 +193,7 @@ Sort the results object from left to right and top to bottom, ignoring slight he
 > The ammount of height difference to ingnore in pixels
 
 ### Return
-(Array) Return an array of objects containing all lookup results
+(Array) Return an array of lookup objects sorted in order
 
 ### Example
 ```autohotkey
@@ -221,7 +221,7 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 > The y screen coordinate to measure from
 
 ### Return
-(Array) Return an array of objects containing all lookup results
+(Array) Return an array of lookup objects sorted in order
 
 ### Example
 ```autohotkey
