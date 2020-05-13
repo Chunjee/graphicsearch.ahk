@@ -126,22 +126,22 @@ class graphicsearch {
 	}
 	
 
-	main_search(param_query, param_obj:="")
+	main_search(param_query, param_options:="")
 	{
 		; create default if needed
-		if (!IsObject(param_obj)) {
-			param_obj := this.defaultOptionsObj.Clone()
+		if (!IsObject(param_options)) {
+			param_options := this.defaultOptionsObj.Clone()
 		}
 		; merge with default for any blank parameters
 		for Key, Value in this.defaultOptionsObj {
-			if (!param_obj.HasKey(Key)) { ; if the key is not already in use
-				param_obj[Key] := Value
+			if (!param_options.HasKey(Key)) { ; if the key is not already in use
+				param_options[Key] := Value
 			}
 		}
 
 		; pass the parameters to .find and return
-		return this.find(param_obj.x1, param_obj.y1, param_obj.x2, param_obj.y2, param_obj.err1, param_obj.err0, param_query
-			, param_obj.screenshot, param_obj.findall, param_obj.joinqueries, param_obj.offsetx, param_obj.offsety)
+		return this.find(param_options.x1, param_options.y1, param_options.x2, param_options.y2, param_options.err1, param_options.err0, param_query
+			, param_options.screenshot, param_options.findall, param_options.joinqueries, param_options.offsetx, param_options.offsety)
 	}
 
 
