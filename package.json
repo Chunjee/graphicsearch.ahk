@@ -1,7 +1,7 @@
 {
   "name": "graphicsearch.ahk",
-  "version": "0.3.0",
-  "description": "Capture screen graphics, turn graphics into text, and then find them",
+  "version": "0.3.1",
+  "description": "A fast, super powerful, and flexible screen searching library for AHK",
   "main": "export.ahk",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,5 +29,5 @@
   "bugs": {
     "url": "https://github.com/Chunjee/graphicsearch.ahk/issues"
   },
-  "homepage": "https://github.com/Chunjee/graphicsearch.ahk#readme"
+  "homepage": "https://chunjee.github.io/graphicsearch.ahk"
 }
