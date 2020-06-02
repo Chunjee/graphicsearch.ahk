@@ -201,14 +201,42 @@ class graphicsearch {
 		return this.main_search(param_query, this.lastScanOptions)
 	}
 
-	scanAgain(param_query:="", param_options:="") 
+	scanAgain(param_query:="", x1:="", y1:="", x2:="", y2:="", err1:="", err0:="", screenshot:=""
+		, findall:="", joinqueries:="", offsetx:="", offsety:="")
 	{
 		; save new query if entered
 		if (param_query != "") {
 			this.lastScanQuery := param_query
 		}
-		if (param_options != "") {
-			this.lastScanOptions := param_options
+		if (x1 != "") {
+			this.lastScanOptions.x1 := x1
+		}
+		if (y1 != "") {
+			this.lastScanOptions.y1 := y1
+		}
+		if (x2 != "") {
+			this.lastScanOptions.x2 := x2
+		}
+		if (err1 != "") {
+			this.lastScanOptions.err1 := err1
+		}
+		if (err0 != "") {
+			this.lastScanOptions.err0 := err0
+		}
+		if (screenshot != "") {
+			this.lastScanOptions.screenshot := screenshot
+		}
+		if (findall != "") {
+			this.lastScanOptions.findall := findall
+		}
+		if (joinqueries != "") {
+			this.lastScanOptions.joinqueries := joinqueries
+		}
+		if (offsetx != "") {
+			this.lastScanOptions.offsetx := offsetx
+		}
+		if (offsety != "") {
+			this.lastScanOptions.offsety := offsety
 		}
 		; pass saved arguments to .search and return
 		return this.main_search(this.lastScanQuery, this.lastScanOptions)

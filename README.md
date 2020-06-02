@@ -1,4 +1,4 @@
-Long-form README: https://chunjee.github.io/graphicsearch.ahk/#/
+Long-form README: https://chunjee.github.io/graphicsearch.ahk
 
 ## GraphicSearch
 
@@ -148,7 +148,7 @@ oGraphicSearch.scan("|<tag>*165$22.03z", 1, 1, 1028, 720, .1, .1, 1, 1, 1, 0, 0)
 
 
 <!-- .scanAgain -->
-## .scanAgain([graphicsearch_query])
+## .scanAgain([graphicsearch_query, y1, x2, y2, err1, err0, screenshot, findall, joinqueries, offsetx, offsety])
 performs the last .search with the last arguments supplied
 
 ### Example
@@ -208,7 +208,7 @@ oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20
 
 # Sorting Methods
 
-## .resultSort(resultsObject], ydistance)
+## .resultSort(resultsObject[, ydistance])
 Sort the results object from left to right and top to bottom, ignoring slight height difference
 
 ### Arguments
