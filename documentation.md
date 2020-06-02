@@ -36,6 +36,8 @@ finds GraphicSearch queries on the screen
 
 ### Return
 (Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
 
 ### Example
 ```autohotkey
@@ -61,7 +63,13 @@ oGraphicSearch.search("|<tag>*165$22.03z", {x2: 100, y2: 100})
 <!-- .searchAgain -->
 ## .searchAgain
 ### .searchAgain([graphicsearch_query, options]) :id=definition {docsify-ignore}
-performs the last .search with the last arguments supplied
+performs the last `.search` with the last arguments supplied
+
+
+### Return
+(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
 
 ### Example
 ```autohotkey
@@ -107,7 +115,7 @@ finds GraphicSearch queries on the screen
 
 ### Return
 (Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
 ### Example
@@ -121,8 +129,14 @@ oGraphicSearch.scan("|<tag>*165$22.03z", 1, 1, 1028, 720, .1, .1, 1, 1, 1, 0, 0)
 
 <!-- .scanAgain -->
 ## .scanAgain
-### .scanAgain([graphicsearch_query, options]) :id=definition {docsify-ignore}
+### .scanAgain([graphicsearch_query, y1, x2, y2, err1, err0, screenshot, findall, joinqueries, offsetx, offsety]) :id=definition {docsify-ignore}
 performs the last .search with the last arguments supplied
+
+
+### Return
+(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
 
 ### Example
 ```autohotkey
@@ -168,7 +182,7 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 
 ### Return
 (Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
 ### Example
