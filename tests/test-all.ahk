@@ -2,7 +2,8 @@
 #Include %A_ScriptDir%\..\export.ahk
 #Include %A_ScriptDir%\..\node_modules
 #Include unit-testing.ahk\export.ahk
-; #Include biga.ahk\export.ahk
+#Include json.ahk\export.ahk
+
 #NoTrayIcon
 #NoEnv
 #SingleInstance, force
@@ -15,8 +16,8 @@ assert := new unittesting()
 ; this testing should be performed with image.png open
 
 ; variables
-pizzaGraphic := "|<pizza>*165$22.03zw0Dzk0w707k00T007w70zUw3s7kDUT0wDy"
-spaggGraphic := "|<spagg>*125$26.zzzUTzzw3zzzwzzzzDzzzXzzk0zzU0Dzs03zy00zzs0Dzy03zzU0zs000s0000000000000000000000008"
+pizzaGraphic := "|<pizza>*150$45.D1zw01z1sTzU0TsD3zw03z1wTz00TsDzk00zs1zy0Dzy0Dzk1zzk1zy0Dzy0zzk3zy07zy0TzU0zzk3zw07zy0TzU000Dzs00001zy000U"
+spaggGraphic := "|<spagg>*150$43.znzzzzzzkzzzzzzsTzzzzzyTzzzzvzzzzzzVzzzzzzkzzzzzzsTzzzzzw3zzzzzzszzzzzzwTzzzzzyTzzzzzzU"
 drinkGraphic := "|<drink>"
 
 centerPoint :=  "|<center>*193$17.zzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzTzwzztzzXzy3zU1s0E"

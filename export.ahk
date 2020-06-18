@@ -22,7 +22,7 @@ class graphicsearch {
 	static lastScanOptions    := {}
 	
 
-	find(x1, y1, x2, y2, err1, err0, query, ScreenShot:=1, findall:=1, joinqueries:=0, offsetx:=20, offsety:=10)
+	find(x1, y1, x2, y2, err1, err0, query, screenShot:=1, findall:=1, joinqueries:=0, offsetx:=20, offsety:=10)
 	{
 		savedBatchLines := A_BatchLines
 		SetBatchLines, -1
@@ -34,10 +34,10 @@ class graphicsearch {
 			SetBatchLines, %savedBatchLines%
 			return this.noMatchVal
 		}
-		bits := this.GetBitsFromScreen(x, y, w, h, ScreenShot, zx, zy, zw, zh)
+		bits := this.getBitsFromScreen(x, y, w, h, screenShot, zx, zy, zw, zh)
 		sx := x - zx, sy := y-zy, sw := w, sh := h, arr := [], info := []
 		loop, Parse, query, |
-		if IsObject(j := this.PicInfo(A_LoopField))
+		if IsObject(j := this.picInfo(A_LoopField))
 			info.Push(j)
 		if (!(num := info.MaxIndex()) || !bits.1) {
 			SetBatchLines, %savedBatchLines%
@@ -55,7 +55,7 @@ class graphicsearch {
 			if (err1 = 0 && err0 = 0) && (num > 1 || A_Index>1) {
 				err1 := 0.1, err0 := 0.05
 			}
-			if (joinqueries) {
+			if (joinqueries == 0) {
 				j := info[1], mode := j.8, color := j.9, n := j.10
 				, w1 := -1, h1 := j.3, comment := "", v := "", i := 0
 				loop, % num
@@ -70,7 +70,7 @@ class graphicsearch {
 					}
 					v .= j.1
 				}
-				ResultObj := this.PicFind( mode, color, n, offsetx, offsety
+				ResultObj := this.picFind( mode, color, n, offsetx, offsety
 				, bits, sx, sy, sw, sh, gs, ss, v, s1, s0
 				, input,num*7, allpos, allpos_max )
 				loop, % ResultObj
@@ -89,7 +89,7 @@ class graphicsearch {
 						: A_Index=6 && err1 && !j.12 ? Round(j.4*err1)
 						: A_Index=7 && err0 && !j.12 ? Round(j.5*err0)
 						: j[A_Index]), input, 4*(A_Index-1), "int")
-					ResultObj := this.PicFind( mode,color,n,offsetx,offsety
+					ResultObj := this.picFind( mode,color,n,offsetx,offsety
 					, bits,sx,sy,sw,sh,gs,ss,v,s1,s0
 					, input,7,allpos,allpos_max )
 					loop, % ResultObj
@@ -124,7 +124,7 @@ class graphicsearch {
 		SetBatchLines, %savedBatchLines%
 		return arr
 	}
-	
+
 
 	main_search(param_query, param_options:="")
 	{
@@ -134,7 +134,7 @@ class graphicsearch {
 		}
 		; merge with default for any blank parameters
 		for Key, Value in this.defaultOptionsObj {
-			if (!param_options.HasKey(Key)) { ; if the key is not already in use
+			if (param_options.HasKey(Key) == false) { ; if the key is existing in param_options
 				param_options[Key] := Value
 			}
 		}
@@ -175,7 +175,7 @@ class graphicsearch {
 
 
 	scan(param_query, x1:=0, y1:=0, x2:="", y2:="", err1:=0, err0:=0, screenshot:=1
-		, findall:=1, joinqueries:=0, offsetx:=20, offsety:=10)
+		, findall:=1, joinqueries:=1, offsetx:=20, offsety:=10)
 	{
 		if (x2 == "") {
 			x2 := A_ScreenWidth
@@ -200,6 +200,7 @@ class graphicsearch {
 		; pass the parameters to .find and return
 		return this.main_search(param_query, this.lastScanOptions)
 	}
+
 
 	scanAgain(param_query:="", x1:="", y1:="", x2:="", y2:="", err1:="", err0:="", screenshot:=""
 		, findall:="", joinqueries:="", offsetx:="", offsety:="")
@@ -245,8 +246,8 @@ class graphicsearch {
 
 	; Bind the window so that it can find images when obscured
 	; by other windows, it's equivalent to always being
-	; at the front desk. Unbind Window using BindWindow(0)
-	BindWindow(window_id := 0, set_exstyle := 0, get := 0)
+	; at the front desk. Unbind Window using bindWindow(0)
+	bindWindow(window_id := 0, set_exstyle := 0, get := 0)
 	{
 		local
 		static id := 0, old := 0
@@ -290,12 +291,12 @@ class graphicsearch {
 	}
 
 
-	GetBitsFromScreen(x, y, w, h, ScreenShot:=1, zx:="", zy:="", zw:="", zh:="")
+	getBitsFromScreen(x, y, w, h, screenShot:=1, zx:="", zy:="", zw:="", zh:="")
 	{
 		local
 		static hBM := "", bits := [], Ptr := A_PtrSize ? "UPtr" : "UInt"
-		static init := !this.GetBitsFromScreen(0,0,0,0,1)
-		if (!ScreenShot) {
+		static init := !this.getBitsFromScreen(0,0,0,0,1)
+		if (!screenShot) {
 			zx := bits.3, zy := bits.4, zw := bits.5, zh := bits.6
 			return bits
 		}
@@ -327,7 +328,7 @@ class graphicsearch {
 			DllCall("BitBlt",Ptr,mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
 				, Ptr,hDC, "int",x, "int",y, "uint",0x00CC0020|0x40000000)
 			DllCall("ReleaseDC", Ptr,win, Ptr,hDC)
-			if (id := this.BindWindow(0,0,1)) {
+			if (id := this.bindWindow(0,0,1)) {
 				WinGet, id, ID, ahk_id %id%
 			}
 			if (id) {
@@ -352,7 +353,7 @@ class graphicsearch {
 	}
 
 
-	PicInfo(text)
+	picInfo(text)
 	{
 		local
 		static info := []
@@ -399,7 +400,7 @@ class graphicsearch {
 	}
 
 
-	PicFind(mode, color, n, offsetX, offsetY, bits, sx, sy, sw, sh
+	picFind(mode, color, n, offsetX, offsetY, bits, sx, sy, sw, sh
 		, ByRef gs, ByRef ss, ByRef text, ByRef s1, ByRef s0
 		, ByRef input, num, ByRef allpos, allpos_max)
 	{
@@ -668,7 +669,7 @@ class graphicsearch {
 		. "9D27D03C601014883C0014983C1014883C1014983C0014C39D"
 		. "8759383C7014801F54889D84139FC0F8562FFFFFFE968F7FFF"
 		. "F31C9E9D9F8FFFF909090909090909090909090"
-		this.MCode(MyFunc, A_PtrSize=8 ? x64:x32)
+		this.mCode(MyFunc, A_PtrSize=8 ? x64:x32)
 		}
 		return !bits.1 ? 0:DllCall(&MyFunc, "int",mode, "uint",color
 		, "uint",n, "int",offsetX, "int",offsetY, Ptr,bits.1
@@ -678,7 +679,7 @@ class graphicsearch {
 	}
 
 
-	MCode(ByRef code, hex)
+	mCode(ByRef code, hex)
 	{
 		local
 		bch := A_BatchLines
@@ -734,7 +735,7 @@ class graphicsearch {
 	}
 
 
-	ASCII(s)
+	convertASCII(s)
 	{
 		local
 		if RegExMatch(s,"\$(\d+)\.([\w+/]+)",r)
@@ -748,9 +749,9 @@ class graphicsearch {
 
 
 	; You can put the text library at the beginning of the script,
-	; and Use this.PicLib(Text,1) to add the text library to this.PicLib()'s Lib,
-	; Use this.PicLib("comment1|comment2|...") to get text images from Lib
-	PicLib(comments, add_to_Lib := 0, index := 1)
+	; and Use this.picLib(Text,1) to add the text library to this.picLib()'s Lib,
+	; Use this.picLib("comment1|comment2|...") to get text images from Lib
+	picLib(comments, add_to_Lib := 0, index := 1)
 	{
 		local
 		static Lib := []
@@ -782,15 +783,15 @@ class graphicsearch {
 	}
 
 
-	PicN(Number, index := 1)
+	picN(Number, index := 1)
 	{
-		return this.PicLib(RegExReplace(Number,".","|$0"), 0, index)
+		return this.picLib(RegExReplace(Number,".","|$0"), 0, index)
 	}
 
 
-	; Use PicX(Text) to automatically cut into multiple characters
+	; Use picX(Text) to automatically cut into multiple characters
 	; Can't be used in ColorPos mode, because it can cause position errors
-	PicX(Text)
+	picX(Text)
 	{
 		local
 		if !RegExMatch(Text,"\|([^$]+)\$(\d+)\.([\w+/]+)",r)
@@ -814,8 +815,8 @@ class graphicsearch {
 	}
 
 
-	; ScreenShot and retained as the last ScreenShot.
-	ScreenShot(x1 := "", y1 := "", x2 := "", y2 := "")
+	; screenShot and retained as the last screenShot.
+	screenShot(x1 := "", y1 := "", x2 := "", y2 := "")
 	{
 		local
 		if (x1+y1+x2+y2="") {
@@ -824,18 +825,18 @@ class graphicsearch {
 			x := (x1<x2 ? x1:x2), y := (y1<y2 ? y1:y2)
 			, w := Abs(x2-x1)+1, h := Abs(y2-y1)+1
 			this.xywh2xywh(x,y,w,h,x,y,w,h,zx,zy,zw,zh)
-			this.GetBitsFromScreen(x,y,w,h,1,zx,zy,zw,zh)
+			this.getBitsFromScreen(x,y,w,h,1,zx,zy,zw,zh)
 		}
 	}
 
 
-	; Get the RGB color of a point from the last this.ScreenShot.
+	; Get the RGB color of a point from the last this.screenShot.
 	; If the point to get the color is beyond the range of
 	; Screen, it will return White color (0xFFFFFF).
-	ScreenShot_GetColor(x,y)
+	screenShot_GetColor(x,y)
 	{
 		local
-		bits := this.GetBitsFromScreen(0,0,0,0,0,zx,zy,zw,zh)
+		bits := this.getBitsFromScreen(0,0,0,0,0,zx,zy,zw,zh)
 		return (x<zx or x>zx+zw-1 or y<zy or y>zy+zh-1 or !bits.1)
 		? "0xFFFFFF" : Format("0x{:06X}",NumGet(bits.1
 		+(y-zy)*bits.2+(x-zx)*4,"uint")&0xFFFFFF)
@@ -844,8 +845,8 @@ class graphicsearch {
 
 	; Identify a line of text or verification code
 	; based on the result returned by this.search()
-	; Return Association array {ocr:Text, x:X, y:Y}
-	OcrOK(ok, offsetX := 20, offsetY := 20)
+	; Return Associative array {ocr:Text, x:X, y:Y}
+	resultOCR(ok, offsetX := 20, offsetY := 20)
 	{
 		local
 		ocr_Text := ocr_X := ocr_Y := min_X := ""
@@ -936,7 +937,7 @@ class graphicsearch {
 
 
 	; Prompt mouse position in remote assistance
-	MouseTip(x := "", y := "")
+	mouseTip(x := "", y := "")
 	{
 		local
 		if (x="") {
@@ -945,8 +946,8 @@ class graphicsearch {
 		}
 		x := Round(x-10), y := Round(y-10), w := h:=2*10+1
 		;-------------------------
-		Gui, _MouseTip_: +AlwaysOnTop -Caption +ToolWindow +Hwndmyid +E0x08000000
-		Gui, _MouseTip_: Show, Hide w%w% h%h%
+		Gui, _mouseTip_: +AlwaysOnTop -Caption +ToolWindow +Hwndmyid +E0x08000000
+		Gui, _mouseTip_: Show, Hide w%w% h%h%
 		;-------------------------
 		dhw := A_DetectHiddenWindows
 		DetectHiddenWindows, On
@@ -956,17 +957,17 @@ class graphicsearch {
 		WinSet, Region, %s%, ahk_id %myid%
 		DetectHiddenWindows, %dhw%
 		;-------------------------
-		Gui, _MouseTip_: Show, NA x%x% y%y%
+		Gui, _mouseTip_: Show, NA x%x% y%y%
 		loop, 4
 		{
-			Gui, _MouseTip_: Color, % A_Index & 1 ? "Red" : "Blue"
+			Gui, _mouseTip_: Color, % A_Index & 1 ? "Red" : "Blue"
 			Sleep, 500
 		}
-		Gui, _MouseTip_: Destroy
+		Gui, _mouseTip_: Destroy
 	}
 
 
-	GetTextFromScreen(x1, y1, x2, y2, Threshold := "", ScreenShot := 1, ByRef rx := "", ByRef ry := "")
+	getTextFromScreen(x1, y1, x2, y2, Threshold := "", screenShot := 1, ByRef rx := "", ByRef ry := "")
 	{
 		local
 		bch := A_BatchLines
@@ -980,13 +981,13 @@ class graphicsearch {
 		}
 		lls := A_ListLines=0 ? "Off" : "On"
 		ListLines, Off
-		this.GetBitsFromScreen(x,y,w,h,this.ScreenShot,zx,zy,zw,zh)
+		this.getBitsFromScreen(x,y,w,h,this.screenShot,zx,zy,zw,zh)
 		gc := [], k := 0
 		loop, %h% {
 			j := y+A_Index-1
 			loop, %w%
 			{
-				i := x+A_Index-1, c := this.this.ScreenShot_GetColor(i,j), gc[++k] := (((c>>16)&0xFF)*38+((c>>8)&0xFF)*75+(c&0xFF)*15)>>7
+				i := x+A_Index-1, c := this.this.screenShot_GetColor(i,j), gc[++k] := (((c>>16)&0xFF)*38+((c>>8)&0xFF)*75+(c&0xFF)*15)>>7
 			}
 		}
 		Threshold := StrReplace(Threshold,"*")
