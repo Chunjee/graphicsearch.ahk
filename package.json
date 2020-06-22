@@ -1,6 +1,6 @@
 {
   "name": "graphicsearch.ahk",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A fast, super powerful, and flexible screen searching library for AHK",
   "main": "export.ahk",
   "scripts": {

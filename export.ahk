@@ -9,7 +9,7 @@ class graphicsearch {
 								, "err0": 0 ;background
 								, "screenshot": 1
 								, "findall": 1
-								, "joinqueries": 1
+								, "joinqueries": 0
 								, "offsetx": 0
 								, "offsety": 0 }
 	static savedScreenshot := []
@@ -55,7 +55,7 @@ class graphicsearch {
 			if (err1 = 0 && err0 = 0) && (num > 1 || A_Index>1) {
 				err1 := 0.1, err0 := 0.05
 			}
-			if (joinqueries == 0) {
+			if (joinqueries == 1) {
 				j := info[1], mode := j.8, color := j.9, n := j.10
 				, w1 := -1, h1 := j.3, comment := "", v := "", i := 0
 				loop, % num

@@ -18,7 +18,7 @@ assert := new unittesting()
 ; variables
 pizzaGraphic := "|<pizza>*150$45.D1zw01z1sTzU0TsD3zw03z1wTz00TsDzk00zs1zy0Dzy0Dzk1zzk1zy0Dzy0zzk3zy07zy0TzU0zzk3zw07zy0TzU000Dzs00001zy000U"
 spaggGraphic := "|<spagg>*150$43.znzzzzzzkzzzzzzsTzzzzzyTzzzzvzzzzzzVzzzzzzkzzzzzzsTzzzzzw3zzzzzzszzzzzzwTzzzzzyTzzzzzzU"
-drinkGraphic := "|<drink>"
+drinkGraphic := "|<drink>*178$26.Dzzznzzzzy07zz01zzk0Tzw03zzU0Tzss1zyC0Tzzk7zzw1zzz0Tzzk7zzw1z3z0TU7k7s"
 
 centerPoint :=  "|<center>*193$17.zzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzTzwzztzzXzy3zU1s0E"
 centerObj := {"x": 1328, "y": 752}
@@ -29,9 +29,13 @@ result1 := oGraphicSearch.search(pizzaGraphic)
 result2 := oGraphicSearch.scan(spaggGraphic, 0, 0, A_ScreenWidth, A_ScreenHeight, 0, 0)
 resultlegacyfind := oGraphicSearch.find(0, 0, A_ScreenWidth, A_ScreenHeight, 0, 0, spaggGraphic)
 
+
 searchAgainResults := oGraphicSearch.searchAgain()
 scanAgainResults := oGraphicSearch.scanAgain()
 scanAgainResults2 := oGraphicSearch.scanAgain(,,,10000000000000,100000000000)
+
+threeResults := oGraphicSearch.search(pizzaGraphic spaggGraphic drinkGraphic)
+
 assert.test(searchAgainResults, result1)
 assert.test(scanAgainResults, result2)
 assert.test(scanAgainResults2, result2)
@@ -40,6 +44,18 @@ if (result1) {
 	assert.label("search")
 	assert.test(result1.Count(), 5)
 	assert.test(result2.Count(), 2)
+
+	; test three searches combined
+	assert.label("multiple searches combined")
+	assert.test(threeResults.Count(), 8)
+	assert.test(threeResults[1].id, "pizza")
+	assert.test(threeResults[2].id, "pizza")
+	assert.test(threeResults[3].id, "pizza")
+	assert.test(threeResults[4].id, "pizza")
+	assert.test(threeResults[5].id, "pizza")
+	assert.test(threeResults[6].id, "spagg")
+	assert.test(threeResults[7].id, "spagg")
+	assert.test(threeResults[8].id, "drink")
 
 	assert.label("find")
 	assert.test(result2, resultlegacyfind)
