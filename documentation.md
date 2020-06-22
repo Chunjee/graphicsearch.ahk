@@ -13,10 +13,10 @@ finds GraphicSearch queries on the screen
 > The options object
 
 #### [options.x1:=0] (number), [options.y1:=0] (number)
-> the search scope's upper left corner coordinates
+> The search scope's upper left corner coordinates
 
 #### [options.x2:=A_ScreenWidth] (number), [options.y2:=A_ScreenHeight] (number)
-> the search scope's lower right corner coordinates
+> The search scope's lower right corner coordinates
 
 #### [options.err1:=1] (number), [options.err0:=0] (number)
 > Fault tolerance of graphic and background (0.1=10%)
@@ -27,11 +27,11 @@ finds GraphicSearch queries on the screen
 #### [options.findall:=1] (boolean)
 > Wether or not to find all instances or just one.
 
-#### [options.joinqueries:=1] (boolean)
-> Join all GraphicsSearch queries for combination lookup.
+#### [options.joinqueries:=0] (boolean)
+> Wether or not to search each query in succession. Queries must be in close proximity (characters in a string)
 
 #### [options.offsetx:=1] (number), [options.offsety:=0] (number)
-> Set the Max offset for combination lookup
+> The max offset for joinqueries search
 
 
 ### Return
@@ -49,7 +49,7 @@ optionsObj := {   x1: 0
                 , err0: 0
                 , screenshot: 1
                 , findall: 1
-                , joinqueries: 1
+                , joinqueries: 0
                 , offsetx: 1
                 , offsety: 1 }
 
@@ -92,25 +92,25 @@ finds GraphicSearch queries on the screen
 > GraphicsSearch queries as strings. Can be multiple queries separated by `|`
 
 #### [x1:=0, y1:=0] (number)
-> the search scope's upper left corner coordinates
+> The search scope's upper left corner coordinates
 
 #### [x2:=0, y2:=0] (number)
-> the search scope's lower right corner coordinates
+> The search scope's lower right corner coordinates
 
 #### [err1:=0, err0:=0] (number)
 > A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
 #### [screenshot:=1] (boolean)
-> if the value is 1, a new capture of the screen will be used; else it will use the last capture
+> If the value is 1, a new capture of the screen will be used; else it will use the last capture
 
 #### [findall:=1] (boolean)
-> if the value is 1, graphicsearch will find all matches. for 0, only return one match
+> If the value is 1, graphicsearch will find all matches. for 0, only return one match
 
-#### [joinqueries:=1] (boolean)
-> if the value is 1, Join all GraphicsSearch queries for combination lookup
+#### [joinqueries:=0] (boolean)
+> If the value is 1, search each query in succession. Queries must be in close proximity (characters in a string)
 
 #### [offsetx:=0, offsety:=0] (number)
-> Set the Max offset for combination lookup
+> The max offset for joinqueries search
 
 
 ### Return
@@ -156,10 +156,10 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 
 ### Arguments
 #### x1, y1 (number)
-> the search scope's upper left corner coordinates
+> The search scope's upper left corner coordinates
 
 #### x2, y2 (number)
-> the search scope's lower right corner coordinates
+> The search scope's lower right corner coordinates
 
 #### err1, err0 (number)
 > A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
@@ -168,16 +168,16 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 > GraphicsSearch queries as strings. Can be multiple queries separated by `|`
 
 #### [screenshot:=1] (boolean)
-> if the value is 1, a new capture of the screen will be used; else it will use the last capture
+> If the value is 1, a new capture of the screen will be used; else it will use the last capture
 
 #### [findall:=1] (boolean)
-> if the value is 1, graphicsearch will find all matches. for 0, only return one match
+> If the value is 1, graphicsearch will find all matches. for 0, only return one match
 
-#### [joinqueries:=1] (boolean)
-> if the value is 1, Join all GraphicsSearch queries for combination lookup
+#### [joinqueries:=0] (boolean)
+> If the value is 1, search each query in succession. Queries must be in close proximity (characters in a string)
 
 #### [offsetx:=20, offsety:=10] (number)
-> Set the Max offset for combination lookup
+> The max offset for joinqueries search
 
 
 ### Return
