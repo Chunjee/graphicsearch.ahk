@@ -35,7 +35,7 @@ finds GraphicSearch queries on the screen
 
 
 ### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
 Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
@@ -67,7 +67,7 @@ performs the last `.search` with the last arguments supplied
 
 
 ### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
 Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
@@ -114,7 +114,7 @@ finds GraphicSearch queries on the screen
 
 
 ### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
 Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
@@ -134,7 +134,7 @@ performs the last .search with the last arguments supplied
 
 
 ### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
 Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
@@ -181,7 +181,7 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 
 
 ### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
+(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
 Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
@@ -207,7 +207,7 @@ Sort the results object from left to right and top to bottom, ignoring slight he
 > The ammount of height difference to ingnore in pixels
 
 ### Return
-(Array) Return an array of lookup objects sorted in order
+(Array) Returns a new array of lookup objects sorted in order
 
 ### Example
 ```autohotkey
@@ -235,7 +235,7 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 > The y screen coordinate to measure from
 
 ### Return
-(Array) Return an array of lookup objects sorted in order
+(Array) Returns a new array of lookup objects sorted in order
 
 ### Example
 ```autohotkey
