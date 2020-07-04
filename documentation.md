@@ -18,7 +18,7 @@ finds GraphicSearch queries on the screen
 #### [options.x2:=A_ScreenWidth] (number), [options.y2:=A_ScreenHeight] (number)
 > The search scope's lower right corner coordinates
 
-#### [options.err1:=1] (number), [options.err0:=0] (number)
+#### [options.err1:=0] (number), [options.err0:=0] (number)
 > Fault tolerance of graphic and background (0.1=10%)
 
 #### [options.screenshot:=1] (boolean)

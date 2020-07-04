@@ -83,6 +83,7 @@ while (foundBothGate != true) {
     resultPizzaObj := oPizzaSearch.searchAgain()
     resultBeerObj := oBeerSearch.searchAgain()
     if (resultPizzaObj && resultBeerObj) {
+        msgbox, % "Found both Pizza and Beer! Let's Eat!"
         foundBothGate := true
     }
 }
@@ -107,7 +108,7 @@ Let's imagine we want to click the pizza closet to the center, `.resultSortDista
 For example simplicity we'll say we already know the center is at 300,300
 
 > [!Note]
-> Graphicsearch doesn't mutate arguments it's given, notice that the sorted and unsorted ResultObjects are different in this example.
+> Graphicsearch doesn't mutate arguments it's given, notice that the sorted and unsorted ResultObjects are different variables in this example.
 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
@@ -137,32 +138,3 @@ if (resultObj) {
     }
 }
 ```
-
-<!-- sorting external -->
-<!-- ```autohotkey
-oGraphicSearch := new graphicsearch()
-resultObj := oGraphicSearch.search(pizzaGraphic, {})
-
-if (resultObj) {
-    totalFound := resultObj.Count()
-    
-    ; find and save distance for each item
-    loop, % result.Count() {
-        result[A_Index].distance := A.round(fn_PythagoreanTheorem(Point.x - result[A_Index].x, Point.y - result[A_Index].y))
-    }
-    ; sort the distance to Point
-    sortedCoords := A.sortby(result, "distance")
-    sortedCoords := A.sortby(sortedCoords, {id: "Spaghetti"})
-    msgbox, % A.printObj(sortedCoords)
-
-    ; move mouse to the closest coord to Point
-    CoordMode, Mouse
-    ; move mouse to the rest of the coords
-    for i, obj in sortedCoords {
-        if (obj.distance < 600) {
-            Mousemove, % obj.x ,obj.y
-            sleep, 300
-        }
-    }
-}
-``` -->
