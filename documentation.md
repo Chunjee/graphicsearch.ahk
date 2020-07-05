@@ -19,7 +19,7 @@ finds GraphicSearch queries on the screen
 > The search scope's lower right corner coordinates
 
 #### [options.err1:=0] (number), [options.err0:=0] (number)
-> Fault tolerance of graphic and background (0.1=10%)
+> A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
 #### [options.screenshot:=1] (boolean)
 > Wether or not to capture a new screenshot or not. If the value is 0, the last captured screenhhot will be used
