@@ -93,12 +93,11 @@ if (resultObj.Count() >= 4) {
 	; find the center of the screen by dividing the width and height by 2
 	centerX := A_ScreenWidth / 2
 	centerY := A_ScreenHeight / 2
+
 	; create a new result object sorted by distance to the center
 	resultObj2 := oGraphicSearch.resultSortDistance(resultObj, centerX, centerY)
 
-	; loop through the sorted resultObj2 and mouseover each found graphic
-	if (resultObj2.Count() >= 4) {
-		Click, % resultObj2[3].x, resultObj2[3].y
-	}
+	; click the third closest to the center
+	Click, % resultObj2[3].x, resultObj2[3].y
 }
 ```

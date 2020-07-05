@@ -22,13 +22,13 @@ finds GraphicSearch queries on the screen
 > A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
 #### [options.screenshot:=1] (boolean)
-> Wether or not to capture a new screenshot or not. If the value is 0, the last captured screenhhot will be used
+> Whether or not to capture a new screenshot. When the value is 0, the last captured screenshot will be used
 
 #### [options.findall:=1] (boolean)
-> Wether or not to find all instances or just one.
+> Whether or not to find all instances or just one. The default is to find all
 
 #### [options.joinqueries:=0] (boolean)
-> Wether or not to search each query in succession. Queries must be in close proximity (characters in a string)
+> Whether or not to search each query in succession. Queries must be in close proximity (characters in a string)
 
 #### [options.offsetx:=1] (number), [options.offsety:=0] (number)
 > The max offset for joinqueries search
@@ -101,13 +101,13 @@ finds GraphicSearch queries on the screen
 > A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
 
 #### [screenshot:=1] (boolean)
-> If the value is 1, a new capture of the screen will be used; else it will use the last capture
+> Whether or not to capture a new screenshot. When the value is 0, the last captured screenshot will be used
 
 #### [findall:=1] (boolean)
-> If the value is 1, graphicsearch will find all matches. for 0, only return one match
+> Whether or not to find all instances or just one. The default is to find all
 
 #### [joinqueries:=0] (boolean)
-> If the value is 1, search each query in succession. Queries must be in close proximity (characters in a string)
+> Whether or not to search each query in succession. Queries must be in close proximity (characters in a string)
 
 #### [offsetx:=0, offsety:=0] (number)
 > The max offset for joinqueries search
@@ -168,13 +168,13 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 > GraphicsSearch queries as strings. Can be multiple queries separated by `|`
 
 #### [screenshot:=1] (boolean)
-> If the value is 1, a new capture of the screen will be used; else it will use the last capture
+> Whether or not to capture a new screenshot. When the value is 0, the last captured screenshot will be used
 
 #### [findall:=1] (boolean)
-> If the value is 1, graphicsearch will find all matches. for 0, only return one match
+> Whether or not to find all instances or just one. The default is to find all
 
 #### [joinqueries:=0] (boolean)
-> If the value is 1, search each query in succession. Queries must be in close proximity (characters in a string)
+> Whether or not to search each query in succession. Queries must be in close proximity (characters in a string)
 
 #### [offsetx:=20, offsety:=10] (number)
 > The max offset for joinqueries search
