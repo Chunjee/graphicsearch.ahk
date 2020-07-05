@@ -865,7 +865,7 @@ gs_Gui(cmd)
 		. "`n   . ""``n``nResult:``t"" (resultObj ? ""Success !"" : ""Failed !"")`n"
 		. "`n for i,v in resultObj"
 		. "`n   if (i<=2)"
-		. "`n     MouseTip(resultObj[i].x, resultObj[i].y)`n"
+		. "`n     graphicsearch.mouseTip(resultObj[i].x, resultObj[i].y)`n"
 		Event:=cmd, Result:=s
 		Gui, Hide
 		return gs_Off(cri,bch)
