@@ -43,7 +43,7 @@ oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, false)
 
 All searching methods return a ResultsObject, which is an array of all found graphics. If only one was found, it is still contained in an array.
 
-Each found graphic is an assiciative array with the following properties:
+Each found graphic is an object with the following properties:
 - 1: the X position on screen
 - 2: the Y position on screen
 - 3: the width of the graphic
