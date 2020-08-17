@@ -326,7 +326,7 @@ class graphicsearch {
 			mDC := DllCall("CreateCompatibleDC", Ptr,hDC, Ptr)
 			oBM := DllCall("SelectObject", Ptr,mDC, Ptr,hBM, Ptr)
 			DllCall("BitBlt",Ptr,mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
-				, Ptr,hDC, "int",x, "int",y, "uint",0x00CC0020|0x40000000)
+				, Ptr,hDC, "int",x-zx, "int",y-zy, "uint",0x00CC0020|0x40000000)
 			DllCall("ReleaseDC", Ptr,win, Ptr,hDC)
 			if (id := this.bindWindow(0,0,1)) {
 				WinGet, id, ID, ahk_id %id%
@@ -341,7 +341,7 @@ class graphicsearch {
 			if (id) and !(w<1 or h<1) {
 				hDC2 := DllCall("GetDCEx", Ptr,id, Ptr,0, "int",3, Ptr)
 				DllCall("BitBlt",Ptr,mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
-				, Ptr,hDC2, "int",x-wx, "int",y-wy, "uint",0x00CC0020|0x40000000)
+					, Ptr,hDC2, "int",x-wx, "int",y-wy, "uint",0x00CC0020|0x40000000)
 				DllCall("ReleaseDC", Ptr,id, Ptr,hDC2)
 			}
 			DllCall("SelectObject", Ptr,mDC, Ptr,oBM)
