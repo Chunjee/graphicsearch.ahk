@@ -2,6 +2,7 @@ Assume the following is a snapshot of game and we want to use GraphicSearch to t
 
 ![Main stage tutorial image](assets/tutorial-1.png)
 
+
 <br>
 
 We'll use the followng capture regions. It's very important to capture the smallest region possible, while also being unique to the graphic so it doesn't match other similar things. For distance calculations it might be useful to search for the center of each graphic. Since GraphicSearch really cares about differences in color, it is highly benifitial to grab an area that is not all the same color.
@@ -16,7 +17,54 @@ pizzaGraphic :=      "|<Pizza>#391@0.61$41.TzXyDzy3z7wDzw7yTwDzsDzzs3XkSDzy07UwT
 beerGraphic :=       "|<Beer>#418@0.61$44.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz3zzzzzzkzzzzzzsDzzzzw03zzzzz00zzzzzk0DzzzzkTzzzzzkDzzzzzw3zzzzzy0Tw7zzU03j1zzs001kTzy000Q1zy00070000001s"
 ```
 
+
 <br>
+
+## Performing Searches
+
+GraphicSearch's most verbose method is `.find`. It requires **seven** arguments and has **five** more optional arguments. 
+To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an optional object with all the same options as properties.
+
+The following are all functionally identical, They search a region of the screen (0,0 -> 600,600) and only return one found match (the first match)
+
+See [Documentation](/documentation) for more details on all methods.
+
+```autohotkey
+oGraphicSearch := new graphicsearch()
+oGraphicSearch.search(pizzaGraphic, {x2: 600, y2: 600, findall: false})
+oGraphicSearch.scan(pizzaGraphic, 0, 0, 600, 600, false)
+oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, false)
+```
+
+
+<br>
+
+## ResultsObject
+
+All searching methods return a ResultsObject, which is an array of all found graphics. If only one was found, it is still contained in an array.
+
+Each found graphic is an assiciative array with the following properties:
+- 1: the X position on screen
+- 2: the Y position on screen
+- 3: the width of the graphic
+- 4: the height of the graphic
+- x: the center of the graphic's X axis. The width of the graphic divided by 2 plus the X position on screen
+- y: the center of the graphic's Y axis. The height of the graphic divided by 2 plus the Y position on screen
+- id: a string of the corrisponding GraphicSearch queries human readable tag if one was present (the text between `<` and `>`), else `""`
+
+An example ResultsObject might look like this: 
+```autohotkey
+[{1:113, 2:50, 3:10, 4:10, x:118, y:55, id:"Pizza"}]
+```
+Or this if more than one was found:
+```autohotkey
+[{1:113, 2:50, 3:10, 4:10, x:118, y:55, id:"Pizza"}, {1:233, 2:440, 3:10, 4:10, x:238, y:445, id:"Pizza"}]
+```
+
+
+<br>
+
+## Example Scripts
 
 If we want to search for all the pizzas we can perform the following to msgbox the x,y location of each match
 
@@ -30,7 +78,6 @@ if (resultObj) {
     }
 }
 ```
-
 
 <br>
 
@@ -46,23 +93,6 @@ if (resultObj) {
         msgbox, % "x: " resultObj[A_Index].x ", y: " resultObj[A_Index].y
     }
 }
-```
-
-
-<br>
-
-GraphicSearch's most verbose method is `.find`. It requires **seven** arguments and has **five** more optional arguments. 
-To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an optional object with all the same options as properties.
-
-The following are all functionally identical, They search a region of the screen (0,0 -> 600,600) and only return one found match (the first match)
-
-See [Documentation](/documentation) for more details on all methods.
-
-```autohotkey
-oGraphicSearch := new graphicsearch()
-oGraphicSearch.search(pizzaGraphic, {x2: 600, y2: 600, findall: false})
-oGraphicSearch.scan(pizzaGraphic, 0, 0, 600, 600, false)
-oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, false)
 ```
 
 

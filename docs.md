@@ -35,8 +35,8 @@ finds GraphicSearch queries on the screen
 
 
 ### Return
-(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+(Array) Returns an array of objects containing all found graphics, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W\2, y:Y+H\2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
 ### Example
@@ -67,8 +67,8 @@ performs the last `.search` with the last arguments supplied
 
 
 ### Return
-(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+(Array) Returns an array of objects containing all found graphics, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W\2, y:Y+H\2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
 ### Example
@@ -114,8 +114,8 @@ finds GraphicSearch queries on the screen
 
 
 ### Return
-(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+(Array) Returns an array of objects containing all found graphics, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W\2, y:Y+H\2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
 ### Example
@@ -134,8 +134,8 @@ performs the last .search with the last arguments supplied
 
 
 ### Return
-(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+(Array) Returns an array of objects containing all found graphics, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W\2, y:Y+H\2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
 ### Example
@@ -181,8 +181,8 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 
 
 ### Return
-(Array) Returns an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+(Array) Returns an array of objects containing all found graphics, else `false` if no matches were found.
+Any result is an associative array `{1:X, 2:Y, 3:W, 4:H, x:X+W\2, y:Y+H\2, id:tag}`. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
 
 
 ### Example
@@ -195,6 +195,7 @@ oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20
 
 
 # Sorting Methods
+The searching methods return a "ResultsObject" array that contains one or more instances of found graphics. The methods below deal with reorganizing the order of that array and do not perform any new screen capture.
 
 ## .resultSort
 ## .resultSort(resultsObject], ydistance) :id=definition {docsify-ignore}

@@ -1,4 +1,4 @@
-## Generating GraphicSearch Queries
+# Generating GraphicSearch Queries
 
 Open graphicsearch_gui.ahk
 
