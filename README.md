@@ -16,8 +16,7 @@ In a terminal or command line:
 ```bash
 npm install graphicsearch.ahk
 ```
-
-In your code:
+In your code only export.ahk needs to be included:
 ```autohotkey
 #Include %A_ScriptDir%\node_modules
 #Include graphicsearch.ahk\export.ahk
@@ -26,8 +25,7 @@ oGraphicSearch := new graphicsearch()
 result := oGraphicSearch.search("|<HumanReadableTag>*165$22.03z")
 ; => [{1: 1215, 2: 407, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 ```
-You may also review or copy the library from [./export.ahk on GitHub](https://github.com/Chunjee/graphicsearch.ahk)
-
+You may also review or copy the library from [./export.ahk on GitHub](https://github.com/Chunjee/graphicsearch.ahk) #Incude as you would normally when manually downloading.
 
 # Main Methods
 
@@ -254,7 +252,7 @@ resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000
               , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 
 oGraphicSearch.resultSortDistance(resultsObj, 2000, 2000)
-/* 
+/*
 [ {1: 2000, 2: 2000, 3: 22, 4: 10, distance: "12.08", id: "HumanReadableTag", x: 2000, y: 2000}
 , {1: 1215, 2: 400, 3: 22, 4: 10, distance: "1766.58", id: "HumanReadableTag", x: 1226, y: 412}]
 */
