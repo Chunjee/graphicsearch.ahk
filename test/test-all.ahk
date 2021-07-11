@@ -1,8 +1,7 @@
-	
+
 #Include %A_ScriptDir%\..\export.ahk
 #Include %A_ScriptDir%\..\node_modules
 #Include unit-testing.ahk\export.ahk
-#Include json.ahk\export.ahk
 
 #NoTrayIcon
 #NoEnv
@@ -13,15 +12,41 @@ oGraphicSearch := new graphicsearch()
 assert := new unittesting()
 ; A := new biga()
 
-; this testing should be performed with image.png open
+; this testing should be performed with image.png open in mspaint. 1920x1080 if it matters
 
 ; variables
-pizzaGraphic := "|<pizza>*150$45.D1zw01z1sTzU0TsD3zw03z1wTz00TsDzk00zs1zy0Dzy0Dzk1zzk1zy0Dzy0zzk3zy07zy0TzU0zzk3zw07zy0TzU000Dzs00001zy000U"
-spaggGraphic := "|<spagg>*150$43.znzzzzzzkzzzzzzsTzzzzzyTzzzzvzzzzzzVzzzzzzkzzzzzzsTzzzzzw3zzzzzzszzzzzzwTzzzzzyTzzzzzzU"
-drinkGraphic := "|<drink>*178$26.Dzzznzzzzy07zz01zzk0Tzw03zzU0Tzss1zyC0Tzzk7zzw1zzz0Tzzk7zzw1z3z0TU7k7s"
+pizzaGraphic := "|<pizza>*150$13.VUHk9s7znzskzMTXDlbw"
+spaggGraphic := "|<spagg>*150$14.TtryTzzzzzbztzzzzzzzyzzby5zVU"
+drinkGraphic := "|<drink>*150$17.00000000000003U0700w01s0zk1zjwDk"
 
 centerPoint :=  "|<center>*193$17.zzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzTzwzztzzXzy3zU1s0E"
 centerObj := {"x": 1328, "y": 752}
+
+
+; #Include GraphicSearch.ahk
+
+ t1 := A_TickCount, X := Y := ""
+
+GraphicSearch_query := "|<>*146$26.s060Ts67Xy1Vs7sNbVy6NuTaNybtaTbsNy5y6TV1zzsETzy4Ts0T7y07k1Vs00MS006Tts"
+options := {"x1": 0, "y1": -4000}
+resultObj := graphicsearch.search(GraphicSearch_query, options)
+if (resultObj) {
+	X := resultObj.1.x, Y := resultObj.1.y, Comment := resultObj.1.id
+	; Click, %X%, %Y%
+}
+
+ MsgBox, 4096, Tip, % "Found :`t" Round(resultObj.MaxIndex())
+   . "`n`nTime  :`t" (A_TickCount-t1) " ms"
+   . "`n`nPos   :`t" X ", " Y
+   . "`n`nResult:`t" (resultObj ? "Success !" : "Failed !")
+
+ for i,v in resultObj
+   if (i<=2)
+     graphicsearch.mouseTip(resultObj[i].x, resultObj[i].y)
+
+
+
+
 
 ; Perform the searches
 sleep, 400
@@ -75,14 +100,14 @@ if (result1) {
 	resultsObj := oGraphicSearch.resultSortDistance(resultsObj)
 	assert.test(resultsObj[1].distance, "1292.11")
 	assert.test(resultsObj[2].distance, "2838.33")
-	
+
 
 	distanceCoords := oGraphicSearch.resultSortDistance(result1, A_ScreenWidth, A_ScreenHeight)
 	assert.test(sortedCoords.Count(), 5)
 	assert.test(sortedCoords[5].id, "pizza")
 	; assert.test(distanceCoords, [{1:1847,2:1261,3:22,4:10,"distance":"723.24","id":"pizza","x":1858,"y":1266},{1:1565,2:949,3:22,4:10,"distance":"1097.48","id":"pizza","x":1576,"y":954},{1:1457,2:815,3:22,4:10,"distance":"1255.73","id":"pizza","x":1468,"y":820},{1:1215,2:407,3:22,4:10,"distance":"1684.14","id":"pizza","x":1226,"y":412},{1:852,2:891,3:22,4:10,"distance":"1782.06","id":"pizza","x":863,"y":896}])
 
-	
+
 	; test some partial argument objects
 	assert.label("Argument objects")
 	result3 := oGraphicSearch.search(spaggGraphic, {"x2": 100, "y2": 100})
