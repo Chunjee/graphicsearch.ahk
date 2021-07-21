@@ -852,7 +852,7 @@ gs_Gui(cmd)
 		x:=px-ww+CutLeft+(nW-CutLeft-CutRight)//2
 		y:=py-hh+CutUp+(nH-CutUp-CutDown)//2
 		s:=StrReplace(s, "Text.=", "Text:=")
-		s:="`; #Include <GraphicSearch>`n"
+		s:="`; #Include graphicsearch.ahk\export.ahk`n"
 		. "`n t1 := A_TickCount, X := Y := """"`n" s
 		. "`n resultObj := graphicsearch.search(GraphicSearch_query)"
 		. "`n if (resultObj) {"
