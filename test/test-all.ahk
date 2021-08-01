@@ -15,38 +15,12 @@ assert := new unittesting()
 ; this testing should be performed with image.png open in mspaint. 1920x1080 if it matters
 
 ; variables
-pizzaGraphic := "|<pizza>*150$13.VUHk9s7znzskzMTXDlbw"
-spaggGraphic := "|<spagg>*150$14.TtryTzzzzzbztzzzzzzzyzzby5zVU"
-drinkGraphic := "|<drink>*150$17.00000000000003U0700w01s0zk1zjwDk"
+pizzaGraphic := "|<pizza>*150$32.3wAnkAzAnw3DnAz0DknwDnwAz3w3zzkz0zzwDkzk0z0Dw0Dk033k08"
+spaggGraphic := "|<spagg>*164$30.zzzzwznzzzznzzzzzzzzzzzzzzzwzkzzwzk3z3A03z3A0kkzA3kkzA3A03AAA03AAnkAnAnkAnAA3kn0U"
+drinkGraphic := "|<drink>*150$18.0070070Tz0Tz1s71s7Ts1Ts1VzVVzV01V01V07V07V0M60M60MM0MMU"
 
-centerPoint :=  "|<center>*193$17.zzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzTzwzztzzXzy3zU1s0E"
+centerPoint :=  "|<center>*199$10.DlzbyzzzzzzxzXw32"
 centerObj := {"x": 1328, "y": 752}
-
-
-; #Include GraphicSearch.ahk
-
- t1 := A_TickCount, X := Y := ""
-
-GraphicSearch_query := "|<>*146$26.s060Ts67Xy1Vs7sNbVy6NuTaNybtaTbsNy5y6TV1zzsETzy4Ts0T7y07k1Vs00MS006Tts"
-options := {"x1": 0, "y1": -4000}
-resultObj := graphicsearch.search(GraphicSearch_query, options)
-if (resultObj) {
-	X := resultObj.1.x, Y := resultObj.1.y, Comment := resultObj.1.id
-	; Click, %X%, %Y%
-}
-
- MsgBox, 4096, Tip, % "Found :`t" Round(resultObj.MaxIndex())
-   . "`n`nTime  :`t" (A_TickCount-t1) " ms"
-   . "`n`nPos   :`t" X ", " Y
-   . "`n`nResult:`t" (resultObj ? "Success !" : "Failed !")
-
- for i,v in resultObj
-   if (i<=2)
-     graphicsearch.mouseTip(resultObj[i].x, resultObj[i].y)
-
-
-
-
 
 ; Perform the searches
 sleep, 400
@@ -57,10 +31,14 @@ resultlegacyfind := oGraphicSearch.find(0, 0, A_ScreenWidth, A_ScreenHeight, 0, 
 
 searchAgainResults := oGraphicSearch.searchAgain()
 scanAgainResults := oGraphicSearch.scanAgain()
-scanAgainResults2 := oGraphicSearch.scanAgain(,,,10000000000000,100000000000)
+scanAgainResults2 := oGraphicSearch.scanAgain(,,, 10000000000000, 100000000000)
 
 threeResults := oGraphicSearch.search(pizzaGraphic spaggGraphic drinkGraphic)
 
+assert.label("library loaded")
+assert.true(isObject(oGraphicSearch.defaultOptionsObj))
+
+assert.label("search results match")
 assert.test(searchAgainResults, result1)
 assert.test(scanAgainResults, result2)
 assert.test(scanAgainResults2, result2)
@@ -71,8 +49,9 @@ if (result1) {
 	assert.test(result2.Count(), 2)
 
 	; test three searches combined
-	assert.label("multiple searches combined")
+	assert.label("multiple searches combined count")
 	assert.test(threeResults.Count(), 8)
+	assert.label("multiple searches combined order")
 	assert.test(threeResults[1].id, "pizza")
 	assert.test(threeResults[2].id, "pizza")
 	assert.test(threeResults[3].id, "pizza")
