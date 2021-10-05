@@ -1069,14 +1069,8 @@ class graphicsearch {
 	}
 
 	; Re-order resultObj according to the nearest distance
-	resultSortDistance(param_resultObj, param_x := "", param_y := "")
+	resultSortDistance(param_resultObj, param_x := 1, param_y := 1)
 	{
-		if (param_x == "") {
-			param_x := A_ScreenWidth / 2
-		}
-		if (param_y == "") {
-			param_y := A_ScreenHeight / 2
-		}
 		resultObj := param_resultObj.clone()
 		for k, v in resultObj {
 			x := v.1+v.3//2, y := v.2+v.4//2
