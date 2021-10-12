@@ -1069,21 +1069,28 @@ class graphicsearch {
 	}
 
 	; Re-order resultObj according to the nearest distance
-	resultSortDistance(param_resultObj, param_x := 1, param_y := 1)
+	resultSortDistance(param_resultObj, param_x := "", param_y := "")
 	{
+		if (param_x == "") {
+			param_x := A_ScreenWidth / 2
+		}
+		if (param_y == "") {
+			param_y := A_ScreenWidth / 2
+		}
 		resultObj := param_resultObj.clone()
 		for k, v in resultObj {
-			x := v.1+v.3//2, y := v.2+v.4//2
-			n := ((x-param_x)**2+(y-param_y)**2) "." k
+			x := v.1 + v.3 // 2
+			y := v.2 + v.4 // 2
+			n := ((x - param_x)**2 + (y - param_y)**2) "###" k
 			; save the square root to the result object pre-sorting
-			resultObj[A_Index].distance := round(sqrt(StrSplit(n, ".")[1]), 2)
+			resultObj[A_Index].distance := round(sqrt(StrSplit(n, "###")[1]), 0)
 			s := A_Index = 1 ? n : s "-" n
 		}
 		Sort, s, N D-
 		resultObj2 := []
 		loop, Parse, s, -
 		{
-			resultObj2.Push(resultObj[(StrSplit(A_LoopField,".")[2])])
+			resultObj2.push(resultObj[(StrSplit(A_LoopField, "###")[2])])
 		}
 		return resultObj2
 	}
