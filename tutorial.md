@@ -1,4 +1,4 @@
-Assume the following is a snapshot of game and we want to use GraphicSearch to translate to parse where things are on screen. 
+Assume the following is a snapshot of game and we want to use GraphicSearch to translate to parse where things are on screen.
 
 ![Main stage tutorial image](assets/tutorial-1.png)
 
@@ -22,7 +22,7 @@ beerGraphic :=       "|<Beer>#418@0.61$44.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz3z
 
 ## Performing Searches
 
-GraphicSearch's most verbose method is `.find`. It requires **seven** arguments and has **five** more optional arguments. 
+GraphicSearch's most verbose method is `.find`. It requires **seven** arguments and has **five** more optional arguments.
 To simplify use, `.search` only takes two arguments, a GraphicSearch Query and an optional object with all the same options as properties.
 
 The following are all functionally identical, They search a region of the screen (0,0 -> 600,600) and only return one found match (the first match)
@@ -52,7 +52,7 @@ Each found graphic is an object with the following properties:
 - y: the center of the graphic's Y axis. The height of the graphic divided by 2 plus the Y position on screen
 - id: a string of the corrisponding GraphicSearch queries human readable tag if one was present (the text between `<` and `>`), else `""`
 
-An example ResultsObject might look like this: 
+An example ResultsObject might look like this:
 ```autohotkey
 [{1:113, 2:50, 3:10, 4:10, x:118, y:55, id:"Pizza"}]
 ```
@@ -85,7 +85,7 @@ If we wanted to search for two (or more) items in one search that can be accompl
 
 ```autohotkey
 oGraphicSearch := new graphicsearch()
-allQueries := pizzaGraphic beerGraphic 
+allQueries := pizzaGraphic beerGraphic
 resultObj := oGraphicSearch.search(allQueries)
 
 if (resultObj) {
