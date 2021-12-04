@@ -3,7 +3,7 @@
 <!-- .search -->
 ## .search
 ### .search(graphicsearch_query [, options]) :id=definition {docsify-ignore}
-finds GraphicSearch queries on the screen
+finds GraphicSearch queries on the screen. Using an options object.
 
 ### Arguments
 #### graphicsearch_query (string)
@@ -85,7 +85,7 @@ oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
 <!-- .scan -->
 ## .scan
 ### .scan(graphicsearch_query [, y1, x2, y2, err1, err0, screenshot, findall, joinqueries, offsetx, offsety]) :id=definition {docsify-ignore}
-finds GraphicSearch queries on the screen
+finds GraphicSearch queries on the screen. Using options arguments.
 
 ### Arguments
 #### graphicsearch_query (string)
