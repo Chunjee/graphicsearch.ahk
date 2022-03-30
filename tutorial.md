@@ -149,7 +149,7 @@ if (resultObj) {
     loop, % sortedResults.Count() {
         msgbox, % "x: " sortedResults[A_Index].x ", y: " sortedResults[A_Index].y
     }
-    MouseClick, % sortedResults[1].x, sortedResults[1].y
+    Click, % sortedResults[1].x " " sortedResults[1].y
 }
 ```
 

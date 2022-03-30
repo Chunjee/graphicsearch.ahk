@@ -49,7 +49,7 @@ resultObj := oGraphicSearch.search("|<Pizza>*165$22.03z")
 ; check if any graphic was found
 if (resultObj) {
 	; click on the first graphic in the object
-	Click, % resultObj[1].x, resultObj[1].y
+	Click, % resultObj[1].x " " resultObj[1].y
 }
 ```
 
@@ -85,6 +85,6 @@ if (resultObj.Count() >= 4) {
 	resultObj2 := oGraphicSearch.resultSortDistance(resultObj, centerX, centerY)
 
 	; click the third closest to the center
-	Click, % resultObj2[3].x, resultObj2[3].y
+	Click, % resultObj2[3].x " " resultObj2[3].y
 }
 ```
