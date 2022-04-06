@@ -73,9 +73,9 @@ oGraphicSearch := new graphicsearch()
 resultObj := oGraphicSearch.search(pizzaGraphic)
 
 if (resultObj) {
-    loop, % resultObj.Count() {
-        msgbox, % "x: " result[A_Index].x ", y: " result[A_Index].y
-    }
+	loop, % resultObj.Count() {
+		msgbox, % "x: " resultObj[A_Index].x ", y: " resultObj[A_Index].y
+	}
 }
 ```
 
@@ -89,9 +89,9 @@ allQueries := pizzaGraphic beerGraphic
 resultObj := oGraphicSearch.search(allQueries)
 
 if (resultObj) {
-    loop, % resultObj.Count() {
-        msgbox, % "x: " resultObj[A_Index].x ", y: " resultObj[A_Index].y
-    }
+	loop, % resultObj.Count() {
+		msgbox, % "x: " resultObj[A_Index].x ", y: " resultObj[A_Index].y
+	}
 }
 ```
 
@@ -110,12 +110,12 @@ oBeerSearch.search(oBeerSearch)
 
 foundBothGate := false
 while (foundBothGate != true) {
-    resultPizzaObj := oPizzaSearch.searchAgain()
-    resultBeerObj := oBeerSearch.searchAgain()
-    if (resultPizzaObj && resultBeerObj) {
-        msgbox, % "Found both Pizza and Beer! Let's Eat!"
-        foundBothGate := true
-    }
+	resultPizzaObj := oPizzaSearch.searchAgain()
+	resultBeerObj := oBeerSearch.searchAgain()
+	if (resultPizzaObj && resultBeerObj) {
+		msgbox, % "Found both Pizza and Beer! Let's Eat!"
+		foundBothGate := true
+	}
 }
 ```
 
@@ -124,10 +124,10 @@ Since we're not doing anything with the result objects we can simplify the code 
 ```autohotkey
 foundBothGate := false
 while (foundBothGate != true) {
-    if (oPizzaSearch.searchAgain() && oBeerSearch.searchAgain()) {
-        msgbox, % "Found both Pizza and Beer! Let's Eat!"
-        foundBothGate := true
-    }
+	if (oPizzaSearch.searchAgain() && oBeerSearch.searchAgain()) {
+		msgbox, % "Found both Pizza and Beer! Let's Eat!"
+		foundBothGate := true
+	}
 }
 ```
 
@@ -145,11 +145,11 @@ oGraphicSearch := new graphicsearch()
 
 resultObj := oGraphicSearch.search(pizzaGraphic)
 if (resultObj) {
-    sortedResults := oGraphicSearch.resultSortDistance(resultObj, 300, 300)
-    loop, % sortedResults.Count() {
-        msgbox, % "x: " sortedResults[A_Index].x ", y: " sortedResults[A_Index].y
-    }
-    Click, % sortedResults[1].x " " sortedResults[1].y
+	sortedResults := oGraphicSearch.resultSortDistance(resultObj, 300, 300)
+	loop, % sortedResults.Count() {
+		msgbox, % "x: " sortedResults[A_Index].x ", y: " sortedResults[A_Index].y
+	}
+	Click, % sortedResults[1].x " " sortedResults[1].y
 }
 ```
 
@@ -160,11 +160,11 @@ oGraphicSearch := new graphicsearch()
 
 resultObj := oGraphicSearch.search(pizzaGraphic)
 if (resultObj) {
-    sortedResults := oGraphicSearch.resultSortDistance(resultObj)
-    loop, % sortedResults.Count() {
-        if (sortedResults[A_Index].distance > 350) {
-            msgbox, % "x: " sortedResults[A_Index].x ", y: " sortedResults[A_Index].y " is outside the circle"
-        }
-    }
+	sortedResults := oGraphicSearch.resultSortDistance(resultObj)
+	loop, % sortedResults.Count() {
+		if (sortedResults[A_Index].distance > 350) {
+			msgbox, % "x: " sortedResults[A_Index].x ", y: " sortedResults[A_Index].y " is outside the circle"
+		}
+	}
 }
 ```
