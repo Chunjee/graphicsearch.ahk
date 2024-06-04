@@ -18,6 +18,7 @@ assert := new unittesting()
 pizzaGraphic := "|<pizza>*150$32.3wAnkAzAnw3DnAz0DknwDnwAz3w3zzkz0zzwDkzk0z0Dw0Dk033k08"
 spaggGraphic := "|<spagg>*164$30.zzzzwznzzzznzzzzzzzzzzzzzzzwzkzzwzk3z3A03z3A0kkzA3kkzA3A03AAA03AAnkAnAnkAnAA3kn0U"
 drinkGraphic := "|<drink>*150$18.0070070Tz0Tz1s71s7Ts1Ts1VzVVzV01V01V07V07V0M60M60MM0MMU"
+unfindableGraphic := "|<unfindable>*96$48.zzztzzzzzzztzzzzzzztzzzzUsQ94C3XaP9dRYnBjT/sTZuRjM/sw5u0jH/sNZuTaH9d9YnDUsA9Y63Vjzzzzzvzjzzzzznzjzzzzw7zU"
 
 centerPoint :=  "|<center>*199$10.DlzbyzzzzzzxzXw32"
 centerObj := {"x": 1328, "y": 752}
@@ -106,6 +107,14 @@ if (result1) {
 	assert.test(resultsObj1[2].distance, "1766.58")
 
 
+
+	assert.group("Unsuccessful searches")
+	assert.label("return object")
+	assert.false(oGraphicSearch.scan(unfindableGraphic, 0, 0, A_ScreenWidth, A_ScreenHeight, 0, 0))
+
+	assert.label("change noMatchVal")
+	oGraphicSearch.noMatchVal := "foobar"
+	assert.test(oGraphicSearch.scan(unfindableGraphic, 0, 0, A_ScreenWidth, A_ScreenHeight, 0, 0), "foobar")
 
 	assert.fullreport()
 } else {

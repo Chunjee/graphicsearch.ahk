@@ -220,27 +220,6 @@ class graphicsearch {
 	, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10
 	, dir:=1, zoomW:=1, zoomH:=1) {
 		local
-		if (OutputX ~= "i)^\s*wait[10]?\s*$")
-		{
-		found:=!InStr(OutputX,"0"), time:=this.addZero(OutputY)
-		, timeout:=A_TickCount+Round(time*1000), OutputX:=""
-		Loop
-		{
-			ok:=this.find(x1, y1, x2, y2, err1, err0, text, ScreenShot
-			, FindAll, JoinText, offsetX, offsetY, dir, zoomW, zoomH)
-			if (found && ok)
-			{
-			OutputX:=ok[1].x, OutputY:=ok[1].y
-			return ok
-			}
-			if (!found && !ok)
-			return 1
-			if (time>=0 && A_TickCount>=timeout)
-			Break
-			Sleep 50
-		}
-		return 0
-		}
 		SetBatchLines % (bch:=A_BatchLines)?"-1":"-1"
 		x1:=this.addZero(x1), y1:=this.addZero(y1), x2:=this.addZero(x2), y2:=this.addZero(y2)
 		if (x1=0 && y1=0 && x2=0 && y2=0)
@@ -306,12 +285,10 @@ class graphicsearch {
 			Break
 		}
 		SetBatchLines % bch
-		if (arr.Length())
-		{
-		OutputX:=arr[1].x, OutputY:=arr[1].y, this.ok:=arr
-		return arr
+		if (arr.count()) {
+			return arr
 		}
-		return 0
+		return this.noMatchVal
 	}
 	
 	; the join text object <==> [ "abc", "xyz", "a1|a2|a3" ]
