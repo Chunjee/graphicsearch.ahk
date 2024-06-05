@@ -179,6 +179,22 @@ functionally identicle to `.scan` but uses legacy argument order as a convience 
 #### [offsetx:=20, offsety:=10] (number)
 > The max offset for joinqueries search
 
+#### [direction:=1] (number)
+> Set the direction search is conducted in
+
+> 1( Left to Right / Top to Bottom )
+2( Right to Left / Top to Bottom )
+3( Left to Right / Bottom to Top )
+4( Right to Left / Bottom to Top )
+5( Top to Bottom / Left to Right )
+6( Bottom to Top / Left to Right )
+7( Top to Bottom / Right to Left )
+8( Bottom to Top / Right to Left )
+9( Center to Four Sides )
+
+#### [zoomW:=1, zoomH:=1] (number)
+> Zoom percentage of image width and height (0.1=10%)
+
 
 ### Return
 (Array) Returns an array of objects containing all found graphics, else `false` if no matches were found.
