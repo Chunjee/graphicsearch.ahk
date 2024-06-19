@@ -1,23 +1,25 @@
 int __attribute__((__stdcall__)) PicFind(
-int mode, unsigned int c, unsigned int n, int dir
-, unsigned char * Bmp, int Stride
-, int sx, int sy, int sw, int sh
-, unsigned char * ss, unsigned int * s1, unsigned int * s0
-, unsigned char * text, int w, int h, int err1, int err0
-, unsigned int * allpos, int allpos_max
-, int new_w, int new_h ) {
+	int mode, unsigned int c, unsigned int n, int dir
+	, unsigned char * Bmp, int Stride
+	, int sx, int sy, int sw, int sh
+	, unsigned char * ss, unsigned int * s1, unsigned int * s0
+	, unsigned char * text, int w, int h, int err1, int err0
+	, unsigned int * allpos, int allpos_max
+	, int new_w, int new_h )
+	{
 	int ok, o, i, j, k, v, e1, e0, len1, len0, max;
 	int x, y, x1, y1, x2, y2, x3, y3;
 	int r, g, b, rr, gg, bb, dR, dG, dB;
 	int ii, jj, RunDir, DirCount, RunCount, AllCount1, AllCount2;
 	unsigned int c1, c2;
-	unsigned char * gs;
+	unsigned char * ts, * gs;
 	unsigned int * cors;
-	ok=0; o=0; len1=0; len0=0;
+	ok=0; o=0; len1=0; len0=0; ts=ss+sw; gs=ss+sw*3;
+	if (mode<1 || mode>5) goto Return1;
 	//----------------------
 	if (mode==5)
 	{
-		if (k=(c!=0))  // FindPic
+		if (k=(c!=0))	// FindPic
 		{
 		cors=(unsigned int *)(text+w*h*4);
 		r=(c>>16)&0xFF; g=(c>>8)&0xFF; b=c&0xFF; dR=r*r; dG=g*g; dB=b*b;
@@ -38,7 +40,7 @@ int mode, unsigned int c, unsigned int n, int dir
 			}
 		}
 		}
-		else  // FindMultiColor or FindColor
+		else	// FindMultiColor or FindColor
 		{
 		cors=(unsigned int *)text;
 		for (; len1<n; len1++, o+=22)
@@ -79,7 +81,7 @@ int mode, unsigned int c, unsigned int n, int dir
 	//----------------------
 	// Generate Two Value Image
 	o=sy*Stride+sx*4; j=Stride-sw*4; i=0;
-	if (mode==1)  // Color Mode
+	if (mode==1)	// Color Mode
 	{
 		cors=(unsigned int *)(text+w*h); n=n*2;
 		for (y=0; y<sh; y++, o+=j)
@@ -102,23 +104,22 @@ int mode, unsigned int c, unsigned int n, int dir
 				if (r*r<=dR*dR && g*g<=dG*dG && b*b<=dB*dB) goto MatchOK1;
 			}
 			}
-			ss[i]=0;
+			ts[i]=0;
 			continue;
 			MatchOK1:
-			ss[i]=1;
+			ts[i]=1;
 		}
 		}
 	}
-	else if (mode==2)  // Gray Threshold Mode
+	else if (mode==2)	// Gray Threshold Mode
 	{
 		c=(c+1)<<7;
 		for (y=0; y<sh; y++, o+=j)
 		for (x=0; x<sw; x++, o+=4, i++)
-			ss[i]=(Bmp[2+o]*38+Bmp[1+o]*75+Bmp[o]*15<c) ? 1:0;
+			ts[i]=(Bmp[2+o]*38+Bmp[1+o]*75+Bmp[o]*15<c) ? 1:0;
 	}
-	else if (mode==3)  // Gray Difference Mode
+	else if (mode==3)	// Gray Difference Mode
 	{
-		gs=ss+sw*2;
 		for (y=0; y<sh; y++, o+=j)
 		{
 		for (x=0; x<sw; x++, o+=4, i++)
@@ -128,17 +129,27 @@ int mode, unsigned int c, unsigned int n, int dir
 		{
 		for (x=0; x<sw; x++, i++)
 		{
-			if (x==0 || y==0 || x==sw-1 || y==sh-1)
-			ss[i]=2;
+			if (x==0 || x==sw-1 || y==0 || y==sh-1)
+			ts[i]=2;
 			else
 			{
 			n=gs[i]+c;
-			ss[i]=(gs[i-1]>n || gs[i+1]>n
-			|| gs[i-sw]>n   || gs[i+sw]>n
+			ts[i]=(gs[i-1]>n || gs[i+1]>n
+			|| gs[i-sw]>n	 || gs[i+sw]>n
 			|| gs[i-sw-1]>n || gs[i-sw+1]>n
 			|| gs[i+sw-1]>n || gs[i+sw+1]>n) ? 1:0;
 			}
 		}
+		}
+	}
+	for (i=0, y=0; y<sh; y++)
+	{
+		for (x=0; x<sw; x++, i++)
+		{
+		r=ts[i];
+		g=(x==0) ? 3 : ts[i-1];
+		b=(x==sw-1) ? 3 : ts[i+1];
+		ss[i]=(r==2||r==1||g==1||b==1)<<1|(r==2||r==0||g==0||b==0);
 		}
 	}
 	//----------------------
@@ -154,7 +165,7 @@ int mode, unsigned int c, unsigned int n, int dir
 	}
 	else
 	{
-		x1=0; y1=0;
+		x1=0; y1=0; sx++;
 	}
 	x2=x1+sw-new_w; y2=y1+sh-new_h;
 	// 1 ==> ( Left to Right ) Top to Bottom
@@ -203,7 +214,20 @@ int mode, unsigned int c, unsigned int n, int dir
 		//----------------------
 		FindPos:
 		e1=err1; e0=err0;
-		if (mode==5)
+		if (mode<4)
+		{
+			o=y*sw+x;
+			for (i=0; i<max; i++)
+			{
+			if (i<len1 && ss[o+s1[i]]<2 && (--e1)<0) goto NoMatch;
+			if (i<len0 && (ss[o+s0[i]]&1)==0 && (--e0)<0) goto NoMatch;
+			}
+			// Clear the image that has been found
+			for (i=0; i<new_h; i++)
+			for (j=0; j<new_w; j++)
+				ss[o+i*sw+j]=0;
+		}
+		else if (mode==5)
 		{
 			o=y*Stride+x*4;
 			if (k)
@@ -238,7 +262,7 @@ int mode, unsigned int c, unsigned int n, int dir
 			}
 			}
 		}
-		else if (mode==4)
+		else	// mode==4
 		{
 			o=y*Stride+x*4;
 			j=o+c; rr=Bmp[2+j]; gg=Bmp[1+j]; bb=Bmp[j];
@@ -255,18 +279,6 @@ int mode, unsigned int c, unsigned int n, int dir
 				if ((1024+v)*r*r+2048*g*g+(1534-v)*b*b<=n && (--e0)<0) goto NoMatch;
 			}
 			}
-		}
-		else
-		{
-			o=y*sw+x;
-			for (i=0; i<max; i++)
-			{
-			if (i<len1 && ss[o+s1[i]]==0 && (--e1)<0) goto NoMatch;
-			if (i<len0 && ss[o+s0[i]]==1 && (--e0)<0) goto NoMatch;
-			}
-			// Clear the image that has been found
-			for (i=0; i<len1; i++)
-			ss[o+s1[i]]=0;
 		}
 		ok++;
 		if (allpos!=0)
