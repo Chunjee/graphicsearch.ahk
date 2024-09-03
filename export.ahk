@@ -170,7 +170,7 @@ class graphicsearch {
 			param_x := A_ScreenWidth / 2
 		}
 		if (param_y == "") {
-			param_y := A_ScreenWidth / 2
+			param_y := A_ScreenHeight / 2
 		}
 		resultObj := param_resultObj.clone()
 		for k, v in resultObj {
