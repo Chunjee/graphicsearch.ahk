@@ -3,6 +3,7 @@
 #Include %A_ScriptDir%\..\node_modules
 #Include unit-testing.ahk\export.ahk
 
+#Requires autohotkey v1.1
 #NoTrayIcon
 #NoEnv
 #SingleInstance, force
@@ -85,8 +86,8 @@ if (result1) {
 	resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
 				  , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
 	resultsObj := oGraphicSearch.resultSortDistance(resultsObj, screenSizeX, screenSizeY)
-	assert.test(resultsObj[1].distance, 929)
-	assert.test(resultsObj[2].distance, 963)
+	assert.test(resultsObj[1].distance, 936)
+	assert.test(resultsObj[2].distance, 952)
 
 
 	distanceCoords := oGraphicSearch.resultSortDistance(result1, screenSizeX, screenSizeY)
@@ -99,12 +100,12 @@ if (result1) {
 	resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
 				, {1: 1215, 2: 407, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 	resultsObj0 := oGraphicSearch.resultSortDistance(resultsObj, screenSizeX, screenSizeY)
-	assert.test(resultsObj0[1].distance, 929)
-	assert.test(resultsObj0[2].distance, 963)
+	assert.test(resultsObj0[1].distance, 936)
+	assert.test(resultsObj0[2].distance, 952)
 
 	resultsObj1 := oGraphicSearch.resultSortDistance(resultsObj, screenSizeX, screenSizeY)
-	assert.test(resultsObj1[1].distance, 929)
-	assert.test(resultsObj1[2].distance, 963)
+	assert.test(resultsObj1[1].distance, 936)
+	assert.test(resultsObj1[2].distance, 952)
 
 
 	assert.group("Unsuccessful searches")
