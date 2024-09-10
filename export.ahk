@@ -21,7 +21,7 @@ class graphicsearch {
 	static lastScanQuery := ""
 	static lastScanOptions := {}
 
-	;; Convience methods
+	;; Convience Methods
 	search(param_query, param_options := "") {
 		; create default if needed
 		if (!isObject(param_options)) {
@@ -117,7 +117,7 @@ class graphicsearch {
 		return this._mainSearch(this.lastScanQuery, this.lastScanOptions)
 	}
 
-	;; sorting methods
+	;; Sort Methods
 	; Sort the results from left to right and top to bottom, ignore slight height difference
 	resultSort(param_resultsObj, param_dy := 10) {
 		local
@@ -203,8 +203,12 @@ class graphicsearch {
 
 	;; Display Methods
 	showMatches(param_resultObj, param_options:="") {
-		setBatchLines, % (bch:=A_BatchLines) ? "-1" : "-1"			
 		if (!isObject(param_resultObj)) {
+			return false
+		}
+
+		setBatchLines, % (bch:=A_BatchLines) ? "-1" : "-1"
+		if (!isObject(param_options)) {
 			param_options := {}
 		}
 		if (param_options.showlabels == "") {
