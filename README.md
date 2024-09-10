@@ -2,12 +2,12 @@ Long-form README: https://chunjee.github.io/graphicsearch.ahk
 
 ## GraphicSearch
 
-A fast, super powerful, and flexible screen searching library for AHK
+A lightning-fast, highly versatile, and powerful screen searching library for AutoHotkey
 
 
 ## What is it?
 
-> Can be thought of as an alternative to native [AHK Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) command. The native command requires saved image files, nearly identical image matching, can be difficult to troubleshoot, and performs in a relatively slow manner. GraphicSearch approaches searching differently. Think of ASCII art; GraphicSearch abstracts the screen's image into representative 0's and _'s. Because this is an abstraction, not a bit-for-bit comparison, it allows for faster matching and easier adjustments of fault tolerance. It can also check for several different graphics without recapturing the screen's image every time. Perhaps most useful, it can return **all** matches unlike AHK ImageSearch which only returns the first match.
+> GraphicSearch offers a powerful alternative to the native AHK [Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) command. While the native command requires saved image files, nearly exact image matching, and can be slow and difficult to troubleshoot, GraphicSearch takes a different approach. It abstracts the screen into a simplified representation, similar to ASCII art, using characters like 0s and _s. This abstraction enables faster matching, easier adjustments to fault tolerance, and more flexibility. Unlike AHK ImageSearch, which returns only the first match, GraphicSearch can return all matches, making it more efficient for complex searches. Additionally, it avoids the need to recapture the screen image for each search, improving performance when checking multiple graphics.
 
 
 ## Installation
@@ -272,4 +272,29 @@ oGraphicSearch.resultSortDistance(resultsObj, 2000, 2000)
 [ {1: 2000, 2: 2000, 3: 22, 4: 10, distance: "12.08", id: "HumanReadableTag", x: 2000, y: 2000}
 , {1: 1215, 2: 400, 3: 22, 4: 10, distance: "1766.58", id: "HumanReadableTag", x: 1226, y: 412}]
 */
+```
+
+# Display Methods
+
+## .showMatches
+`.showMatches(resultsObject [, optionsObject])`
+
+Visually display the locations of search results on the screen. It takes in a `resultsObject`, and optionally an `optionsObject` to customize how the results are displayed.
+
+### Arguments
+#### resultsObject (Object)
+> The GraphicSearch results object
+
+#### [options := {showlabels: true, timeout: 4000}] (Object)
+> The options object results object
+
+### Returns
+No values are returned
+
+### Example
+```autohotkey
+resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
+              , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
+
+oGraphicSearch.showMatches(resultsObj, {showlabels: false, timeout: 60000}}]
 ```
