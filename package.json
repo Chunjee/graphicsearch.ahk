@@ -1,7 +1,7 @@
 {
 	"name": "graphicsearch.ahk",
-	"version": "0.6.0",
-	"description": "A fast, super powerful, and flexible screen searching library for AHK",
+	"version": "0.7.0",
+	"description": "A lightning-fast, highly versatile, and powerful screen searching library for AutoHotkey",
 	"main": "export.ahk",
 	"scripts": {
 		"test": "test\\test-all.ahk"

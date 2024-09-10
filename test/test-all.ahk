@@ -7,6 +7,7 @@
 #NoTrayIcon
 #NoEnv
 #SingleInstance, force
+; CoordMode, Mouse, Screen
 SetBatchLines, -1
 
 oGraphicSearch := new graphicsearch()
@@ -52,11 +53,11 @@ if (result1) {
 	assert.group(".search")
 	assert.label("resultObject")
 	assert.test(result1.count(), 5)
-	assert.test(result2.count(), 2)
+	assert.test(result2.count(), 1)
 
 	; test three searches combined
 	assert.label("multiple searches combined count")
-	assert.test(threeResults.count(), 8)
+	assert.test(threeResults.count(), 7)
 	assert.label("multiple searches combined order")
 	assert.test(threeResults[1].id, "pizza")
 	assert.test(threeResults[2].id, "pizza")
@@ -64,8 +65,9 @@ if (result1) {
 	assert.test(threeResults[4].id, "pizza")
 	assert.test(threeResults[5].id, "pizza")
 	assert.test(threeResults[6].id, "spagg")
-	assert.test(threeResults[7].id, "spagg")
-	assert.test(threeResults[8].id, "drink")
+	assert.test(threeResults[7].id, "drink")
+	oGraphicSearch.showMatches(threeResults, {timeout: 60000, showlabels: 1})
+
 
 	assert.group(".find")
 	assert.label("exact output match with other methods")
@@ -89,11 +91,16 @@ if (result1) {
 	assert.test(resultsObj[1].distance, 936)
 	assert.test(resultsObj[2].distance, 952)
 
+	; check that drink is closest to a spaggetti
+	assert.label("drink is closest to spagg")
+	resultsObj := oGraphicSearch.resultSortDistance(threeResults, threeResults[7].x, threeResults[7].y)
+	assert.test(resultsObj[2].id, "spagg")
+
 
 	distanceCoords := oGraphicSearch.resultSortDistance(result1, screenSizeX, screenSizeY)
 	assert.test(sortedCoords.count(), 5)
 	assert.test(sortedCoords[5].id, "pizza")
-
+	
 
 	; test resultSortDistance with static data
 	assert.label("with static data")
@@ -120,7 +127,6 @@ if (result1) {
 	assert.label("change noMatchVal")
 	oGraphicSearch.noMatchVal := "foobar"
 	assert.test(oGraphicSearch.searchAgain(), "foobar")
-
 
 	assert.fullReport()
 } else {
