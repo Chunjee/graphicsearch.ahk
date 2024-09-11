@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>graphicsearch.ahk</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="description" content="Modern array methods to AutoHotkey" />
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+		<!-- appearance -->
+		<link rel="stylesheet" href="assets/style.css" title="docsify-darklight-theme" type="text/css" />
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+		<!-- js -->
+		<!-- docsify-themeable -->
+		<script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
+	</head>
+
+	<body>
+		<div id="app"></div>
+		<script>
+			window.$docsify = {
+				name: "graphicsearch.ahk",
+				repo: "https://github.com/Chunjee/graphicsearch.ahk",
+				maxLevel: 2,
+				subMaxLevel: 2,
+				loadSidebar: true,
+				themeable: {
+					readyTransition: true, // default
+					responsiveTables: true, // default
+				},
+				loadNavbar: true,
+
+				// translation pages not detected will fallback to the root language page (en)
+				fallbackLanguages: ["de", "es", "fr", "hi", "it", "ja", "ko", "pt", "ru", "zh", "/"],
+
+				// searchbar settings
+				search: {
+					depth: 2, // Headline depth
+					paths: "auto",
+					noData: {
+						"/ja/": "結果がありません！",
+						"/de/": "Keine Ergebnisse!",
+						"/es/": "¡No hay resultados!",
+						"/fr/": "Aucun résultat!",
+						"/hi/": "कोई परिणाम नहीं!",
+						"/it/": "Nessun risultato!",
+						"/ko/": "결과가 없습니다!",
+						"/pt/": "Sem resultados!",
+						"/ru/": "Никаких результатов!",
+						"/zh/": "没有结果!",
+						"/": "No results!"
+					},
+					placeholder: {
+						"/ja/": "ここにタイプして検索してください",
+						"/de/": "Suche",
+						"/es/": "Escriba aquí para buscar",
+						"/fr/": "Recherche",
+						"/hi/": "खोज",
+						"/it/": "Ricerca",
+						"/ko/": "검색하려면 여기에 입력하세요.",
+						"/pt/": "Digite aqui para pesquisar",
+						"/ru/": "поиск",
+						"/zh/": "搜索",
+						"/": "Type to Search"
+					},
+				},
+				// end of searchbar
+
+				"flexible-alerts": {
+					style: "flat",
+				},
+
+				plugins: [
+					function (hook) {
+						var footer = [
+							'<footer><center></center></footer>',
+						].join('');
+
+						hook.afterEach(function (html) {
+							return html + footer;
+						});
+					},
+				],
+				darklightTheme: {
+					defaultTheme: "dark",
+					codeFontFamily: "Roboto Mono, Monaco, courier, monospace",
+					bodyFontSize: "17px",
+					dark: {
+						accent: "#8a9299",
+						toogleBackground: "#ffffff",
+						background: "#131416",
+						backgroundAccent: "#1A1B1D",
+						textColor: "#dddddd",
+						codeTextColor: "#ffffff",
+						codeBackgroundColor: "#1F2123",
+						borderColor: "#5a5d61",
+						blockQuoteColour: "#0b7bda",
+						highlightColor: "#0b87da",
+						sidebarSublink: "#cccccc",
+						codeTypeColor: "#ffffff",
+						coverBackground: "linear-gradient(to left bottom, hsl(0, 100%, 85%) 0%, hsl(350, 100%, 85%) 100%)",
+						toogleImage: "url(https://cdn.jsdelivr.net/npm/docsify-darklight-theme@latest/icons/sun.svg)",
+					},
+					light: {
+						accent: "#1F2123",
+						toogleBackground: "#091a28",
+						background: "#EAEAEB",
+						backgroundAccent: "#f0f0f0",
+						textColor: "#34495e",
+						codeTextColor: "#525252",
+						codeBackgroundColor: "#FAFAFA",
+						borderColor: "rgba(0, 0, 0, 0.07)",
+						blockQuoteColor: "#858585",
+						highlightColor: "#0b87da",
+						sidebarSublink: "#34495e",
+						codeTypeColor: "#091a28",
+						coverBackground: "linear-gradient(to left bottom, hsl(118, 100%, 85%) 0%,hsl(181, 100%, 85%) 100%)",
+						toogleImage: "url(https://cdn.jsdelivr.net/npm/docsify-darklight-theme@latest/icons/moon.svg)",
+					},
+				},
+			};
+		</script>
+		<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+		<script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+		<script src="//unpkg.com/docsify-copy-code"></script>
+		<script src="prism-autohotkey.min.js"></script>
+		<script src="//unpkg.com/docsify-plugin-flexible-alerts"></script>
+		<script src="//cdn.jsdelivr.net/npm/docsify-darklight-theme@latest/dist/index.min.js"></script>
+	</body>
+	<footer>
+		<script>
+			// custom js goes here
+			// nothing
+		</script>
+	</footer>
+</html>
