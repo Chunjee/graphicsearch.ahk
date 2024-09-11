@@ -7,39 +7,32 @@
 
 finds GraphicSearch queries on the screen
 
-### Arguments
-#### graphicsearch_query (string)
-> The GraphicSearch query(s) to search. Must be concatinated with `|` if searching multiple graphics
-
-#### [options:={}] (object)
-> The options object
-
-#### [options.x1:=0] (number), [options.y1:=0] (number)
-> the search scope's upper left corner coordinates
-
-#### [options.x2:=A_ScreenWidth] (number), [options.y2:=A_ScreenHeight] (number)
-> the search scope's lower right corner coordinates
-
-#### [options.err1:=1] (number), [options.err0:=0] (number)
-> Fault tolerance of graphic and background (0.1=10%)
-
-#### [options.screenshot:=1] (boolean)
-> Wether or not to capture a new screenshot or not. If the value is 0, the last captured screenhhot will be used
-
-#### [options.findall:=1] (boolean)
-> Wether or not to find all instances or just one.
-
-#### [options.joinqueries:=1] (boolean)
-> Join all GraphicsSearch queries for combination lookup.
-
-#### [options.offsetx:=1] (number), [options.offsety:=0] (number)
-> Set the Max offset for combination lookup
+##### Arguments
+| Argument               | Type     | Description                                                                                     |
+|------------------------|----------|-------------------------------------------------------------------------------------------------|
+| `graphicsearch_query`   | string   | The GraphicSearch query(s) to search. Must be concatenated with `|` if searching multiple graphics. |
+| `options`              | object   | The options object. |
+| `options.x1`           | number   | The search scope's upper left corner x-coordinate. Default: `0`. |
+| `options.y1`           | number   | The search scope's upper left corner y-coordinate. Default: `0`. |
+| `options.x2`           | number   | The search scope's lower right corner x-coordinate. Default: `A_ScreenWidth`. |
+| `options.y2`           | number   | The search scope's lower right corner y-coordinate. Default: `A_ScreenHeight`. |
+| `options.err1`         | number   | Fault tolerance of graphic (0.1 = 10%). Default: `1`. |
+| `options.err0`         | number   | Fault tolerance of background (0.1 = 10%). Default: `0`. |
+| `options.screenshot`    | boolean  | Whether or not to capture a new screenshot. If `0`, the last captured screenshot will be used. Default: `1`. |
+| `options.findall`       | boolean  | Whether or not to find all instances or just one. Default: `1`. |
+| `options.joinqueries`   | boolean  | Join all GraphicSearch queries for combination lookup. Default: `1`. |
+| `options.offsetx`       | number   | Maximum x-offset for combination lookup. Default: `1`. |
+| `options.offsety`       | number   | Maximum y-offset for combination lookup. Default: `0`. |
 
 
-### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
 
-### Example
+##### Return
+| Type   | Description                                                                 |
+|--------|-----------------------------------------------------------------------------|
+| array  | Returns an array of objects containing all lookup results, or `false` if no matches are found. |
+
+
+##### Example
 ```autohotkey
 optionsObj := {   x1: 0
                 , y1: 0
@@ -66,7 +59,7 @@ oGraphicSearch.search("|<tag>*165$22.03z", {x2: 100, y2: 100})
 
 performs the last .search with the last arguments supplied
 
-### Example
+##### Example
 ```autohotkey
 oGraphicSearch.search("|<tag>*165$22.03z", {x2: 1028, y2: 720})
 
@@ -83,38 +76,28 @@ oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
 
 finds GraphicSearch queries on the screen
 
-### Arguments
-#### graphicsearch_query (string)
-> GraphicsSearch queries as strings. Can be multiple queries separated by `|`
-
-#### [x1:=0, y1:=0] (number)
-> the search scope's upper left corner coordinates
-
-#### [x2:=0, y2:=0] (number)
-> the search scope's lower right corner coordinates
-
-#### [err1:=0, err0:=0] (number)
-> A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
-
-#### [screenshot:=1] (boolean)
-> if the value is 1, a new capture of the screen will be used; else it will use the last capture
-
-#### [findall:=1] (boolean)
-> if the value is 1, graphicsearch will find all matches. for 0, only return one match
-
-#### [joinqueries:=1] (boolean)
-> if the value is 1, Join all GraphicsSearch queries for combination lookup
-
-#### [offsetx:=0, offsety:=0] (number)
-> Set the Max offset for combination lookup
+##### Arguments
+| Argument             | Type     | Description                                                                                     |
+|----------------------|----------|-------------------------------------------------------------------------------------------------|
+| `graphicsearch_query` | string   | GraphicsSearch queries as strings. Can be multiple queries separated by `|`. |
+| `x1`, `y1`           | number   | The search scope's upper left corner coordinates. Default: `0, 0`. |
+| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `0, 0`. |
+| `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). Default: `0, 0`. |
+| `screenshot`         | boolean  | If the value is `1`, a new capture of the screen will be used; otherwise, the last capture will be used. Default: `1`. |
+| `findall`            | boolean  | If the value is `1`, GraphicSearch will find all matches. For `0`, only one match is returned. Default: `1`. |
+| `joinqueries`        | boolean  | If the value is `1`, join all GraphicsSearch queries for combination lookup. Default: `1`. |
+| `offsetx`, `offsety` | number   | Set the maximum offset for combination lookup. Default: `0, 0`. |
 
 
-### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
+#### Return
+| Type   | Description                                                                                                                                            |
+|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| array  | Returns an array of objects containing all lookup results, or `false` if no matches are found. Each result is an associative array: `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. Coordinates are relative to the screen, colors are in RGB format, and combination lookup requires uniform color mode. |
 
 
-### Example
+
+#### Example
 ```autohotkey
 oGraphicSearch.scan("|<tag>*165$22.03z", 1, 1, 1028, 720, .1, .1, 1, 1, 1, 0, 0)
 ; => [{1: 1215, 2: 400, 3:22, 4: 10, id: "tag", x:1226, y:412}]
@@ -129,7 +112,7 @@ oGraphicSearch.scan("|<tag>*165$22.03z", 1, 1, 1028, 720, .1, .1, 1, 1, 1, 0, 0)
 
 performs the last .search with the last arguments supplied
 
-### Example
+#### Example
 ```autohotkey
 oGraphicSearch.scan("|<tag>*165$22.03z", {x2: 1028, y2: 720})
 
@@ -146,54 +129,30 @@ oGraphicSearch.scanAgain("|<HumanReadableTag>*99$26.z7z")
 
 Identicle to `.scan` but uses legacy argument order as a convience for old scripts
 
-### Arguments
-#### x1, y1 (number)
-> the search scope's upper left corner coordinates
-
-#### x2, y2 (number)
-> the search scope's lower right corner coordinates
-
-#### err1, err0 (number)
-> A number between 0 and 1 (0.1=10%) for fault tolerance of foreground (err1) and background (err0)
-
-#### graphicsearch_query (string)
-> GraphicsSearch queries as strings. Can be multiple queries separated by `|`
-
-#### [screenshot:=1] (boolean)
-> if the value is 1, a new capture of the screen will be used; else it will use the last capture
-
-#### [findall:=1] (boolean)
-> if the value is 1, graphicsearch will find all matches. for 0, only return one match
-
-#### [joinqueries:=1] (boolean)
-> if the value is 1, Join all GraphicsSearch queries for combination lookup
-
-#### [offsetx:=20, offsety:=10] (number)
-> Set the Max offset for combination lookup
-
-#### [direction:=1] (number)
-> Set the direction search is conducted in
-
-> 1( Left to Right / Top to Bottom )  
-2( Right to Left / Top to Bottom )  
-3( Left to Right / Bottom to Top )  
-4( Right to Left / Bottom to Top )  
-5( Top to Bottom / Left to Right )  
-6( Bottom to Top / Left to Right )  
-7( Top to Bottom / Right to Left )  
-8( Bottom to Top / Right to Left )  
-9( Center to Four Sides )
-
-#### [zoomW:=1, zoomH:=1] (number)
-> Zoom percentage of image width and height (0.1=10%)
+#### Arguments
+| Argument             | Type     | Description                                                                                     |
+|----------------------|----------|-------------------------------------------------------------------------------------------------|
+| `x1`, `y1`           | number   | The search scope's upper left corner coordinates. |
+| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. |
+| `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). |
+| `graphicsearch_query` | string   | GraphicsSearch queries as strings. Can be multiple queries separated by `|`. |
+| `screenshot`         | boolean  | If the value is `1`, a new capture of the screen will be used; otherwise, the last capture will be used. Default: `1`. |
+| `findall`            | boolean  | If the value is `1`, GraphicSearch will find all matches. For `0`, only one match is returned. Default: `1`. |
+| `joinqueries`        | boolean  | If the value is `1`, join all GraphicsSearch queries for combination lookup. Default: `1`. |
+| `offsetx`, `offsety` | number   | Set the maximum offset for combination lookup. Default: `20, 10`. |
+| `direction`          | number   | Set the direction search is conducted in. Values: <br> 1 (Left to Right / Top to Bottom) <br> 2 (Right to Left / Top to Bottom) <br> 3 (Left to Right / Bottom to Top) <br> 4 (Right to Left / Bottom to Top) <br> 5 (Top to Bottom / Left to Right) <br> 6 (Bottom to Top / Left to Right) <br> 7 (Top to Bottom / Right to Left) <br> 8 (Bottom to Top / Right to Left) <br> 9 (Center to Four Sides). |
+| `zoomW`, `zoomH`     | number   | Zoom percentage of image width and height (0.1 = 10%). Default: `1, 1`. |
 
 
-### Return
-(Array) Return an array of objects containing all lookup results, else `false` if no matches were found.
-Any result is an associative array {1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}. All coordinates are relative to Screen, colors are in RGB format, and combination lookup must use uniform color mode
+
+#### Return
+| Type   | Description                                                                                                                                            |
+|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| array  | Returns an array of objects containing all lookup results, or `false` if no matches are found. Each result is an associative array: `{1:X, 2:Y, 3:W, 4:H, x:X+W//2, y:Y+H//2, id:tag}`. All coordinates are relative to the screen, colors are in RGB format, and combination lookup must use uniform color mode. |
 
 
-### Example
+
+#### Example
 ```autohotkey
 oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20, 10)
 ; => [{1: 1215, 2: 400, 3: 22, 4: 10, id: "tag", x: 1226, y: 412}]
@@ -209,17 +168,19 @@ oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20
 
 Sort the results object from left to right and top to bottom, ignoring slight height difference
 
-### Arguments
-#### [resultsobject] (Object)
-> The GraphicSearch results object to sort
+#### Arguments
+| Argument             | Type    | Description                                                   |
+|----------------------|---------|---------------------------------------------------------------|
+| `resultsobject`       | object  | The GraphicSearch results object to sort.                     |
+| `ydistance`          | number  | The amount of height difference to ignore, in pixels. Default: `10`. |
 
-#### [ydistance:=10] (number)
-> The ammount of height difference to ignore in pixels
+#### Return
+| Type   | Description                                               |
+|--------|-----------------------------------------------------------|
+| array  | Returns an array of objects containing all lookup results. |
 
-### Return
-(Array) Return an array of objects containing all lookup results
 
-### Example
+#### Example
 ```autohotkey
 resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
               , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
@@ -235,20 +196,21 @@ oGraphicSearch.resultSort(resultsObj)
 
 Sort the results objects by distance to a given x,y coordinate. A property "distance" is added to all elements in the returned result object
 
-### Arguments
-#### resultsObject (Object)
-> The GraphicSearch results object
+#### Arguments
 
-#### [x:=1] (number)
-> The x screen coordinate to measure from
+| Argument       | Type    | Description                                      |
+|----------------|---------|--------------------------------------------------|
+| `resultsObject` | object  | The GraphicSearch results object.                |
+| `x`            | number  | The x screen coordinate to measure from. Default: `1`. |
+| `y`            | number  | The y screen coordinate to measure from. Default: `1`. |
 
-#### [y:=1] (number)
-> The y screen coordinate to measure from
+#### Return
+| Type   | Description                                               |
+|--------|-----------------------------------------------------------|
+| array  | Returns an array of objects containing all lookup results. |
 
-### Return
-(Array) Return an array of objects containing all lookup results
 
-### Example
+#### Example
 ```autohotkey
 resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
               , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
@@ -267,17 +229,19 @@ oGraphicSearch.resultSortDistance(resultsObj, 2000, 2000)
 
 Visually display the locations of search results on the screen. It takes in a `resultsObject`, and optionally an `optionsObject` to customize how the results are displayed.
 
-### Arguments
-#### resultsObject (Object)
-> The GraphicSearch results object
+#### Arguments
+| Argument       | Type    | Description                                        |
+|----------------|---------|----------------------------------------------------|
+| `resultsObject` | object  | The GraphicSearch results object.                  |
+| `options`      | object  | The options object. Default: `{showlabels: true, timeout: 4000}`. |
 
-#### [options := {showlabels: true, timeout: 4000}] (Object)
-> The options object results object
+#### Returns
+| Type   | Description                  |
+|--------|------------------------------|
+| void   | No values are returned.       |
 
-### Returns
-No values are returned
 
-### Example
+#### Example
 ```autohotkey
 resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
               , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
