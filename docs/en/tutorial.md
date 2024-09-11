@@ -1,13 +1,13 @@
 Assume the following is a snapshot of game and we want to use GraphicSearch to translate to parse where things are on screen.
 
-![Main stage tutorial image](https://chunjee.github.io/graphicsearch.ahk/docs/assets/tutorial-1.png)
+![Main stage tutorial image](https://chunjee.github.io/graphicsearch.ahk/assetsdocs/assets/tutorial-1.png)
 
 
 <br>
 
 We'll use the followng capture regions. It's very important to capture the smallest region possible, while also being unique to the graphic so it doesn't match other similar things. For distance calculations it might be useful to search for the center of each graphic. Since GraphicSearch really cares about differences in color, it is highly benifitial to grab an area that is not all the same color.
 
-![GraphicSearch capture](https://chunjee.github.io/graphicsearch.ahk/docs/assets/tutorial-2.png)
+![GraphicSearch capture](https://chunjee.github.io/graphicsearch.ahk/assetsdocs/assets/tutorial-2.png)
 
 These GraphicSearch queries should match many, but probably not all 16:9 ratio screens
 

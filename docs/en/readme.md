@@ -1,11 +1,19 @@
 # graphicsearch.ahk
 
-A lightning-fast, highly versatile, and powerful screen searching library for AutoHotkey
+A fast, super powerful, and flexible screen searching library for AHK
 
 
 ## Alternative to Native AHK Imagesearch
 
-> GraphicSearch offers a powerful alternative to the native AHK Imagesearch command. While the native command requires saved image files, nearly exact image matching, and can be slow and difficult to troubleshoot, GraphicSearch takes a different approach. It abstracts the screen into a simplified representation, similar to ASCII art, using characters like 0s and _s. This abstraction enables faster matching, easier adjustments to fault tolerance, and more flexibility. Unlike AHK ImageSearch, which returns only the first match, GraphicSearch can return all matches, making it more efficient for complex searches. Additionally, it avoids the need to recapture the screen image for each search, improving performance when checking multiple graphics.
+The native [AHK Imagesearch](https://www.autohotkey.com/docs/v1/lib/ImageSearch.htm) command has several limitations:
+- Requires image files
+- Needs nearly identical image matching
+- Performs slowly
+- Difficult to troubleshoot
+- Doesn't fit in flow statements
+- Uses OutputVars
+
+graphicsearch.ahk provides a different approach to image searching. Instead of performing a bit-for-bit comparison, it abstracts the screen's image into representative 0's and _'s, similar to ASCII art. 
 
 ### Advantages:
 - **Faster Matching**: Due to abstraction rather than direct comparison.
@@ -35,10 +43,10 @@ You may also review or copy the library from [./export.ahk on GitHub](https://gi
 ## Search Methods
 * [.search](/en/docs?id=concat)
 * [.searchAgain](/en/docs?id=searchagain)
+* [.scan](/en/docs?id=scan)
+* [.scanAgain](/en/docs?id=scanagain)
+* [.find](/en/docs?id=find)
 
 ## Sort Methods
 * [.resultSort](/en/docs?id=resultSort)
 * [.resultSortDistance](/en/docs?id=resultSortDistance)
-
-## Display Methods
-* [.showMatches](/en/docs?id=resultSort)
