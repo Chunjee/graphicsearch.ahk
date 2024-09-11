@@ -22,39 +22,39 @@
   <div id="app"></div>
   <script>
 	window.$docsify = {
-	  name: 'graphicsearch.ahk',
-	  repo: "https://github.com/Chunjee/graphicsearch.ahk",
-	  homepage: "/en/readme.md",
-	  maxLevel: 2,
-	  subMaxLevel: 2,
-	  loadSidebar: true,
-	  themeable: {
-		readyTransition : true, // default
-		responsiveTables: true  // default
-	  },
-
-	  // searchbar settings
-	  search: {
-		depth: 2, // Headline depth
-		noData: {
-			'/de-de/': 'Keine Ergebnisse!',
-			'/ja-ja/': '結果がありません！',
-			'/zh-cn/': '没有结果!'
-			'/': 'No results!',
+		name: 'graphicsearch.ahk',
+		repo: "https://github.com/Chunjee/graphicsearch.ahk",
+		homepage: "/en/readme.md",
+		maxLevel: 2,
+		subMaxLevel: 2,
+		loadSidebar: true,
+		themeable: {
+			readyTransition : true, // default
+			responsiveTables: true  // default
 		},
-		paths: ['/'],
-		placeholder: {
-			'/': 'Type to Search',
-			'/de-de/': 'Suche',
-			'/ja-ja/': 'ここにタイプして検索してください',
-			'/zh-cn/': '搜索'
-		}
-	  },
-	  // end of searchbar
-	  
-	  'flexible-alerts': {
-		style: 'flat'
-	  },
+
+		// searchbar settings
+		search: {
+			depth: 2, // Headline depth
+			noData: {
+				'/de-de/': 'Keine Ergebnisse!',
+				'/ja-ja/': '結果がありません！',
+				'/zh-cn/': '没有结果!',
+				'/': 'No results!'
+			},
+			paths: ['/'],
+			placeholder: {
+				'/': 'Type to Search',
+				'/de-de/': 'Suche',
+				'/ja-ja/': 'ここにタイプして検索してください',
+				'/zh-cn/': '搜索'
+			}
+		},
+		// end of searchbar
+		
+		'flexible-alerts': {
+			style: 'flat'
+		},
 
 		plugins: [
 			function (hook) {
