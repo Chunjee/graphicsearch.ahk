@@ -12,16 +12,13 @@ finds GraphicSearch queries on the screen
 |------------------------|----------|-------------------------------------------------------------------------------------------------|
 | `graphicsearch_query`   | string   | The GraphicSearch query(s) to search. Must be concatenated with `|` if searching multiple graphics. |
 | `options`              | object   | The options object. |
-| `options.x1`           | number   | The search scope's upper left corner x-coordinate. Default: `0`. |
-| `options.y1`           | number   | The search scope's upper left corner y-coordinate. Default: `0`. |
-| `options.x2`           | number   | The search scope's lower right corner x-coordinate. Default: `A_ScreenWidth`. |
-| `options.y2`           | number   | The search scope's lower right corner y-coordinate. Default: `A_ScreenHeight`. |
-| `options.err1`         | number   | Fault tolerance of graphic (0.1 = 10%). Default: `1`. |
-| `options.err0`         | number   | Fault tolerance of background (0.1 = 10%). Default: `0`. |
+| `x1`, `y1`           | number   | The search scope's upper left corner coordinates. Default: `0, 0`. |
+| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `0, 0`. |
+| `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). Default: `0, 0`. |
 | `options.screenshot`    | boolean  | Whether or not to capture a new screenshot. If `0`, the last captured screenshot will be used. Default: `1`. |
 | `options.findall`       | boolean  | Whether or not to find all instances or just one. Default: `1`. |
 | `options.joinqueries`   | boolean  | Join all GraphicSearch queries for combination lookup. Default: `1`. |
-| `options.offsetx`       | number   | Maximum x-offset for combination lookup. Default: `1`. |
+| `options.offsetx`       | number   | Maximum x-offset for combination lookup. Default: `0`. |
 | `options.offsety`       | number   | Maximum y-offset for combination lookup. Default: `0`. |
 
 
@@ -201,8 +198,8 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 | Argument       | Type    | Description                                      |
 |----------------|---------|--------------------------------------------------|
 | `resultsObject` | object  | The GraphicSearch results object.                |
-| `x`            | number  | The x screen coordinate to measure from. Default: `1`. |
-| `y`            | number  | The y screen coordinate to measure from. Default: `1`. |
+| `x`            | number  | The x screen coordinate to measure from. Default: `A_ScreenWidth / 2`. |
+| `y`            | number  | The y screen coordinate to measure from. Default: `A_ScreenHeight / 2`. |
 
 #### Return
 | Type   | Description                                               |
