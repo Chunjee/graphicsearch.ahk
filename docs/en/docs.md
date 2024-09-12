@@ -8,24 +8,24 @@
 finds GraphicSearch queries on the screen
 
 ##### Arguments
-| Argument               | Type     | Description                                                                                     |
-|------------------------|----------|-------------------------------------------------------------------------------------------------|
-| `graphicsearch_query`   | string   | The GraphicSearch query(s) to search. Must be concatenated with `|` if searching multiple graphics. |
+| Argument               | Type     | Description |
+|------------------------|----------|-------------|
+| `graphicsearch_query`  | string   | The GraphicSearch query(s) to search. Must be concatenated with `\|` if searching multiple graphics. |
 | `options`              | object   | The options object. |
-| `x1`, `y1`           | number   | The search scope's upper left corner coordinates. Default: `0, 0`. |
-| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `A_ScreenWidth, A_ScreenHeight`. |
-| `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). Default: `0, 0`. |
-| `options.screenshot`    | boolean  | Whether or not to capture a new screenshot. If `0`, the last captured screenshot will be used. Default: `1`. |
-| `options.findall`       | boolean  | Whether or not to find all instances or just one. Default: `1`. |
-| `options.joinqueries`   | boolean  | Join all GraphicSearch queries for combination lookup. Default: `1`. |
-| `options.offsetx`       | number   | Maximum x-offset for combination lookup. Default: `0`. |
-| `options.offsety`       | number   | Maximum y-offset for combination lookup. Default: `0`. |
+| `options.x1`, `options.y1`     | number   | The search scope's upper left corner coordinates. Default: `0, 0`. |
+| `options.x2`, `options.y2`     | number   | The search scope's lower right corner coordinates. Default: `A_ScreenWidth, A_ScreenHeight`. |
+| `options.err1`, `options.err0` | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). Default: `0, 0`. |
+| `options.screenshot`    | number  | Whether or not to capture a new screenshot. If `0`, the last captured screenshot will be used. Default: `1`. |
+| `options.findall`       | number  | Whether or not to find all instances or just one. Default: `1`. |
+| `options.joinqueries`   | number  | Join all GraphicSearch queries for combination lookup. Default: `1`. |
+| `options.offsetx`       | number  | Maximum x-offset for combination lookup. Default: `0`. |
+| `options.offsety`       | number  | Maximum y-offset for combination lookup. Default: `0`. |
 
 
 
 ##### Return
-| Type   | Description                                                                 |
-|--------|-----------------------------------------------------------------------------|
+| Type   | Description |
+|--------|-------------|
 | array  | Returns an array of objects containing all lookup results, or `false` if no matches are found. |
 
 
@@ -74,9 +74,9 @@ oGraphicSearch.searchAgain("|<HumanReadableTag>*99$26.z7z")
 finds GraphicSearch queries on the screen
 
 ##### Arguments
-| Argument             | Type     | Description                                                                                     |
-|----------------------|----------|-------------------------------------------------------------------------------------------------|
-| `graphicsearch_query` | string   | GraphicsSearch queries as strings. Can be multiple queries separated by `|`. |
+| Argument             | Type     | Description |
+|----------------------|----------|-------------|
+| `graphicsearch_query`| string   | GraphicsSearch queries as strings. Can be multiple queries separated by `\|`. |
 | `x1`, `y1`           | number   | The search scope's upper left corner coordinates. Default: `0, 0`. |
 | `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `A_ScreenWidth, A_ScreenHeight`. |
 | `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). Default: `0, 0`. |
@@ -127,12 +127,12 @@ oGraphicSearch.scanAgain("|<HumanReadableTag>*99$26.z7z")
 Identicle to `.scan` but uses legacy argument order as a convience for old scripts
 
 #### Arguments
-| Argument             | Type     | Description                                                                                     |
-|----------------------|----------|-------------------------------------------------------------------------------------------------|
+| Argument             | Type     | Description |
+|----------------------|----------|-------------|
 | `x1`, `y1`           | number   | The search scope's upper left corner coordinates. |
 | `x2`, `y2`           | number   | The search scope's lower right corner coordinates. |
 | `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). |
-| `graphicsearch_query` | string   | GraphicsSearch queries as strings. Can be multiple queries separated by `|`. |
+| `graphicsearch_query`| string   | GraphicsSearch queries as strings. Can be multiple queries separated by `\|`. |
 | `screenshot`         | boolean  | If the value is `1`, a new capture of the screen will be used; otherwise, the last capture will be used. Default: `1`. |
 | `findall`            | boolean  | If the value is `1`, GraphicSearch will find all matches. For `0`, only one match is returned. Default: `1`. |
 | `joinqueries`        | boolean  | If the value is `1`, join all GraphicsSearch queries for combination lookup. Default: `1`. |
@@ -166,15 +166,15 @@ oGraphicSearch.find(x1, y1, x2, y2, err1, err0, "|<tag>*165$22.03z", 1, 1, 0, 20
 Sort the results object from left to right and top to bottom, ignoring slight height difference
 
 #### Arguments
-| Argument             | Type    | Description                                                   |
-|----------------------|---------|---------------------------------------------------------------|
-| `resultsobject`       | object  | The GraphicSearch results object to sort.                     |
+| Argument             | Type    | Description |
+|----------------------|---------|-------------|
+| `resultsobject`      | object  | The GraphicSearch results object to sort. |
 | `ydistance`          | number  | The amount of height difference to ignore, in pixels. Default: `10`. |
 
 #### Return
 | Type   | Description                                               |
 |--------|-----------------------------------------------------------|
-| array  | Returns an array of objects containing all lookup results. |
+| array  | Returns an array of objects containing all lookup results.|
 
 
 #### Example
@@ -195,15 +195,15 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 
 #### Arguments
 
-| Argument       | Type    | Description                                      |
-|----------------|---------|--------------------------------------------------|
-| `resultsObject` | object  | The GraphicSearch results object.                |
+| Argument       | Type    | Description |
+|----------------|---------|-------------|
+| `resultsObject`| object  | The GraphicSearch results object. |
 | `x`            | number  | The x screen coordinate to measure from. Default: `A_ScreenWidth / 2`. |
 | `y`            | number  | The y screen coordinate to measure from. Default: `A_ScreenHeight / 2`. |
 
 #### Return
-| Type   | Description                                               |
-|--------|-----------------------------------------------------------|
+| Type   | Description |
+|--------|-------------|
 | array  | Returns an array of objects containing all lookup results. |
 
 
@@ -227,15 +227,18 @@ oGraphicSearch.resultSortDistance(resultsObj, 2000, 2000)
 Visually display the locations of search results on the screen. It takes in a `resultsObject`, and optionally an `optionsObject` to customize how the results are displayed.
 
 #### Arguments
-| Argument       | Type    | Description                                        |
-|----------------|---------|----------------------------------------------------|
-| `resultsObject` | object  | The GraphicSearch results object.                  |
+| Argument       | Type    | Description |
+|----------------|---------|-------------|
+| `resultsObject`| object  | The GraphicSearch results object. |
 | `options`      | object  | The options object. Default: `{showlabels: true, timeout: 4000}`. |
+| `options.showlabels` | number  | Whether or not to display labels. Default: `1` |
+| `options.timeout`    | number  | The ammount of time in milliseconds to hide the search results on screen. Default: `4000` |
+
 
 #### Returns
-| Type   | Description                  |
-|--------|------------------------------|
-| void   | No values are returned.       |
+| Type   | Description |
+|--------|-------------|
+| none   | No value is returned. |
 
 
 #### Example
