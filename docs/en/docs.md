@@ -13,7 +13,7 @@ finds GraphicSearch queries on the screen
 | `graphicsearch_query`   | string   | The GraphicSearch query(s) to search. Must be concatenated with `|` if searching multiple graphics. |
 | `options`              | object   | The options object. |
 | `x1`, `y1`           | number   | The search scope's upper left corner coordinates. Default: `0, 0`. |
-| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `0, 0`. |
+| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `A_ScreenWidth, A_ScreenHeight`. |
 | `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). Default: `0, 0`. |
 | `options.screenshot`    | boolean  | Whether or not to capture a new screenshot. If `0`, the last captured screenshot will be used. Default: `1`. |
 | `options.findall`       | boolean  | Whether or not to find all instances or just one. Default: `1`. |
@@ -78,7 +78,7 @@ finds GraphicSearch queries on the screen
 |----------------------|----------|-------------------------------------------------------------------------------------------------|
 | `graphicsearch_query` | string   | GraphicsSearch queries as strings. Can be multiple queries separated by `|`. |
 | `x1`, `y1`           | number   | The search scope's upper left corner coordinates. Default: `0, 0`. |
-| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `0, 0`. |
+| `x2`, `y2`           | number   | The search scope's lower right corner coordinates. Default: `A_ScreenWidth, A_ScreenHeight`. |
 | `err1`, `err0`       | number   | A number between 0 and 1 (0.1 = 10%) for fault tolerance of foreground (`err1`) and background (`err0`). Default: `0, 0`. |
 | `screenshot`         | boolean  | If the value is `1`, a new capture of the screen will be used; otherwise, the last capture will be used. Default: `1`. |
 | `findall`            | boolean  | If the value is `1`, GraphicSearch will find all matches. For `0`, only one match is returned. Default: `1`. |
