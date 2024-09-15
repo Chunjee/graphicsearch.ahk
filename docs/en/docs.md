@@ -18,8 +18,7 @@ finds GraphicSearch queries on the screen
 | `options.screenshot`    | number  | Whether or not to capture a new screenshot. If `0`, the last captured screenshot will be used. Default: `1`. |
 | `options.findall`       | number  | Whether or not to find all instances or just one. Default: `1`. |
 | `options.joinqueries`   | number  | Join all GraphicSearch queries for combination lookup. Default: `1`. |
-| `options.offsetx`       | number  | Maximum x-offset for combination lookup. Default: `0`. |
-| `options.offsety`       | number  | Maximum y-offset for combination lookup. Default: `0`. |
+| `options.offsetx`, `options.offsety` | number  | The maximum offset for combination lookup. Default: `0, 0`. |
 
 
 
@@ -83,7 +82,7 @@ finds GraphicSearch queries on the screen
 | `screenshot`         | boolean  | If the value is `1`, a new capture of the screen will be used; otherwise, the last capture will be used. Default: `1`. |
 | `findall`            | boolean  | If the value is `1`, GraphicSearch will find all matches. For `0`, only one match is returned. Default: `1`. |
 | `joinqueries`        | boolean  | If the value is `1`, join all GraphicsSearch queries for combination lookup. Default: `1`. |
-| `offsetx`, `offsety` | number   | Set the maximum offset for combination lookup. Default: `0, 0`. |
+| `offsetx`, `offsety` | number   | The maximum offset for combination lookup. Default: `0, 0`. |
 
 
 
@@ -247,4 +246,43 @@ resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000
               , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 
 oGraphicSearch.showMatches(resultsObj, {showlabels: false, timeout: 60000}}]
+```
+
+# Misc
+
+## .ocr
+> .ocr(resultObj, offsetX := 20, offsetY := 20, overlapW := 0)
+
+#### Arguments
+| Parameter | Type   | Default Value | Description |
+|-----------|--------|---------------|-------------|
+| resultObj | Object | N/A           | The GraphicSearch result object containing the search results to process.    |
+| offsetX   | number | 20            | The horizontal offset in pixels between adjacent OCR results.                |
+| offsetY   | number | 20            | The vertical offset in pixels between adjacent OCR results.                  |
+| overlapW  | number | 0             | The overlap width in pixels. Sets the allowed horizontal overlap between OCR blocks. |
+
+#### Returns
+| Type   | Description |
+|--------|-------------|
+| Object | Returns an object containing the combined OCR text and bounding box dimensions of the text. The object includes: |
+|        | `text`: The concatenated OCR text.                                        |
+|        | `x`: The x-coordinate of the bounding box's upper-left corner.            |
+|        | `y`: The y-coordinate of the bounding box's upper-left corner.            |
+|        | `w`: The width of the bounding box.                                       |
+|        | `h`: The height of the bounding box.                                      |
+
+
+#### Example
+```autohotkey
+resultObj := [{1:300, 2:200, 3:50, 4:30, id:"Hello"}
+	, {1:360, 2:200, 3:60, 4:30, id:"World"}
+	, {1:900, 2:250, 3:80, 4:40, id:"OCR"}]
+
+; Extract OCR text with custom offsets
+ocrResults := oGraphicSearch.ocr(resultObj, 30, 20, 10)
+
+; Output the OCR text and bounding box info
+msgBox % "OCR Text: " ocrResults.text "`n" 
+	. "Bounding Box - X: " ocrResults.x " Y: " ocrResults.y 
+	. " Width: " ocrResults.w " Height: " ocrResults.h
 ```
