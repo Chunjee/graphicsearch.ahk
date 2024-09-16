@@ -25,7 +25,7 @@ class graphicsearch {
 	search(param_query, param_options := "") {
 		; create default if needed
 		if (!isObject(param_options)) {
-			param_options := this.defaultOptionsObj.Clone()
+			param_options := this.defaultOptionsObj.clone()
 		}
 		; save parameters for use in future
 		this.lastSearchQuery := param_query
@@ -182,11 +182,8 @@ class graphicsearch {
 		sortStr := ""
 
 		for key, value in resultObj {
-			x := value.1 + value.3
-			y := value.2 + value.4
-			distance := round(sqrt((x - param_x)**2 + (y - param_y)**2), 0)
-			resultObj[key].distance := distance
-			sortStr .= distance "###" key "`n"
+			resultObj[key].distance := round(sqrt((value.x - param_x)**2 + (value.y - param_y)**2), 0)
+			sortStr .= value.distance "###" key "`n"
 		}
 
 		; Sort the string by distance in ascending order
@@ -202,41 +199,47 @@ class graphicsearch {
 	}
 
 	;; Display Methods
-	showMatches(param_resultObj, param_options:="") {
-		if (!isObject(param_resultObj)) {
-			return false
+	showMatches(param_resultObj, param_options := "") {
+		setBatchLines, % (bch := A_BatchLines) ? "-1" : "-1"
+		; apply defaults
+		param_options := this._merge({showBox:true, showLabel:true, timeout:4000, color:"0b87da"}, param_options)
+		; convert if width/height object
+		param_resultObj := this._ocrObjToStandard(param_resultObj)
+		; Check if param_resultObj is a single object, cast it to an array if necessary
+		if !isObject(param_resultObj[1]) {
+			; Cast single result to an array
+			param_resultObj := [param_resultObj]
 		}
 
-		setBatchLines, % (bch:=A_BatchLines) ? "-1" : "-1"
-		if (!isObject(param_options)) {
-			param_options := {}
-		}
-		if (param_options.showlabels == "") {
-			param_options.showlabels := true
-		}
-		if (param_options.timeout == "") {
-			param_options.timeout := 4000
-		}
-
-		try for key, value in param_resultObj {
-			this._drawBoxOnScreen(key, {x: value.1, y: value.2, width: value.3, height: value.4, color: "0b87da", thickness: 6, timeout: param_options.timeout})
-			if (value.id != "" && param_options.showlabels) {
-				this._drawTextOnScreen("[" key "] " value.id, {x: (value.1 - value.3), y: (value.2 - value.4 + 2), size: 16, timeout: param_options.timeout})
+		for key, value in param_resultObj {
+			if (param_options.showBox == false) {
+				this._drawTextOnScreen(key, {x: value.x - 76, y: value.y - 76, color: param_options.color, size: 33})
+				if (value.id != "" && param_options.showLabel) {
+					this._drawTextOnScreen(value.id, {x: value.x + (20 * strLen(key)), y: value.y - 48, color: param_options.color, size: 16})
+				}
+				continue
+			}
+			this._drawBoxOnScreen(key, {x: value.1 + 2, y: value.2 + 2, width: value.3, height: value.4, color: "black", thickness: 6, timeout: param_options.timeout})
+			this._drawBoxOnScreen(key, {x: value.1, y: value.2, width: value.3, height: value.4, color: param_options.color, thickness: 6, timeout: param_options.timeout})
+			if (value.id != "" && param_options.showLabel) {
+				this._drawTextOnScreen("[" key "] " value.id, {x: (value.1 - value.3), y: (value.2 - value.4 + 2), color: param_options.color, size: 16, timeout: param_options.timeout})
 			}
 		}
 		setBatchLines, % bch
 	}
 
 	;; Internal Methods
-	_mainSearch(param_query, param_options := "")
-	{
+	_mainSearch(param_query, param_options := "") {
+		local
+
 		; create default if needed
 		if (!isObject(param_options)) {
-			param_options := this.defaultOptionsObj.Clone()
+			param_options := this.defaultOptionsObj.clone()
 		}
 		; merge with default for any blank parameters
 		for Key, Value in this.defaultOptionsObj {
-			if (param_options.HasKey(Key) == false) { ; if the key is existing in param_options
+			; if the key is existing in param_options
+			if (param_options.hasKey(Key) == false) {
 				param_options[Key] := Value
 			}
 		}
@@ -248,29 +251,22 @@ class graphicsearch {
 
 	_drawTextOnScreen(para_text, para_options) {
 		try {
-			; defaults
-			if (!isObject(para_options)) {
-				para_options := {x: 100, y: 100}
-			}
-			if (!para_options.timeout) {
-				para_options.timeout := 4000
-			}
-			if (!para_options.size) {
-				para_options.size := 33
-			}
+			; apply defaults
+			para_options := this._merge({x: 100, y: 100, timeout: 4000, size: 33}, para_options)
 	
 			; create unique name and start timeout timer
 			l_name := this._hash([para_text, para_options])
-			timeRef := objBindMethod(this, "_timeoutGui", l_name)
+			timeRef := objBindMethod(this, "_timeoutTextGui", l_name)
 			setTimer % timeRef, % "-" para_options.timeout
-	
-			gui, text%l_name%:new, +lastFound +alwaysOnTop +toolWindow -caption
-			gui, color, FFFFFF
-			gui, Font, % "S" para_options.size , Arial Black
-			gui, add, text, backgroundTrans, % para_text
-			gui, add, text, backgroundTrans xp-2 yp-2 c0b87da, % para_text
-			winSet, TransColor, FFFFFF
-			gui, Show, % "NoActivate x" para_options.x " y" para_options.y, OSD
+			
+			gui, text%l_name%:new, % "+lastFound +alwaysOnTop +toolWindow -caption"
+			gui, color, % "195f8e"
+			gui, font, % "S" para_options.size , Arial Black
+			gui, add, text, % "backgroundTrans", % para_text
+			gui, add, text, % "backgroundTrans xp-2 yp-2 c" para_options.color, % para_text
+
+			winSet, transColor, % "195f8e"
+			gui, show, % "NoActivate x" para_options.x " y" para_options.y, OSD
 			return true
 		}
 		return false
@@ -278,18 +274,12 @@ class graphicsearch {
 
 	_drawBoxOnScreen(para_text, para_options) {
 		try {
+			; apply defaults
+			para_options := this._merge({x: 100, y: 100, timeout: 4000}, para_options)
 
-			; defaults
-			if (!isObject(para_options)) {
-				para_options := {x: 100, y: 100}
-			}
-			if (!para_options.timeout) {
-				para_options.timeout := 4000
-			}
-	
 			; create unique name and start timeout timer
 			l_name := this._hash([para_text, para_options])
-			timeRef := objBindMethod(this, "_timeout", l_name)
+			timeRef := objBindMethod(this, "_timeoutBoxGui", l_name)
 			setTimer % timeRef, % "-" para_options.timeout
 	
 			; create gui
@@ -314,20 +304,19 @@ class graphicsearch {
 		return false
 	}
 
-	_timeout(l_name) {
+	_timeoutBoxGui(l_name) {
 		; hide
 		loop, 4 {
 			gui, box%l_name%%A_Index%:destroy
 		}
 	}
 
-	_timeoutGui(l_name) {
+	_timeoutTextGui(l_name) {
 		; hide 
 		gui, text%l_name%:destroy
 	}
 
-	_hash(dataArray)
-	{
+	_hash(dataArray) {
 		data := ""
 		
 		; Process each element in the array
@@ -349,140 +338,167 @@ class graphicsearch {
 		}
 		
 		; Return hash in hexadecimal format
-		return Format("{:08X}", hash & 0xFFFFFFFF)
+		return format("{:08X}", hash & 0xFFFFFFFF)
 	}
 
-	addZero(i)
-	{
+	_merge(defaultObj, targetObj) {
+		local
+		; Create a copy of defaultObj
+		mergedObj := defaultObj.clone()
+		
+		; Override with targetObj values
+		for key, value in targetObj {
+			mergedObj[key] := value
+		}
+		
+		return mergedObj
+	}
+
+	_ocrObjToStandard(inputObj) {
+		local
+		if (inputObj.hasKey("h")) {
+			; Extract properties from the input object
+			centerX := inputObj.x
+			centerY := inputObj.y
+			height := inputObj.h
+			width := inputObj.w
+			id := inputObj.text
+		
+			; Calculate top-left and bottom-right coordinates
+			topLeftX := centerX - (width // 2)
+			topLeftY := centerY - (height // 2)
+			bottomRightX := centerX + (width // 2)
+			bottomRightY := centerY + (height // 2)
+		
+			; Create the transformed object
+			outputObj := {1: topLeftX, 2: topLeftY, 3: bottomRightX, 4: bottomRightY, "x": centerX, "y": centerY, "id": id}
+			return [outputObj]
+		}
+		return inputObj
+	}
+
+	addZero(i) {
 		if i is number
 			return i+0
 		else return 0
 	}
 
-	__New()
-	{
-		this.bits:={ Scan0: 0, hBM: 0, oldzw: 0, oldzh: 0 }
-		this.bind:={ id: 0, mode: 0, oldStyle: 0 }
-		this.Lib:=[]
-		this.Cursor:=0
+	__New() {
+		this.bits := { Scan0: 0, hBM: 0, oldzw: 0, oldzh: 0 }
+		this.bind := { id: 0, mode: 0, oldStyle: 0 }
+		this.Lib := []
+		this.Cursor := 0
 	}
 
-	__Delete()
-	{
+	__Delete() {
 		if (this.bits.hBM)
-			Try DllCall("DeleteObject", "Ptr",this.bits.hBM)
+			try DllCall("DeleteObject", "Ptr",this.bits.hBM)
 	}
 
 
-	find(x1:=0, y1:=0, x2:=0, y2:=0, err1:=0, err0:=0, text:=""
-	, ScreenShot:=1, FindAll:=1, JoinText:=0, offsetX:=20, offsetY:=10
-	, dir:=1, zoomW:=1, zoomH:=1) {
+	find(x1 := 0, y1 := 0, x2 := 0, y2 := 0, err1 := 0, err0 := 0, text := ""
+	, ScreenShot := 1, FindAll := 1, Joinquery := 0, offsetX := 20, offsetY := 10
+	, dir := 1, zoomW := 1, zoomH := 1) {
 		local
 		
-		setBatchLines, % (bch:=A_BatchLines)?"-1":"-1"
-		x1:=this.addZero(x1), y1:=this.addZero(y1), x2:=this.addZero(x2), y2:=this.addZero(y2)
+		setBatchLines, % (bch := A_BatchLines)?"-1":"-1"
+		x1 := this.addZero(x1), y1 := this.addZero(y1), x2 := this.addZero(x2), y2 := this.addZero(y2)
 		if (x1=0 && y1=0 && x2=0 && y2=0)
-			n:=150000, x:=y:=-n, w:=h:=2*n
+			n := 150000, x := y := -n, w := h := 2*n
 		else
-			x:=min(x1,x2), y:=min(y1,y2), w:=Abs(x2-x1)+1, h:=Abs(y2-y1)+1
-		bits:=this.GetBitsFromScreen(x,y,w,h,ScreenShot,zx,zy), x-=zx, y-=zy
-		, this.resultObj:=0, info:=[]
+			x := min(x1,x2), y := min(y1,y2), w := abs(x2-x1)+1, h := abs(y2-y1)+1
+		bits := this.getBitsFromScreen(x,y,w,h,ScreenShot,zx,zy), x-=zx, y-=zy
+		, this.resultObj := 0, info := []
 		loop, parse, text, |
-			if isObject(j:=this.PicInfo(A_LoopField))
-			info.Push(j)
-		if (w<1 || h<1 || !(num:=info.Length()) || !bits.Scan0)
-		{
+			if (isObject(j := this.PicInfo(A_LoopField))) {
+				info.push(j)
+			}
+		if ((w<1 || h<1 || !(num := info.length()) || !bits.Scan0)) {
 			setBatchLines, % bch
 			return this.noMatchVal
 		}
-		arr:=[], info2:=[], k:=0, s:=""
-		, mode:=(isObject(JoinText) ? 2 : JoinText ? 1 : 0)
-		for i,j in info
-		{
-			k:=max(k, (j[7]=5 && j[8]=0 ? j[9] : j[2]*j[3]))
+		arr := [], info2 := [], k := 0, s := ""
+		, mode := (isObject(JoinText) ? 2 : JoinText ? 1 : 0)
+		for i,j in info {
+			k := max(k, (j[7]=5 && j[8]=0 ? j[9] : j[2]*j[3]))
 			if (mode)
-			v:=(mode=1 ? i : j[10]) . "", s.="|" v
-			, (v!="") && ((!info2.HasKey(v) && info2[v]:=[]), info2[v].Push(j))
+			v := (mode=1 ? i : j[10]) . "", s.="|" v
+			, (v!="") && ((!info2.hasKey(v) && info2[v]:=[]), info2[v].push(j))
 		}
-		sx:=x, sy:=y, sw:=w, sh:=h
-		, (mode=1 && JoinText:=[s])
-		, VarSetCapacity(s1,k*4), VarSetCapacity(s0,k*4), VarSetCapacity(ss,sw*(sh+3))
-		, allpos_max:=(FindAll || JoinText ? 10240 : 1)
-		, ini:={ sx:sx, sy:sy, sw:sw, sh:sh, zx:zx, zy:zy
+		sx := x, sy := y, sw := w, sh := h
+		, (mode=1 && Joinquery := [s])
+		, varSetCapacity(s1,k*4), varSetCapacity(s0,k*4), varSetCapacity(ss,sw*(sh+3))
+		, allpos_max := (FindAll || JoinText ? 10240 : 1)
+		, ini := { sx:sx, sy:sy, sw:sw, sh:sh, zx:zx, zy:zy
 		, mode:mode, bits:bits, ss:&ss, s1:&s1, s0:&s0
 		, err1:err1, err0:err0, allpos_max:allpos_max
 		, zoomW:zoomW, zoomH:zoomH }
 		loop, 2
 		{
 			if (err1=0 && err0=0) && (num>1 || A_Index>1)
-			ini.err1:=err1:=0.05, ini.err0:=err0:=0.05
-			if (!JoinText)
-			{
-			VarSetCapacity(allpos, allpos_max*4), allpos_ptr:=&allpos
+			ini.err1 := err1 := 0.05, ini.err0 := err0 := 0.05
+			if (!JoinText) {
+			varSetCapacity(allpos, allpos_max*4), allpos_ptr := &allpos
 			for i,j in info
 			loop, % this.PicFind(ini, j, dir, sx, sy, sw, sh, allpos_ptr)
 			{
-				pos:=NumGet(allpos, 4*(A_Index-1), "uint")
-				, x:=(pos&0xFFFF)+zx, y:=(pos>>16)+zy
-				, w:=Floor(j[2]*zoomW), h:=Floor(j[3]*zoomH), comment:=j[10]
-				, arr.Push({1:x, 2:y, 3:w, 4:h, x:x+w//2, y:y+h//2, id:comment})
+				pos := numGet(allpos, 4*(A_Index-1), "uint")
+				, x := (pos&0xFFFF)+zx, y := (pos>>16)+zy
+				, w := floor(j[2]*zoomW), h := floor(j[3]*zoomH), comment := j[10]
+				, arr.push({1:x, 2:y, 3:w, 4:h, x:x+w//2, y:y+h//2, id:comment})
 				if (!FindAll)
 				break 3
 			}
 			}
 			else
-			for k,v in JoinText
-			{
-			v:=strSplit(Trim(RegExReplace(v, "\s*\|[|\s]*", "|"), "|")
-			, (InStr(v,"|")?"|":""), " `t")
+			for k,v in JoinText {
+			v := strSplit(trim(regExReplace(v, "\s*\|[|\s]*", "|"), "|")
+			, (inStr(v,"|")?"|":""), " `t")
 			, this.JoinText(arr, ini, info2, v, 1, offsetX, offsetY
 			, FindAll, dir, 0, 0, 0, sx, sy, sw, sh)
-			if (!FindAll && arr.Length())
+			if (!FindAll && arr.length())
 				break 2
 			}
-			if (err1!=0 || err0!=0 || arr.Length() || info[1][4] || info[1][7]=5)
+			if (err1!=0 || err0!=0 || arr.length() || info[1][4] || info[1][7]=5)
 			break
 		}
 		setBatchLines, % bch
-		if (arr.Length())
-		{
-			OutputX:=arr[1].x, OutputY:=arr[1].y, this.resultObj:=arr
+		if (arr.length()) {
+			outputX := arr[1].x, OutputY := arr[1].y, this.resultObj := arr
 			return arr
 		}
 		return this.noMatchVal
 	}
 
-	JoinText(arr, ini, info2, text, index, offsetX, offsetY
-	, FindAll, dir, minX, minY, maxY, sx, sy, sw, sh)
-	{
+	joinText(arr, ini, info2, text, index, offsetX, offsetY
+	, FindAll, dir, minX, minY, maxY, sx, sy, sw, sh) {
 		local
-		if !(Len:=text.Length()) || !info2.HasKey(key:=text[index])
+		if !(Len := text.length()) || !info2.hasKey(key := text[index])
 			return 0
-		VarSetCapacity(allpos, ini.allpos_max*4), allpos_ptr:=&allpos
-		, zoomW:=ini.zoomW, zoomH:=ini.zoomH, mode:=ini.mode
+		varSetCapacity(allpos, ini.allpos_max*4), allpos_ptr := &allpos
+		, zoomW := ini.zoomW, zoomH := ini.zoomH, mode := ini.mode
 		for i,j in info2[key]
 			if (mode!=2 || key==j[10])
 			loop, % this.PicFind(ini, j, dir, sx, sy, (index=1 ? sw
-			: min(sx+offsetX+Floor(j[2]*zoomW),ini.sx+ini.sw)-sx), sh, allpos_ptr) {
-				pos:=NumGet(allpos, 4*(A_Index-1), "uint")
-				, x:=pos&0xFFFF, y:=pos>>16
-				, w:=Floor(j[2]*zoomW), h:=Floor(j[3]*zoomH)
-				, (index=1 && (minX:=x, minY:=y, maxY:=y+h))
-				, minY1:=min(y, minY), maxY1:=max(y+h, maxY), sx1:=x+w
-				if (index<Len)
-				{
-				sy1:=max(minY1-offsetY, ini.sy)
-				, sh1:=min(maxY1+offsetY, ini.sy+ini.sh)-sy1
-				if this.JoinText(arr, ini, info2, text, index+1, offsetX, offsetY
+			: min(sx+offsetX+floor(j[2]*zoomW),ini.sx+ini.sw)-sx), sh, allpos_ptr) {
+				pos := numGet(allpos, 4*(A_Index-1), "uint")
+				, x := pos&0xFFFF, y := pos>>16
+				, w := floor(j[2]*zoomW), h := floor(j[3]*zoomH)
+				, (index=1 && (minX := x, minY := y, maxY := y+h))
+				, minY1 := min(y, minY), maxY1 := max(y+h, maxY), sx1 := x+w
+				if (index<Len) {
+				sy1 := max(minY1-offsetY, ini.sy)
+				, sh1 := min(maxY1+offsetY, ini.sy+ini.sh)-sy1
+				if this.joinText(arr, ini, info2, text, index+1, offsetX, offsetY
 				, FindAll, 5, minX, minY1, maxY1, sx1, sy1, 0, sh1)
 				&& (index>1 || !FindAll)
 					return 1
 				} else {
-					comment:=""
+					comment := ""
 					for k,v in text
 						comment.=(mode=2 ? v : info2[v][1][10])
-					x:=minX+ini.zx, y:=minY1+ini.zy, w:=sx1-minX, h:=maxY1-minY1
-					, arr.Push({1:x, 2:y, 3:w, 4:h, x:x+w//2, y:y+h//2, id:comment})
+					x := minX+ini.zx, y := minY1+ini.zy, w := sx1-minX, h := maxY1-minY1
+					, arr.push({1:x, 2:y, 3:w, 4:h, x:x+w//2, y:y+h//2, id:comment})
 					if (index>1 || !FindAll)
 						return 1
 				}
@@ -490,13 +506,11 @@ class graphicsearch {
 		return 0
 	}
 
-	PicFind(ini, j, dir, sx, sy, sw, sh, allpos_ptr)
-	{
+	picFind(ini, j, dir, sx, sy, sw, sh, allpos_ptr) {
 		local
 		static init, MyFunc
-		if !VarSetCapacity(init) && (init:="1")
-		{
-			x32:="VVdWU4HskAAAAIuEJMwAAAADhCTEAAAAg7wkpAAAAAWJRCQkD4QYBwAAi4wk4AAA"
+		if !varSetCapacity(init) && (init := "1") {
+			x32 := "VVdWU4HskAAAAIuEJMwAAAADhCTEAAAAg7wkpAAAAAWJRCQkD4QYBwAAi4wk4AAA"
 			. "AIXJD46CDQAAi7wk3AAAAMcEJAAAAAAx7cdEJAwAAAAAx0QkCAAAAADHRCQQAAAA"
 			. "AIl0JBSLhCTYAAAAi0wkEDH2MdsByIX@iUQkBH876Y4AAAAPr4QkxAAAAInBifCZ"
 			. "9@8BwYtEJASAPBgxdEyLhCTUAAAAg8MBA7Qk+AAAAIkMqIPFATnfdFSLBCSZ97wk"
@@ -603,7 +617,7 @@ class graphicsearch {
 			. "JNQAAACLHKuJnCSoAAAAi5wktAAAAIuUJKgAAAAPtkwDAsHqEA+20inRD7ZUAwGL"
 			. "nCSoAAAAD6@JD7bfKdqLnCS0AAAAD7YEAw+2nCSoAAAAKdg5TCQsfBIPr9I5VCQg"
 			. "fAkPr8A5RCQofQuDbCQ4AQ+IN@P@@4PFATnvD4Vv@@@@6bv9@@+LdCRs6R7z@@+Q"
-			x64:="QVdBVkFVQVRVV1ZTSIHsuAAAAEhjhCRAAQAAi5wkcAEAAInNiVQkQESJjCQYAQAA"
+			x64 := "QVdBVkFVQVRVV1ZTSIHsuAAAAEhjhCRAAQAAi5wkcAEAAInNiVQkQESJjCQYAQAA"
 			. "i7QkeAEAAEmJxEiJRCRoSAOEJFABAACD+QVIiUQkKA+E+wYAAIX2D44TDQAARTH2"
 			. "i7wkqAEAAEUx7USJdCQQTIu0JGABAABFMdtFMf9EiWwkCESJhCQQAQAAZg8fRAAA"
 			. "TGNUJBBFMclFMcBMA5QkaAEAAIXbfzXreg8fgAAAAABBD6@EicFEiciZ9@sBwUOA"
@@ -710,216 +724,195 @@ class graphicsearch {
 			. "UAFImA+vyUhj0kUPtgwRD7bXQSnRRInKTIuMJCABAABBD7YEAUQPtstEKcg5TCRg"
 			. "fBIPr9I5VCQgfAkPr8A5RCQYfQZBg+sBeBZJg8IBRDnWD49o@@@@iVwkQOmi@f@@"
 			. "iVwkQOlR8@@@i3wkZIlcJBjpRPP@@5CQkJCQkJCQkJA="
-			MyFunc:=this.MCode(StrReplace((A_PtrSize=8?x64:x32),"@","/"))
+			myFunc := this.mCode(strReplace((A_PtrSize=8?x64:x32),"@","/"))
 		}
-		text:=j[1], w:=j[2], h:=j[3]
-		, err1:=this.addZero(j[4] ? j[5] : ini.err1)
-		, err0:=this.addZero(j[4] ? j[6] : ini.err0)
-		, mode:=j[7], color:=j[8], n:=j[9]
-		resultObj:=(!ini.bits.Scan0 || mode<1 || mode>5 || sw<1) ? 0
+		text := j[1], w := j[2], h := j[3]
+		, err1 := this.addZero(j[4] ? j[5] : ini.err1)
+		, err0 := this.addZero(j[4] ? j[6] : ini.err0)
+		, mode := j[7], color := j[8], n := j[9]
+		resultObj := (!ini.bits.Scan0 || mode<1 || mode>5 || sw<1) ? 0
 			: DllCall(MyFunc.Ptr, "int",mode, "uint",color, "uint",n, "int",dir
 			, "Ptr",ini.bits.Scan0, "int",ini.bits.Stride
 			, "int",sx, "int",sy, "int",sw, "int",sh
 			, "Ptr",ini.ss, "Ptr",ini.s1, "Ptr",ini.s0
 			, "Ptr",text, "int",w, "int",h
-			, "int",Floor(Abs(err1)*1024), "int",Floor(Abs(err0)*1024)
+			, "int",floor(abs(err1)*1024), "int",floor(abs(err0)*1024)
 			, "int",(err1<0||err0<0), "Ptr",allpos_ptr, "int",ini.allpos_max
-			, "int",Floor(w*ini.zoomW), "int",Floor(h*ini.zoomH))
+			, "int",floor(w*ini.zoomW), "int",floor(h*ini.zoomH))
 		return resultObj
 	}
 
 
 
-	PicInfo(text)
-	{
+	picInfo(text) {
 		local
-		if !InStr(text, "$")
+		if !inStr(text, "$")
 			return
 		static init, info, bmp
-		if !VarSetCapacity(init) && (init:="1")
-			info:=[], bmp:=[]
-		key:=(r:=StrLen(v:=Trim(text,"|")))<10000 ? v
+		if !varSetCapacity(init) && (init := "1")
+			info := [], bmp := []
+		key := (r := strLen(v := trim(text,"|")))<10000 ? v
 			: DllCall("ntdll\RtlComputeCrc32", "uint",0
 			, "Ptr",&v, "uint",r*(1+!!A_IsUnicode), "uint")
-		if info.HasKey(key)
+		if info.hasKey(key)
 			return info[key]
-		comment:="", seterr:=err1:=err0:=0
-		if RegExMatch(v, "O)<([^>\n]*)>", r)
-			v:=StrReplace(v,r[0]), comment:=Trim(r[1])
-		if RegExMatch(v, "O)\[([^\]\n]*)]", r)
-		{
-			v:=StrReplace(v,r[0]), r:=strSplit(r[1] ",", ",")
-			, seterr:=1, err1:=this.addZero(r[1]), err0:=this.addZero(r[2])
+		comment := "", seterr := err1 := err0 := 0
+		if regExMatch(v, "O)<([^>\n]*)>", r)
+			v := strReplace(v,r[0]), comment := trim(r[1])
+		if regExMatch(v, "O)\[([^\]\n]*)]", r) {
+			v := strReplace(v,r[0]), r := strSplit(r[1] ",", ",")
+			, seterr := 1, err1 := this.addZero(r[1]), err0 := this.addZero(r[2])
 		}
-		color:=SubStr(v,1,InStr(v,"$")-1), v:=Trim(SubStr(v,InStr(v,"$")+1))
-		mode:=InStr(color,"##") ? 5 : InStr(color,"#") ? 4
-			: InStr(color,"**") ? 3 : InStr(color,"*") ? 2 : 1
-		color:=RegExReplace(color, "[*#\s]")
-		(mode=1 || mode=5) && color:=StrReplace(color,"0x")
-		if (mode=5)
-		{
-			if !(v~="/[\s\-\w]+/[\s\-\w,/]+$")
-			{
-			if !(hBM:=LoadPicture(v))
+		color := subStr(v,1,inStr(v,"$")-1), v := trim(subStr(v,inStr(v,"$")+1))
+		mode := inStr(color,"##") ? 5 : inStr(color,"#") ? 4
+			: inStr(color,"**") ? 3 : inStr(color,"*") ? 2 : 1
+		color := regExReplace(color, "[*#\s]")
+		(mode=1 || mode=5) && color := strReplace(color,"0x")
+		if (mode=5) {
+			if !(v~="/[\s\-\w]+/[\s\-\w,/]+$") {
+			if !(hBM := LoadPicture(v))
 				return
 			this.GetBitmapWH(hBM, w, h)
 			if (w<1 || h<1)
 				return
-			hBM2:=this.CreateDIBSection(w, h, 32, Scan0)
+			hBM2 := this.CreateDIBSection(w, h, 32, Scan0)
 			this.CopyHBM(hBM2, 0, 0, hBM, 0, 0, w, h)
 			DllCall("DeleteObject", "Ptr",hBM)
 			if (!Scan0)
 				return
-			arr:=strSplit(color "/", "/"), arr.Pop(), n:=arr.Length()-1
-			bmp.Push(buf:=this.Buffer(w*h*4 + n*2*4)), v:=buf.Ptr, p:=v+w*h*4-4
+			arr := strSplit(color "/", "/"), arr.Pop(), n := arr.length()-1
+			bmp.push(buf := this.buffer(w*h*4 + n*2*4)), v := buf.Ptr, p := v+w*h*4-4
 			DllCall("RtlMoveMemory", "Ptr",v, "Ptr",Scan0, "Ptr",w*h*4)
 			DllCall("DeleteObject", "Ptr",hBM2)
-			tab:=Object("Black", "000000", "White", "FFFFFF"
+			tab := Object("Black", "000000", "White", "FFFFFF"
 			, "Red", "FF0000", "Green", "008000", "Blue", "0000FF"
 			, "Yellow", "FFFF00", "Silver", "C0C0C0", "Gray", "808080"
 			, "Teal", "008080", "Navy", "000080", "Aqua", "00FFFF"
 			, "Olive", "808000", "Lime", "00FF00", "Fuchsia", "FF00FF"
 			, "Purple", "800080", "Maroon", "800000")
 			loop, % n
-				c:=strSplit(Trim(arr[1+A_Index],"-") "-" arr[1], "-"), v1:=c[1]
-				, NumPut(this.addZero("0x" (tab.HasKey(v1)?tab[v1]:v1)), 0|p+=4, "uint")
-				, NumPut(this.addZero("0x" c[2]), 0|p+=4, "uint")
-			color:=this.addZero("0x" arr[1])|0x1000000
-			}
-			else
-			{
-			color:=strSplit(color "/", "/")[1]
-			arr:=strSplit(Trim(RegExReplace(v, "i)\s|0x"), ","), ",")
-			if !(n:=arr.Length())
+				c := strSplit(trim(arr[1+A_Index],"-") "-" arr[1], "-"), v1 := c[1]
+				, numPut(this.addZero("0x" (tab.hasKey(v1)?tab[v1]:v1)), 0|p+=4, "uint")
+				, numPut(this.addZero("0x" c[2]), 0|p+=4, "uint")
+			color := this.addZero("0x" arr[1])|0x1000000
+			} else {
+			color := strSplit(color "/", "/")[1]
+			arr := strSplit(trim(regExReplace(v, "i)\s|0x"), ","), ",")
+			if !(n := arr.length())
 				return
-			bmp.Push(buf:=this.Buffer(n*22*4)), v:=buf.Ptr
-			for k1,v1 in arr
-			{
-				r:=strSplit(v1 "/", "/")
-				, x:=this.addZero(r[1]), y:=this.addZero(r[2])
-				, (A_Index=1) ? (x1:=x2:=x, y1:=y2:=y)
-				: (x1:=min(x1,x), x2:=max(x2,x), y1:=min(y1,y), y2:=max(y2,y))
+			bmp.push(buf := this.buffer(n*22*4)), v := buf.Ptr
+			for k1,v1 in arr {
+				r := strSplit(v1 "/", "/")
+				, x := this.addZero(r[1]), y := this.addZero(r[2])
+				, (A_Index=1) ? (x1 := x2 := x, y1 := y2 := y)
+				: (x1 := min(x1,x), x2 := max(x2,x), y1 := min(y1,y), y2 := max(y2,y))
 			}
 			for k1,v1 in arr
 			{
-				r:=strSplit(v1 "/", "/")
-				, x:=this.addZero(r[1])-x1, y:=this.addZero(r[2])-y1
-				, n1:=min(max(r.Length()-3, 0), 10)
-				, NumPut(y<<16|x, 0|p:=v+(A_Index-1)*22*4, "uint")
-				, NumPut(n1, 0|p+=4, "uint")
+				r := strSplit(v1 "/", "/")
+				, x := this.addZero(r[1])-x1, y := this.addZero(r[2])-y1
+				, n1 := min(max(r.length()-3, 0), 10)
+				, numPut(y<<16|x, 0|p := v+(A_Index-1)*22*4, "uint")
+				, numPut(n1, 0|p+=4, "uint")
 				loop, % n1
-				k1:=(InStr(v1:=r[2+A_Index], "-")=1 ? 0x1000000:0)
-				, c:=strSplit(Trim(v1,"-") "-" color, "-")
-				, NumPut(this.addZero("0x" c[1])&0xFFFFFF|k1, 0|p+=4, "uint")
-				, NumPut(this.addZero("0x" c[2]), 0|p+=4, "uint")
+				k1 := (inStr(v1 := r[2+A_Index], "-")=1 ? 0x1000000:0)
+				, c := strSplit(trim(v1,"-") "-" color, "-")
+				, numPut(this.addZero("0x" c[1])&0xFFFFFF|k1, 0|p+=4, "uint")
+				, numPut(this.addZero("0x" c[2]), 0|p+=4, "uint")
 			}
-			color:=0, w:=x2-x1+1, h:=y2-y1+1
+			color := 0, w := x2-x1+1, h := y2-y1+1
 			}
 		} else {
-			r:=strSplit(v ".", "."), w:=this.addZero(r[1])
-			, v:=this.base64tobit(r[2]), h:=StrLen(v)//w
-			if (w<1 || h<1 || StrLen(v)!=w*h)
+			r := strSplit(v ".", "."), w := this.addZero(r[1])
+			, v := this.base64tobit(r[2]), h := strLen(v)//w
+			if (w<1 || h<1 || strLen(v)!=w*h)
 			return
-			arr:=strSplit(color "/", "/"), arr.Pop(), n:=arr.Length()
-			, bmp.Push(buf:=this.Buffer(StrPut(v, "CP0") + n*2*4))
-			, StrPut(v, buf.Ptr, "CP0"), v:=buf.Ptr, p:=v+w*h-4
-			, color:=this.addZero(arr[1])
-			if (mode=1)
-			{
+			arr := strSplit(color "/", "/"), arr.Pop(), n := arr.length()
+			, bmp.push(buf := this.buffer(StrPut(v, "CP0") + n*2*4))
+			, StrPut(v, buf.Ptr, "CP0"), v := buf.Ptr, p := v+w*h-4
+			, color := this.addZero(arr[1])
+			if (mode=1) {
 			for k1,v1 in arr
-				k1:=(InStr(v1, "@") ? 0x1000000:0)
-				, r:=strSplit(v1 "@", "@"), x:=this.addZero(r[2])
-				, x:=(x<=0||x>1?1:x), x:=Floor(4606*255*255*(1-x)*(1-x))
-				, c:=strSplit(Trim(r[1],"-") "-" Format("{:X}",x), "-")
-				, NumPut(this.addZero("0x" c[1])&0xFFFFFF|k1, 0|p+=4, "uint")
-				, NumPut(this.addZero("0x" c[2]), 0|p+=4, "uint")
+				k1 := (inStr(v1, "@") ? 0x1000000:0)
+				, r := strSplit(v1 "@", "@"), x := this.addZero(r[2])
+				, x := (x<=0||x>1?1:x), x := floor(4606*255*255*(1-x)*(1-x))
+				, c := strSplit(trim(r[1],"-") "-" format("{:X}",x), "-")
+				, numPut(this.addZero("0x" c[1])&0xFFFFFF|k1, 0|p+=4, "uint")
+				, numPut(this.addZero("0x" c[2]), 0|p+=4, "uint")
 			}
-			else if (mode=4)
-			{
-			r:=strSplit(arr[1] "@", "@"), n:=this.addZero(r[2])
-			, n:=(n<=0||n>1?1:n), n:=Floor(4606*255*255*(1-n)*(1-n))
-			, c:=this.addZero(r[1]), color:=((c-1)//w)<<16|Mod(c-1,w)
+			else if (mode=4) {
+			r := strSplit(arr[1] "@", "@"), n := this.addZero(r[2])
+			, n := (n<=0||n>1?1:n), n := floor(4606*255*255*(1-n)*(1-n))
+			, c := this.addZero(r[1]), color := ((c-1)//w)<<16|Mod(c-1,w)
 			}
 		}
 		return info[key]:=[v, w, h, seterr, err1, err0, mode, color, n, comment]
 	}
 
-	Buffer(size, FillByte:="")
-	{
+	buffer(size, FillByte := "") {
 		local
-		buf:={}, buf.SetCapacity("_key", size), p:=buf.GetAddress("_key")
+		buf := {}, buf.SetCapacity("_key", size), p := buf.GetAddress("_key")
 		, (FillByte!="" && DllCall("RtlFillMemory","Ptr",p,"Ptr",size,"uchar",FillByte))
-		, buf.Ptr:=p, buf.Size:=size
+		, buf.Ptr := p, buf.Size := size
 		return buf
 	}
 
-	GetBitsFromScreen(ByRef x:=0, ByRef y:=0, ByRef w:=0, ByRef h:=0
-	, ScreenShot:=1, ByRef zx:=0, ByRef zy:=0, ByRef zw:=0, ByRef zh:=0)
-	{
+	getBitsFromScreen(ByRef x := 0, ByRef y := 0, ByRef w := 0, ByRef h := 0
+	, ScreenShot := 1, ByRef zx := 0, ByRef zy := 0, ByRef zw := 0, ByRef zh := 0) {
 		local
 		static init, CAPTUREBLT
-		if !VarSetCapacity(init) && (init:="1")
-		{
-			DllCall("Dwmapi\DwmIsCompositionEnabled", "Int*",i:=0)
-			CAPTUREBLT:=i ? 0 : 0x40000000
+		if !varSetCapacity(init) && (init := "1") {
+			DllCall("Dwmapi\DwmIsCompositionEnabled", "Int*",i := 0)
+			cAPTUREBLT := i ? 0 : 0x40000000
 		}
-		(!isObject(this.bits) && this.bits:={Scan0:0, hBM:0, oldzw:0, oldzh:0})
-		, bits:=this.bits
-		if (!ScreenShot && bits.Scan0)
-		{
-			zx:=bits.zx, zy:=bits.zy, zw:=bits.zw, zh:=bits.zh
-			, w:=min(x+w,zx+zw), x:=max(x,zx), w-=x
-			, h:=min(y+h,zy+zh), y:=max(y,zy), h-=y
+		(!isObject(this.bits) && this.bits := {Scan0:0, hBM:0, oldzw:0, oldzh:0})
+		, bits := this.bits
+		if (!ScreenShot && bits.Scan0) {
+			zx := bits.zx, zy := bits.zy, zw := bits.zw, zh := bits.zh
+			, w := min(x+w,zx+zw), x := max(x,zx), w-=x
+			, h := min(y+h,zy+zh), y := max(y,zy), h-=y
 			return bits
 		}
-		bch:=A_BatchLines, cri:=A_IsCritical
-		Critical
-		bits.BindWindow:=id:=this.BindWindow(0,0,1)
-		if (id)
-		{
-			WinGet, id, ID, ahk_id %id%
-			WinGetPos, zx, zy, zw, zh, ahk_id %id%
+		bch := A_BatchLines, cri := A_IsCritical
+		critical
+		bits.BindWindow := id := this.BindWindow(0,0,1)
+		if (id) {
+			winGet, id, ID, ahk_id %id%
+			winGetPos, zx, zy, zw, zh, ahk_id %id%
 		}
-		if (!id)
-		{
-			SysGet, zx, 76
-			SysGet, zy, 77
-			SysGet, zw, 78
-			SysGet, zh, 79
+		if (!id) {
+			sysGet, zx, 76
+			sysGet, zy, 77
+			sysGet, zw, 78
+			sysGet, zh, 79
 		}
-		this.UpdateBits(bits, zx, zy, zw, zh)
-		, w:=min(x+w,zx+zw), x:=max(x,zx), w-=x
-		, h:=min(y+h,zy+zh), y:=max(y,zy), h-=y
-		if (!ScreenShot || w<1 || h<1 || !bits.hBM)
-		{
-			Critical % cri
+		this.updateBits(bits, zx, zy, zw, zh)
+		, w := min(x+w,zx+zw), x := max(x,zx), w-=x
+		, h := min(y+h,zy+zh), y := max(y,zy), h-=y
+		if (!ScreenShot || w<1 || h<1 || !bits.hBM) {
+			critical % cri
 			setBatchLines, % bch
 			return bits
 		}
-		if IsFunc(k:="GetBitsFromScreen2")
-			&& %k%(bits, x-zx, y-zy, w, h)
-		{
-			zx:=bits.zx, zy:=bits.zy, zw:=bits.zw, zh:=bits.zh
-			Critical % cri
+		if IsFunc(k := "getBitsFromScreen2")
+			&& %k%(bits, x-zx, y-zy, w, h) {
+			zx := bits.zx, zy := bits.zy, zw := bits.zw, zh := bits.zh
+			critical % cri
 			setBatchLines, % bch
 			return bits
 		}
-		mDC:=DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
-		oBM:=DllCall("SelectObject", "Ptr",mDC, "Ptr",bits.hBM, "Ptr")
-		if (id)
-		{
-			if (mode:=this.BindWindow(0,0,0,1))<2
-			{
-			hDC:=DllCall("GetDCEx", "Ptr",id, "Ptr",0, "int",3, "Ptr")
+		mDC := DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
+		oBM := DllCall("SelectObject", "Ptr",mDC, "Ptr",bits.hBM, "Ptr")
+		if (id) {
+			if (mode := this.BindWindow(0,0,0,1))<2 {
+			hDC := DllCall("GetDCEx", "Ptr",id, "Ptr",0, "int",3, "Ptr")
 			DllCall("BitBlt","Ptr",mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
 				, "Ptr",hDC, "int",x-zx, "int",y-zy, "uint",0xCC0020|CAPTUREBLT)
 			DllCall("ReleaseDC", "Ptr",id, "Ptr",hDC)
-			}
-			else
-			{
-			hBM2:=this.CreateDIBSection(zw, zh)
-			mDC2:=DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
-			oBM2:=DllCall("SelectObject", "Ptr",mDC2, "Ptr",hBM2, "Ptr")
+			} else {
+			hBM2 := this.CreateDIBSection(zw, zh)
+			mDC2 := DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
+			oBM2 := DllCall("SelectObject", "Ptr",mDC2, "Ptr",hBM2, "Ptr")
 			DllCall("UpdateWindow", "Ptr",id)
 			DllCall("PrintWindow", "Ptr",id, "Ptr",mDC2, "uint",(mode>3)*3)
 			DllCall("BitBlt","Ptr",mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
@@ -928,10 +921,8 @@ class graphicsearch {
 			DllCall("DeleteDC", "Ptr",mDC2)
 			DllCall("DeleteObject", "Ptr",hBM2)
 			}
-		}
-		else
-		{
-			hDC:=DllCall("GetWindowDC","Ptr",id:=DllCall("GetDesktopWindow","Ptr"),"Ptr")
+		} else {
+			hDC := DllCall("GetWindowDC","Ptr",id := DllCall("GetDesktopWindow","Ptr"),"Ptr")
 			DllCall("BitBlt","Ptr",mDC,"int",x-zx,"int",y-zy,"int",w,"int",h
 			, "Ptr",hDC, "int",x, "int",y, "uint",0xCC0020|CAPTUREBLT)
 			DllCall("ReleaseDC", "Ptr",id, "Ptr",hDC)
@@ -940,51 +931,46 @@ class graphicsearch {
 			this.CaptureCursor(mDC, zx, zy, zw, zh)
 		DllCall("SelectObject", "Ptr",mDC, "Ptr",oBM)
 		DllCall("DeleteDC", "Ptr",mDC)
-		Critical % cri
+		critical % cri
 		setBatchLines, % bch
 		return bits
 	}
 
-	UpdateBits(bits, zx, zy, zw, zh)
-	{
+	updateBits(bits, zx, zy, zw, zh) {
 		local
-		if (zw>bits.oldzw || zh>bits.oldzh || !bits.hBM)
-		{
-			Try DllCall("DeleteObject", "Ptr",bits.hBM)
-			bits.hBM:=this.CreateDIBSection(zw, zh, bpp:=32, ppvBits)
-			, bits.Scan0:=(!bits.hBM ? 0:ppvBits)
-			, bits.Stride:=((zw*bpp+31)//32)*4
-			, bits.oldzw:=zw, bits.oldzh:=zh
+		if (zw>bits.oldzw || zh>bits.oldzh || !bits.hBM) {
+			try DllCall("DeleteObject", "Ptr",bits.hBM)
+			bits.hBM := this.CreateDIBSection(zw, zh, bpp := 32, ppvBits)
+			, bits.Scan0 := (!bits.hBM ? 0:ppvBits)
+			, bits.Stride := ((zw*bpp+31)//32)*4
+			, bits.oldzw := zw, bits.oldzh := zh
 		}
-		bits.zx:=zx, bits.zy:=zy, bits.zw:=zw, bits.zh:=zh
+		bits.zx := zx, bits.zy := zy, bits.zw := zw, bits.zh := zh
 	}
 
-	CreateDIBSection(w, h, bpp:=32, ByRef ppvBits:=0)
-	{
+	CreateDIBSection(w, h, bpp := 32, ByRef ppvBits := 0) {
 		local
-		VarSetCapacity(bi, 40, 0), NumPut(40, bi, 0, "int")
-		, NumPut(w, bi, 4, "int"), NumPut(-h, bi, 8, "int")
-		, NumPut(1, bi, 12, "short"), NumPut(bpp, bi, 14, "short")
-		return DllCall("CreateDIBSection", "Ptr",0, "Ptr",&bi, "int",0, "Ptr*",ppvBits:=0, "Ptr",0, "int",0, "Ptr")
+		varSetCapacity(bi, 40, 0), numPut(40, bi, 0, "int")
+		, numPut(w, bi, 4, "int"), numPut(-h, bi, 8, "int")
+		, numPut(1, bi, 12, "short"), numPut(bpp, bi, 14, "short")
+		return DllCall("CreateDIBSection", "Ptr",0, "Ptr",&bi, "int",0, "Ptr*",ppvBits := 0, "Ptr",0, "int",0, "Ptr")
 	}
 
-	GetBitmapWH(hBM, ByRef w, ByRef h)
-	{
+	getBitmapWH(hBM, ByRef w, ByRef h) {
 		local
-		VarSetCapacity(bm, size:=(A_PtrSize=8 ? 32:24), 0)
+		varSetCapacity(bm, size := (A_PtrSize=8 ? 32:24), 0)
 		, DllCall("GetObject", "Ptr",hBM, "int",size, "Ptr",&bm)
-		, w:=NumGet(bm,4,"int"), h:=Abs(NumGet(bm,8,"int"))
+		, w := numGet(bm,4,"int"), h := abs(numGet(bm,8,"int"))
 	}
 
-	CopyHBM(hBM1, x1, y1, hBM2, x2, y2, w, h, Clear:=0, trans:=0, alpha:=255)
-	{
+	copyHBM(hBM1, x1, y1, hBM2, x2, y2, w, h, Clear := 0, trans := 0, alpha := 255) {
 		local
 		if (w<1 || h<1 || !hBM1 || !hBM2)
 			return
-		mDC1:=DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
-		oBM1:=DllCall("SelectObject", "Ptr",mDC1, "Ptr",hBM1, "Ptr")
-		mDC2:=DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
-		oBM2:=DllCall("SelectObject", "Ptr",mDC2, "Ptr",hBM2, "Ptr")
+		mDC1 := DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
+		oBM1 := DllCall("SelectObject", "Ptr",mDC1, "Ptr",hBM1, "Ptr")
+		mDC2 := DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
+		oBM2 := DllCall("SelectObject", "Ptr",mDC2, "Ptr",hBM2, "Ptr")
 		if (trans)
 			DllCall("GdiAlphaBlend", "Ptr",mDC1, "int",x1, "int",y1, "int",w, "int",h
 			, "Ptr",mDC2, "int",x2, "int",y2, "int",w, "int",h, "uint",alpha<<16)
@@ -993,57 +979,51 @@ class graphicsearch {
 			, "Ptr",mDC2, "int",x2, "int",y2, "uint",0xCC0020)
 		if (Clear)
 			DllCall("BitBlt", "Ptr",mDC1, "int",x1, "int",y1, "int",w, "int",h
-			, "Ptr",mDC1, "int",x1, "int",y1, "uint",MERGECOPY:=0xC000CA)
+			, "Ptr",mDC1, "int",x1, "int",y1, "uint",MERGECOPY := 0xC000CA)
 		DllCall("SelectObject", "Ptr",mDC1, "Ptr",oBM1)
 		DllCall("DeleteDC", "Ptr",mDC1)
 		DllCall("SelectObject", "Ptr",mDC2, "Ptr",oBM2)
 		DllCall("DeleteDC", "Ptr",mDC2)
 	}
 
-	CopyBits(Scan01,Stride1,x1,y1,Scan02,Stride2,x2,y2,w,h,Reverse:=0)
-	{
+	copyBits(Scan01,Stride1,x1,y1,Scan02,Stride2,x2,y2,w,h,Reverse := 0) {
 		local
 		if (w<1 || h<1 || !Scan01 || !Scan02)
 			return
 		static init, MFCopyImage
-		if !VarSetCapacity(init) && (init:="1")
-		{
-			MFCopyImage:=DllCall("GetProcAddress", "Ptr"
+		if !varSetCapacity(init) && (init := "1") {
+			mFCopyImage := DllCall("GetProcAddress", "Ptr"
 			, DllCall("LoadLibrary", "Str","Mfplat.dll", "Ptr")
 			, "AStr","MFCopyImage", "Ptr")
 		}
-		if (MFCopyImage && !Reverse)
-		{
+		if (MFCopyImage && !Reverse) {
 			return DllCall(MFCopyImage
 			, "Ptr",Scan01+y1*Stride1+x1*4, "int",Stride1
 			, "Ptr",Scan02+y2*Stride2+x2*4, "int",Stride2
 			, "uint",w*4, "uint",h)
 		}
-		ListLines % (lls:=A_ListLines)?0:0
-		setBatchLines, % (bch:=A_BatchLines)?"-1":"-1"
-		p1:=Scan01+(y1-1)*Stride1+x1*4
-		, p2:=Scan02+(y2-1)*Stride2+x2*4, w*=4
-		, (Reverse) && (p2+=(h+1)*Stride2, Stride2:=-Stride2)
+		listLines % (lls := A_ListLines)?0:0
+		setBatchLines, % (bch := A_BatchLines)?"-1":"-1"
+		p1 := Scan01+(y1-1)*Stride1+x1*4
+		, p2 := Scan02+(y2-1)*Stride2+x2*4, w*=4
+		, (Reverse) && (p2+=(h+1)*Stride2, Stride2 := -Stride2)
 		loop, % h
 			DllCall("RtlMoveMemory","Ptr",p1+=Stride1,"Ptr",p2+=Stride2,"Ptr",w)
 		setBatchLines, % bch
-		ListLines % lls
+		listLines % lls
 	}
 
-	DrawHBM(hBM, lines)
-	{
+	drawHBM(hBM, lines) {
 		local
-		mDC:=DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
-		oBM:=DllCall("SelectObject", "Ptr",mDC, "Ptr",hBM, "Ptr")
-		oldc:="", brush:=0, VarSetCapacity(rect, 16)
+		mDC := DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
+		oBM := DllCall("SelectObject", "Ptr",mDC, "Ptr",hBM, "Ptr")
+		oldc := "", brush := 0, varSetCapacity(rect, 16)
 		for k,v in lines
-		if isObject(v)
-		{
-			if (oldc!=v[5])
-			{
-			oldc:=v[5], BGR:=(oldc&0xFF)<<16|oldc&0xFF00|(oldc>>16)&0xFF
+		if isObject(v) {
+			if (oldc!=v[5]) {
+			oldc := v[5], BGR := (oldc&0xFF)<<16|oldc&0xFF00|(oldc>>16)&0xFF
 			DllCall("DeleteObject", "Ptr",brush)
-			brush:=DllCall("CreateSolidBrush", "uint",BGR, "Ptr")
+			brush := DllCall("CreateSolidBrush", "uint",BGR, "Ptr")
 			}
 			DllCall("SetRect", "Ptr",&rect, "int",v[1], "int",v[2]
 			, "int",v[1]+v[3], "int",v[2]+v[4])
@@ -1056,66 +1036,59 @@ class graphicsearch {
 	; by other windows, it's equivalent to always being
 	; at the front desk. Unbind Window using find().BindWindow(0)
 
-	BindWindow(bind_id:=0, bind_mode:=0, get_id:=0, get_mode:=0)
-	{
+	bindWindow(bind_id := 0, bind_mode := 0, get_id := 0, get_mode := 0) {
 		local
-		(!isObject(this.bind) && this.bind:={id:0, mode:0, oldStyle:0})
-		, bind:=this.bind
+		(!isObject(this.bind) && this.bind := {id:0, mode:0, oldStyle:0})
+		, bind := this.bind
 		if (get_id)
 			return bind.id
 		if (get_mode)
 			return bind.mode
-		if (bind_id)
-		{
-			bind.id:=bind_id:=this.addZero(bind_id)
-			, bind.mode:=bind_mode, bind.oldStyle:=0
-			if (bind_mode & 1)
-			{
-			WinGet, i, ExStyle, ahk_id %bind_id%
-			bind.oldStyle:=i
-			WinSet, Transparent, 255, ahk_id %bind_id%
+		if (bind_id) {
+			bind.id := bind_id := this.addZero(bind_id)
+			, bind.mode := bind_mode, bind.oldStyle := 0
+			if (bind_mode & 1) {
+			winGet, i, ExStyle, ahk_id %bind_id%
+			bind.oldStyle := i
+			winSet, Transparent, 255, ahk_id %bind_id%
 			loop, 30
 			{
-				Sleep 100
-				WinGet, i, Transparent, ahk_id %bind_id%
+				sleep 100
+				winGet, i, Transparent, ahk_id %bind_id%
 			}
-			Until (i=255)
+			until (i=255)
 			}
-		}
-		else
-		{
-			bind_id:=bind.id
+		} else {
+			bind_id := bind.id
 			if (bind.mode & 1)
-			WinSet, ExStyle, % bind.oldStyle, ahk_id %bind_id%
-			bind.id:=0, bind.mode:=0, bind.oldStyle:=0
+			winSet, ExStyle, % bind.oldStyle, ahk_id %bind_id%
+			bind.id := 0, bind.mode := 0, bind.oldStyle := 0
 		}
 	}
 	; Use find().CaptureCursor(0) to Cancel Capture Cursor
 
-	CaptureCursor(hDC:=0, zx:=0, zy:=0, zw:=0, zh:=0, get_cursor:=0)
-	{
+	captureCursor(hDC := 0, zx := 0, zy := 0, zw := 0, zh := 0, get_cursor := 0) {
 		local
 		if (get_cursor)
 			return this.Cursor
-		if (hDC=1 || hDC=0) && (zw=0)
-		{
-			this.Cursor:=hDC
+		if (hDC=1 || hDC=0) && (zw=0) {
+			this.Cursor := hDC
 			return
 		}
-		VarSetCapacity(mi, 40, 0), NumPut(16+A_PtrSize, mi, "int")
+		varSetCapacity(mi, 40, 0), numPut(16+A_PtrSize, mi, "int")
 		DllCall("GetCursorInfo", "Ptr",&mi)
-		bShow:=NumGet(mi, 4, "int")
-		hCursor:=NumGet(mi, 8, "Ptr")
-		x:=NumGet(mi, 8+A_PtrSize, "int")
-		y:=NumGet(mi, 12+A_PtrSize, "int")
+		bShow := numGet(mi, 4, "int")
+		hCursor := numGet(mi, 8, "Ptr")
+		x := numGet(mi, 8+A_PtrSize, "int")
+		y := numGet(mi, 12+A_PtrSize, "int")
 		if (!bShow) || (x<zx || y<zy || x>=zx+zw || y>=zy+zh)
 			return
-		VarSetCapacity(ni, 40, 0)
+		varSetCapacity(ni, 40, 0)
 		DllCall("GetIconInfo", "Ptr",hCursor, "Ptr",&ni)
-		xCenter:=NumGet(ni, 4, "int")
-		yCenter:=NumGet(ni, 8, "int")
-		hBMMask:=NumGet(ni, (A_PtrSize=8?16:12), "Ptr")
-		hBMColor:=NumGet(ni, (A_PtrSize=8?24:16), "Ptr")
+		xCenter := numGet(ni, 4, "int")
+		yCenter := numGet(ni, 8, "int")
+		hBMMask := numGet(ni, (A_PtrSize=8?16:12), "Ptr")
+		hBMColor := numGet(ni, (A_PtrSize=8?24:16), "Ptr")
 		DllCall("DrawIconEx", "Ptr",hDC
 			, "int",x-xCenter-zx, "int",y-yCenter-zy, "Ptr",hCursor
 			, "int",0, "int",0, "int",0, "int",0, "int",3)
@@ -1123,155 +1096,139 @@ class graphicsearch {
 		DllCall("DeleteObject", "Ptr",hBMColor)
 	}
 
-	MCode(hex)
-	{
+	mCode(hex) {
 		local
-		flag:=((hex~="[^\s\da-fA-F]") ? 1:4), len:=0
+		flag := ((hex~="[^\s\da-fA-F]") ? 1:4), len := 0
 		loop, 2
 			if !DllCall("crypt32\CryptStringToBinary", "Str",hex, "uint",0, "uint",flag
-			, "Ptr",(A_Index=1?0:(p:=this.Buffer(len)).Ptr), "uint*",len, "Ptr",0, "Ptr",0)
+			, "Ptr",(A_Index=1?0:(p := this.buffer(len)).Ptr), "uint*",len, "Ptr",0, "Ptr",0)
 			return
 		if DllCall("VirtualProtect", "Ptr",p.Ptr, "Ptr",len, "uint",0x40, "uint*",0)
 			return p
 	}
 
-	bin2hex(addr, size, base64:=1)
-	{
+	bin2hex(addr, size, base64 := 1) {
 		local
-		flag:=(base64 ? 1:4)|0x40000000, len:=0
+		flag := (base64 ? 1:4)|0x40000000, len := 0
 		loop, 2
 			DllCall("crypt32\CryptBinaryToString", "Ptr",addr, "uint",size, "uint",flag
-			, "Ptr",(A_Index=1?0:(p:=this.Buffer(len*2)).Ptr), "uint*",len)
-		return RegExReplace(StrGet(p.Ptr, len), "\s+")
+			, "Ptr",(A_Index=1?0:(p := this.buffer(len*2)).Ptr), "uint*",len)
+		return regExReplace(StrGet(p.Ptr, len), "\s+")
 	}
 
-	base64tobit(s)
-	{
+	base64tobit(s) {
 		local
-		ListLines % (lls:=A_ListLines)?0:0
-		Chars:="0123456789+/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-		SetFormat, IntegerFast, d
+		listLines % (lls := A_ListLines)?0:0
+		chars := "0123456789+/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+		setformat, IntegerFast, d
 		loop, parse, Chars
-			if InStr(s, A_LoopField, 1)
-			s:=RegExReplace(s, "[" A_LoopField "]", ((i:=A_Index-1)>>5&1)
+			if inStr(s, A_LoopField, 1)
+			s := regExReplace(s, "[" A_LoopField "]", ((i := A_Index-1)>>5&1)
 			. (i>>4&1) . (i>>3&1) . (i>>2&1) . (i>>1&1) . (i&1))
-		s:=RegExReplace(RegExReplace(s,"[^01]+"),"10*$")
-		ListLines % lls
+		s := regExReplace(regExReplace(s,"[^01]+"),"10*$")
+		listLines % lls
 		return s
 	}
 
-	bit2base64(s)
-	{
+	bit2base64(s) {
 		local
-		ListLines % (lls:=A_ListLines)?0:0
-		s:=RegExReplace(s,"[^01]+")
-		s.=SubStr("100000",1,6-Mod(StrLen(s),6))
-		s:=RegExReplace(s,".{6}","|$0")
-		Chars:="0123456789+/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-		SetFormat, IntegerFast, d
+		listLines % (lls := A_ListLines)?0:0
+		s := regExReplace(s,"[^01]+")
+		s.=subStr("100000",1,6-Mod(strLen(s),6))
+		s := regExReplace(s,".{6}","|$0")
+		chars := "0123456789+/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+		setformat, IntegerFast, d
 		loop, parse, Chars
-			s:=StrReplace(s, "|" . ((i:=A_Index-1)>>5&1)
+			s := strReplace(s, "|" . ((i := A_Index-1)>>5&1)
 			. (i>>4&1) . (i>>3&1) . (i>>2&1) . (i>>1&1) . (i&1), A_LoopField)
-		ListLines % lls
+		listLines % lls
 		return s
 	}
 
-	ASCII(s)
-	{
+	ASCII(s) {
 		local
-		if RegExMatch(s, "O)\$(\d+)\.([\w+/]+)", r)
-		{
-			s:=RegExReplace(this.base64tobit(r[2]),".{" r[1] "}","$0`n")
-			s:=StrReplace(StrReplace(s,"0","_"),"1","0")
+		if regExMatch(s, "O)\$(\d+)\.([\w+/]+)", r) {
+			s := regExReplace(this.base64tobit(r[2]),".{" r[1] "}","$0`n")
+			s := strReplace(strReplace(s,"0","_"),"1","0")
 		}
-		else s:=""
+		else s := ""
 		return s
 	}
 	; and Use find().PicLib(Text,1) to add the text library to PicLib()'s Lib,
 	; Use find().PicLib("comment1|comment2|...") to get text images from Lib
 
-	PicLib(comments, add_to_Lib:=0, index:=1)
-	{
+	picLib(comments, add_to_Lib := 0, index := 1) {
 		local
-		(!isObject(this.Lib) && this.Lib:=[]), Lib:=this.Lib
-		, (!Lib.HasKey(index) && Lib[index]:=[]), Lib:=Lib[index]
-		if (add_to_Lib)
-		{
-			re:="O)<([^>\n]*)>[^$\n]+\$[^""\r\n]+"
+		(!isObject(this.Lib) && this.Lib := []), Lib := this.Lib
+		, (!Lib.hasKey(index) && Lib[index]:=[]), Lib := Lib[index]
+		if (add_to_Lib) {
+			re := "O)<([^>\n]*)>[^$\n]+\$[^""\r\n]+"
 			loop, parse, comments, |
-			if RegExMatch(A_LoopField, re, r)
-			{
-				s1:=Trim(r[1]), s2:=""
+			if regExMatch(A_LoopField, re, r) {
+				s1 := trim(r[1]), s2 := ""
 				loop, parse, s1
-				s2.=Format("_{:d}", Ord(A_LoopField))
+				s2.=format("_{:d}", Ord(A_LoopField))
 				(s2!="") && Lib[s2]:=r[0]
 			}
-		}
-		else
-		{
-			Text:=""
+		} else {
+			query := ""
 			loop, parse, comments, |
 			{
-			s1:=Trim(A_LoopField), s2:=""
+			s1 := trim(A_LoopField), s2 := ""
 			loop, parse, s1
-				s2.=Format("_{:d}", Ord(A_LoopField))
-			(Lib.HasKey(s2)) && Text.="|" Lib[s2]
+				s2.=format("_{:d}", Ord(A_LoopField))
+			(Lib.hasKey(s2)) && Text.="|" Lib[s2]
 			}
 			return Text
 		}
 	}
 
-	PicN(Number, index:=1)
-	{
-		return this.PicLib(RegExReplace(Number,".","|$0"), 0, index)
+	picN(Number, index := 1) {
+		return this.PicLib(regExReplace(Number,".","|$0"), 0, index)
 	}
 	; Can't be used in ColorPos mode, because it can cause position errors
 
-	PicX(Text)
-	{
+	picX(Text) {
 		local
-		if !RegExMatch(Text, "O)(<[^$\n]+)\$(\d+)\.([\w+/]+)", r)
+		if !regExMatch(Text, "O)(<[^$\n]+)\$(\d+)\.([\w+/]+)", r)
 			return Text
-		v:=this.base64tobit(r[3]), Text:=""
-		c:=StrLen(StrReplace(v,"0"))<=StrLen(v)//2 ? "1":"0"
-		txt:=RegExReplace(v,".{" r[2] "}","$0`n")
-		While InStr(txt,c)
+		v := this.base64tobit(r[3]), query := ""
+		c := strLen(strReplace(v,"0"))<=strLen(v)//2 ? "1":"0"
+		txt := regExReplace(v,".{" r[2] "}","$0`n")
+		while inStr(txt,c)
 		{
-			While !(txt~="m`n)^" c)
-			txt:=RegExReplace(txt,"m`n)^.")
-			i:=0
-			While (txt~="m`n)^.{" i "}" c)
-			i:=Format("{:d}",i+1)
-			v:=RegExReplace(txt,"m`n)^(.{" i "}).*","$1")
-			txt:=RegExReplace(txt,"m`n)^.{" i "}")
+			while !(txt~="m`n)^" c)
+			txt := regExReplace(txt,"m`n)^.")
+			i := 0
+			while (txt~="m`n)^.{" i "}" c)
+			i := format("{:d}",i+1)
+			v := regExReplace(txt,"m`n)^(.{" i "}).*","$1")
+			txt := regExReplace(txt,"m`n)^.{" i "}")
 			if (v!="")
-			Text.="|" r[1] "$" i "." this.bit2base64(v)
+			text.="|" r[1] "$" i "." this.bit2base64(v)
 		}
 		return Text
 	}
 
-	ScreenShot(x1:=0, y1:=0, x2:=0, y2:=0)
-	{
+	screenShot(x1 := 0, y1 := 0, x2 := 0, y2 := 0) {
 		this.find(x1, y1, x2, y2)
 	}
 	; If the point to get the color is beyond the range of
 	; Screen, it will return White color (0xFFFFFF).
 
-	GetColor(x, y, fmt:=1)
-	{
+	getColor(x, y, fmt := 1) {
 		local
-		bits:=this.GetBitsFromScreen(,,,,0,zx,zy,zw,zh), x-=zx, y-=zy
-		, c:=(x>=0 && x<zw && y>=0 && y<zh && bits.Scan0)
-		? NumGet(bits.Scan0+y*bits.Stride+x*4,"uint") : 0xFFFFFF
-		return (fmt ? Format("0x{:06X}",c&0xFFFFFF) : c)
+		bits := this.getBitsFromScreen(,,,,0,zx,zy,zw,zh), x-=zx, y-=zy
+		, c := (x>=0 && x<zw && y>=0 && y<zh && bits.Scan0)
+		? numGet(bits.Scan0+y*bits.Stride+x*4,"uint") : 0xFFFFFF
+		return (fmt ? format("0x{:06X}",c&0xFFFFFF) : c)
 	}
 
-	SetColor(x, y, color:=0x000000)
-	{
+	setColor(x, y, color := 0x000000) {
 		local
-		bits:=this.GetBitsFromScreen(,,,,0,zx,zy,zw,zh), x-=zx, y-=zy
+		bits := this.getBitsFromScreen(,,,,0,zx,zy,zw,zh), x-=zx, y-=zy
 		if (x>=0 && x<zw && y>=0 && y<zh && bits.Scan0)
-			NumPut(color, bits.Scan0+y*bits.Stride+x*4, "uint")
+			numPut(color, bits.Scan0+y*bits.Stride+x*4, "uint")
 	}
 	; based on the result returned by this.find().
 	; offsetX is the maximum interval between two texts,
@@ -1280,91 +1237,85 @@ class graphicsearch {
 	; overlapW is used to set the width of the overlap.
 	; Return Association array {text:Text, x:X, y:Y, w:W, h:H}
 
-	Ocr(resultObj, offsetX:=20, offsetY:=20, overlapW:=0)
-	{
+	ocr(resultObj, offsetX := 20, offsetY := 20, overlapW := 0) {
 		local
-		ocr_Text:=ocr_X:=ocr_Y:=min_X:=dx:=""
+		ocr_query := ocr_X := ocr_Y := min_X := dx := ""
 		for k,v in resultObj
-			x:=v.1
-			, min_X:=(A_Index=1 || x<min_X ? x : min_X)
-			, max_X:=(A_Index=1 || x>max_X ? x : max_X)
-		While (min_X!="" && min_X<=max_X)
+			x := v.1
+			, min_X := (A_Index=1 || x<min_X ? x : min_X)
+			, max_X := (A_Index=1 || x>max_X ? x : max_X)
+		while (min_X!="" && min_X<=max_X)
 		{
-			LeftX:=""
+			leftX := ""
 			for k,v in resultObj
 			{
-			x:=v.1, y:=v.2
-			if (x<min_X) || (ocr_Y!="" && Abs(y-ocr_Y)>offsetY)
-				Continue
+			x := v.1, y := v.2
+			if (x<min_X) || (ocr_Y!="" && abs(y-ocr_Y)>offsetY)
+				continue
 			if (LeftX="" || x<LeftX)
-				LeftX:=x, LeftY:=y, LeftW:=v.3, LeftH:=v.4, LeftOCR:=v.id
+				leftX := x, LeftY := y, LeftW := v.3, LeftH := v.4, LeftOCR := v.id
 			}
 			if (LeftX="")
 				break
 			if (ocr_X="")
-			ocr_X:=LeftX, min_Y:=LeftY, max_Y:=LeftY+LeftH
+			ocr_X := LeftX, min_Y := LeftY, max_Y := LeftY+LeftH
 			ocr_Text.=(ocr_Text!="" && LeftX>dx ? "*":"") . LeftOCR
-			min_X:=LeftX+LeftW-(overlapW>LeftW//2 ? LeftW//2:overlapW)
-			, dx:=LeftX+LeftW+offsetX, ocr_Y:=LeftY
-			, (LeftY<min_Y && min_Y:=LeftY)
-			, (LeftY+LeftH>max_Y && max_Y:=LeftY+LeftH)
+			min_X := LeftX+LeftW-(overlapW>LeftW//2 ? LeftW//2:overlapW)
+			, dx := LeftX+LeftW+offsetX, ocr_Y := LeftY
+			, (LeftY<min_Y && min_Y := LeftY)
+			, (LeftY+LeftH>max_Y && max_Y := LeftY+LeftH)
 		}
-		(ocr_X="") && ocr_X:=min_Y:=min_X:=max_Y:=0
+		(ocr_X="") && ocr_X := min_Y := min_X := max_Y := 0
 		return {text:ocr_Text, x:ocr_X, y:min_Y, w:min_X-ocr_X, h:max_Y-min_Y}
 	}
 	; and top to bottom, ignore slight height difference
 
-	Sort(resultObj, dy:=10)
-	{
+	sort(resultObj, dy := 10) {
 		local
 		if !isObject(resultObj)
 			return resultObj
-		s:="", n:=150000, ypos:=[]
-		for k,v in resultObj
-		{
-			x:=v.x, y:=v.y, add:=1
+		s := "", n := 150000, ypos := []
+		for k,v in resultObj {
+			x := v.x, y := v.y, add := 1
 			for k1,v1 in ypos
-			if Abs(y-v1)<=dy
-			{
-				y:=v1, add:=0
+			if abs(y-v1)<=dy {
+				y := v1, add := 0
 				break
 			}
 			if (add)
-			ypos.Push(y)
+			ypos.push(y)
 			s.=(y*n+x) "." k "|"
 		}
-		s:=Trim(s,"|")
+		s := trim(s,"|")
 		sort, s, N D|
-		resultObj2:=[]
+		resultObj2 := []
 		loop, parse, s, |
-			resultObj2.Push( resultObj[strSplit(A_LoopField,".")[2]] )
+			resultObj2.push( resultObj[strSplit(A_LoopField,".")[2]] )
 		return resultObj2
 	}
 
-	Sort2(resultObj, px, py)
-	{
+	sort2(resultObj, px, py) {
 		local
 		if !isObject(resultObj)
 			return resultObj
-		s:=""
+		s := ""
 		for k,v in resultObj
 			s.=((v.x-px)**2+(v.y-py)**2) "." k "|"
-		s:=Trim(s,"|")
+		s := trim(s,"|")
 		sort, s, N D|
-		resultObj2:=[]
+		resultObj2 := []
 		loop, parse, s, |
-			resultObj2.Push( resultObj[strSplit(A_LoopField,".")[2]] )
+			resultObj2.push( resultObj[strSplit(A_LoopField,".")[2]] )
 		return resultObj2
 	}
 
-	Sort3(resultObj, dir:=1)
-	{
+	sort3(resultObj, dir := 1) {
 		local
 		if !isObject(resultObj)
 			return resultObj
-		s:="", n:=150000
+		s := "", n := 150000
 		for k,v in resultObj
-			x:=v.1, y:=v.2
+			x := v.1, y := v.2
 			, s.=(dir=1 ? y*n+x
 			: dir=2 ? y*n-x
 			: dir=3 ? -y*n+x
@@ -1373,64 +1324,59 @@ class graphicsearch {
 			: dir=6 ? x*n-y
 			: dir=7 ? -x*n+y
 			: dir=8 ? -x*n-y : y*n+x) "." k "|"
-		s:=Trim(s,"|")
+		s := trim(s,"|")
 		sort, s, N D|
-		resultObj2:=[]
+		resultObj2 := []
 		loop, parse, s, |
-			resultObj2.Push( resultObj[strSplit(A_LoopField,".")[2]] )
+			resultObj2.push( resultObj[strSplit(A_LoopField,".")[2]] )
 		return resultObj2
 	}
 
-	BitmapFromScreen(ByRef x:=0, ByRef y:=0, ByRef w:=0, ByRef h:=0
-	, ScreenShot:=1, ByRef zx:=0, ByRef zy:=0, ByRef zw:=0, ByRef zh:=0)
-	{
+	bitmapFromScreen(ByRef x := 0, ByRef y := 0, ByRef w := 0, ByRef h := 0
+	, ScreenShot := 1, ByRef zx := 0, ByRef zy := 0, ByRef zw := 0, ByRef zh := 0) {
 		local
-		bits:=this.GetBitsFromScreen(x,y,w,h,ScreenShot,zx,zy,zw,zh)
+		bits := this.getBitsFromScreen(x,y,w,h,ScreenShot,zx,zy,zw,zh)
 		if (w<1 || h<1 || !bits.hBM)
 			return
-		hBM:=this.CreateDIBSection(w, h)
+		hBM := this.CreateDIBSection(w, h)
 		this.CopyHBM(hBM, 0, 0, bits.hBM, x-zx, y-zy, w, h, 1)
 		return hBM
 	}
 	; if file = 0 or "", save to Clipboard
 
-	SavePic(file:=0, x1:=0, y1:=0, x2:=0, y2:=0, ScreenShot:=1)
-	{
+	savePic(file := 0, x1 := 0, y1 := 0, x2 := 0, y2 := 0, ScreenShot := 1) {
 		local
-		x1:=this.addZero(x1), y1:=this.addZero(y1), x2:=this.addZero(x2), y2:=this.addZero(y2)
+		x1 := this.addZero(x1), y1 := this.addZero(y1), x2 := this.addZero(x2), y2 := this.addZero(y2)
 		if (x1=0 && y1=0 && x2=0 && y2=0)
-			n:=150000, x:=y:=-n, w:=h:=2*n
+			n := 150000, x := y := -n, w := h := 2*n
 		else
-			x:=min(x1,x2), y:=min(y1,y2), w:=Abs(x2-x1)+1, h:=Abs(y2-y1)+1
-		hBM:=this.BitmapFromScreen(x, y, w, h, ScreenShot)
+			x := min(x1,x2), y := min(y1,y2), w := abs(x2-x1)+1, h := abs(y2-y1)+1
+		hBM := this.BitmapFromScreen(x, y, w, h, ScreenShot)
 		this.SaveBitmapToFile(file, hBM)
 		DllCall("DeleteObject", "Ptr",hBM)
 		}
 		; hBM_or_file can be a bitmap handle or file path, eg: "c:\1.bmp"
 
-	SaveBitmapToFile(file, hBM_or_file, x:=0, y:=0, w:=0, h:=0)
-	{
+	saveBitmapToFile(file, hBM_or_file, x := 0, y := 0, w := 0, h := 0) {
 		local
 		if hBM_or_file is number
-			hBM_or_file:="HBITMAP:*" hBM_or_file
-		if !hBM:=DllCall("CopyImage", "Ptr",LoadPicture(hBM_or_file)
+			hBM_or_file := "HBITMAP:*" hBM_or_file
+		if !hBM := DllCall("CopyImage", "Ptr",LoadPicture(hBM_or_file)
 		, "int",0, "int",0, "int",0, "uint",0x2008)
 			return
-		if (file) || (w!=0 && h!=0)
-		{
+		if (file) || (w!=0 && h!=0) {
 			(w=0 || h=0) && this.GetBitmapWH(hBM, w, h)
-			hBM2:=this.CreateDIBSection(w, -h, bpp:=(file ? 24 : 32))
+			hBM2 := this.CreateDIBSection(w, -h, bpp := (file ? 24 : 32))
 			this.CopyHBM(hBM2, 0, 0, hBM, x, y, w, h)
-			DllCall("DeleteObject", "Ptr",hBM), hBM:=hBM2
+			DllCall("DeleteObject", "Ptr",hBM), hBM := hBM2
 		}
-		VarSetCapacity(dib, dib_size:=(A_PtrSize=8 ? 104:84), 0)
+		varSetCapacity(dib, dib_size := (A_PtrSize=8 ? 104:84), 0)
 		, DllCall("GetObject", "Ptr",hBM, "int",dib_size, "Ptr",&dib)
-		, pbi:=&dib+(bitmap_size:=A_PtrSize=8 ? 32:24)
-		, size:=NumGet(pbi+20, "uint"), pBits:=NumGet(pbi-A_PtrSize, "Ptr")
-		if (!file)
-		{
-			hdib:=DllCall("GlobalAlloc", "uint",2, "Ptr",40+size, "Ptr")
-			pdib:=DllCall("GlobalLock", "Ptr",hdib, "Ptr")
+		, pbi := &dib+(bitmap_size := A_PtrSize=8 ? 32:24)
+		, size := numGet(pbi+20, "uint"), pBits := numGet(pbi-A_PtrSize, "Ptr")
+		if (!file) {
+			hdib := DllCall("GlobalAlloc", "uint",2, "Ptr",40+size, "Ptr")
+			pdib := DllCall("GlobalLock", "Ptr",hdib, "Ptr")
 			DllCall("RtlMoveMemory", "Ptr",pdib, "Ptr",pbi, "Ptr",40)
 			DllCall("RtlMoveMemory", "Ptr",pdib+40, "Ptr",pBits, "Ptr",size)
 			DllCall("GlobalUnlock", "Ptr",hdib)
@@ -1438,29 +1384,22 @@ class graphicsearch {
 			DllCall("EmptyClipboard")
 			DllCall("SetClipboardData", "uint",8, "Ptr",hdib)
 			DllCall("CloseClipboard")
-		}
-		else
-		{
-			if InStr(file,"\") && !FileExist(dir:=RegExReplace(file,"[^\\]*$"))
-			Try FileCreateDir, % dir
-			VarSetCapacity(bf, 14, 0), NumPut(0x4D42, bf, "short")
-			NumPut(54+size, bf, 2, "uint"), NumPut(54, bf, 10, "uint")
-			f:=FileOpen(file, "w"), f.RawWrite(bf, 14)
+		} else {
+			if inStr(file,"\") && !FileExist(dir := regExReplace(file,"[^\\]*$"))
+			try FileCreateDir, % dir
+			varSetCapacity(bf, 14, 0), numPut(0x4D42, bf, "short")
+			numPut(54+size, bf, 2, "uint"), numPut(54, bf, 10, "uint")
+			f := FileOpen(file, "w"), f.RawWrite(bf, 14)
 			, f.RawWrite(pbi+0, 40), f.RawWrite(pBits+0, size), f.Close()
 		}
 		DllCall("DeleteObject", "Ptr",hBM)
 	}
 
-
-
-
-
-	BitmapToWindow(hwnd, x1, y1, hBM, x2, y2, w, h)
-	{
+	bitmapToWindow(hwnd, x1, y1, hBM, x2, y2, w, h) {
 		local
-		mDC:=DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
-		oBM:=DllCall("SelectObject", "Ptr",mDC, "Ptr",hBM, "Ptr")
-		hDC:=DllCall("GetDC", "Ptr",hwnd, "Ptr")
+		mDC := DllCall("CreateCompatibleDC", "Ptr",0, "Ptr")
+		oBM := DllCall("SelectObject", "Ptr",mDC, "Ptr",hBM, "Ptr")
+		hDC := DllCall("GetDC", "Ptr",hwnd, "Ptr")
 		DllCall("BitBlt", "Ptr",hDC, "int",x1, "int",y1, "int",w, "int",h
 			, "Ptr",mDC, "int",x2, "int",y2, "uint",0xCC0020)
 		DllCall("ReleaseDC", "Ptr",hwnd, "Ptr",hDC)
@@ -1468,270 +1407,249 @@ class graphicsearch {
 		DllCall("DeleteDC", "Ptr",mDC)
 	}
 
-	GetTextFromScreen(x1:=0, y1:=0, x2:=0, y2:=0, Threshold:=""
-	, ScreenShot:=1, ByRef rx:="", ByRef ry:="", cut:=1)
+	getTextFromScreen(x1 := 0, y1 := 0, x2 := 0, y2 := 0, Threshold := ""
+	, ScreenShot := 1, ByRef rx := "", ByRef ry := "", cut := 1)
 	{
 		local
-		x1:=this.addZero(x1), y1:=this.addZero(y1), x2:=this.addZero(x2), y2:=this.addZero(y2)
+		x1 := this.addZero(x1), y1 := this.addZero(y1), x2 := this.addZero(x2), y2 := this.addZero(y2)
 		if (x1=0 && y1=0 && x2=0 && y2=0)
-			Try return this.Gui("CaptureS", ScreenShot)
-		setBatchLines, % (bch:=A_BatchLines)?"-1":"-1"
-		x:=min(x1,x2), y:=min(y1,y2), w:=Abs(x2-x1)+1, h:=Abs(y2-y1)+1
-		bits:=this.GetBitsFromScreen(x,y,w,h,ScreenShot,zx,zy)
-		if (w<1 || h<1 || !bits.Scan0)
-		{
+			try return this.Gui("CaptureS", ScreenShot)
+		setBatchLines, % (bch := A_BatchLines)?"-1":"-1"
+		x := min(x1,x2), y := min(y1,y2), w := abs(x2-x1)+1, h := abs(y2-y1)+1
+		bits := this.getBitsFromScreen(x,y,w,h,ScreenShot,zx,zy)
+		if (w<1 || h<1 || !bits.Scan0) {
 			setBatchLines, % bch
 			return
 		}
-		ListLines % (lls:=A_ListLines)?0:0
-		gs:=[]
-		j:=bits.Stride-w*4, p:=bits.Scan0+(y-zy)*bits.Stride+(x-zx)*4-j-4
-		loop, % h + 0*(k:=0)
+		listLines % (lls := A_ListLines)?0:0
+		gs := []
+		j := bits.Stride-w*4, p := bits.Scan0+(y-zy)*bits.Stride+(x-zx)*4-j-4
+		loop, % h + 0*(k := 0)
 		loop, % w + 0*(p+=j)
-			c:=NumGet(0|p+=4,"uint")
+			c := numGet(0|p+=4,"uint")
 			, gs[++k]:=(((c>>16)&0xFF)*38+((c>>8)&0xFF)*75+(c&0xFF)*15)>>7
-		if InStr(Threshold,"**")
-		{
-			Threshold:=StrReplace(Threshold,"*")
+		if inStr(Threshold,"**") {
+			threshold := strReplace(Threshold,"*")
 			if (Threshold="")
-			Threshold:=50
-			s:="", sw:=w, w-=2, h-=2, x++, y++
-			loop, % h + 0*(y1:=0)
+			threshold := 50
+			s := "", sw := w, w-=2, h-=2, x++, y++
+			loop, % h + 0*(y1 := 0)
 			loop, % w + 0*(y1++)
-			i:=y1*sw+A_Index+1, j:=gs[i]+Threshold
+			i := y1*sw+A_Index+1, j := gs[i]+Threshold
 			, s.=( gs[i-1]>j || gs[i+1]>j
 			|| gs[i-sw]>j || gs[i+sw]>j
 			|| gs[i-sw-1]>j || gs[i-sw+1]>j
 			|| gs[i+sw-1]>j || gs[i+sw+1]>j ) ? "1":"0"
-			Threshold:="**" Threshold
-		}
-		else
-		{
-			Threshold:=StrReplace(Threshold,"*")
-			if (Threshold="")
-			{
-			pp:=[]
+			threshold := "**" Threshold
+		} else {
+			threshold := strReplace(Threshold,"*")
+			if (Threshold="") {
+			pp := []
 			loop, 256
 				pp[A_Index-1]:=0
 			loop, % w*h
 				pp[gs[A_Index]]++
-			IP0:=IS0:=0
+			iP0 := IS0 := 0
 			loop, 256
-				k:=A_Index-1, IP0+=k*pp[k], IS0+=pp[k]
-			Threshold:=Floor(IP0/IS0)
+				k := A_Index-1, IP0+=k*pp[k], IS0+=pp[k]
+			threshold := floor(IP0/IS0)
 			loop, 20
 			{
-				LastThreshold:=Threshold
-				IP1:=IS1:=0
+				lastThreshold := Threshold
+				iP1 := IS1 := 0
 				loop, % LastThreshold+1
-				k:=A_Index-1, IP1+=k*pp[k], IS1+=pp[k]
-				IP2:=IP0-IP1, IS2:=IS0-IS1
+				k := A_Index-1, IP1+=k*pp[k], IS1+=pp[k]
+				iP2 := IP0-IP1, IS2 := IS0-IS1
 				if (IS1!=0 && IS2!=0)
-				Threshold:=Floor((IP1/IS1+IP2/IS2)/2)
+				threshold := floor((IP1/IS1+IP2/IS2)/2)
 				if (Threshold=LastThreshold)
 				break
 			}
 			}
-			s:=""
+			s := ""
 			loop, % w*h
 			s.=gs[A_Index]<=Threshold ? "1":"0"
-			Threshold:="*" Threshold
+			threshold := "*" Threshold
 		}
-		ListLines % lls
-		w:=Format("{:d}",w), CutUp:=CutDown:=0
-		if (cut=1)
-		{
-			re1:="(^0{" w "}|^1{" w "})"
-			re2:="(0{" w "}$|1{" w "}$)"
-			While (s~=re1)
-			s:=RegExReplace(s,re1), CutUp++
-			While (s~=re2)
-			s:=RegExReplace(s,re2), CutDown++
+		listLines % lls
+		w := format("{:d}",w), CutUp := CutDown := 0
+		if (cut=1) {
+			re1 := "(^0{" w "}|^1{" w "})"
+			re2 := "(0{" w "}$|1{" w "}$)"
+			while (s~=re1)
+			s := regExReplace(s,re1), CutUp++
+			while (s~=re2)
+			s := regExReplace(s,re2), CutDown++
 		}
-		rx:=x+w//2, ry:=y+CutUp+(h-CutUp-CutDown)//2
-		s:="|<>" Threshold "$" w "." this.bit2base64(s)
+		rx := x+w//2, ry := y+CutUp+(h-CutUp-CutDown)//2
+		s := "|<>" Threshold "$" w "." this.bit2base64(s)
 		setBatchLines, % bch
 		return s
 	}
 	; Take a Screenshot before using it: find().ScreenShot()
 
-	WaitChange(time:=-1, x1:=0, y1:=0, x2:=0, y2:=0)
-	{
+	waitChange(time := -1, x1 := 0, y1 := 0, x2 := 0, y2 := 0) {
 		local
-		hash:=this.GetPicHash(x1, y1, x2, y2, 0)
-		time:=this.addZero(time), timeout:=A_TickCount+Round(time*1000)
-		Loop
+		hash := this.getPicHash(x1, y1, x2, y2, 0)
+		time := this.addZero(time), timeout := A_TickCount+round(time*1000)
+		loop
 		{
-			if (hash!=this.GetPicHash(x1, y1, x2, y2, 1))
+			if (hash!=this.getPicHash(x1, y1, x2, y2, 1))
 				return 1
 			if (time>=0 && A_TickCount>=timeout)
 				break
-			Sleep 10
+			sleep 10
 		}
 		return 0
 	}
 
-	WaitNotChange(time:=1, timeout:=30, x1:=0, y1:=0, x2:=0, y2:=0)
-	{
+	waitNotChange(time := 1, timeout := 30, x1 := 0, y1 := 0, x2 := 0, y2 := 0) {
 		local
-		oldhash:="", time:=this.addZero(time)
-		, timeout:=A_TickCount+Round(this.addZero(timeout)*1000)
-		Loop
+		oldhash := "", time := this.addZero(time)
+		, timeout := A_TickCount+round(this.addZero(timeout)*1000)
+		loop
 		{
-			hash:=this.GetPicHash(x1, y1, x2, y2, 1), t:=A_TickCount
+			hash := this.getPicHash(x1, y1, x2, y2, 1), t := A_TickCount
 			if (hash!=oldhash)
-			oldhash:=hash, timeout2:=t+Round(time*1000)
+			oldhash := hash, timeout2 := t+round(time*1000)
 			if (t>=timeout2)
 			return 1
 			if (t>=timeout)
 			return 0
-			Sleep 100
+			sleep 100
 		}
 	}
 
-	GetPicHash(x1:=0, y1:=0, x2:=0, y2:=0, ScreenShot:=1)
-	{
+	getPicHash(x1 := 0, y1 := 0, x2 := 0, y2 := 0, ScreenShot := 1) {
 		local
-		static init:=DllCall("LoadLibrary", "Str","ntdll", "Ptr")
-		x1:=this.addZero(x1), y1:=this.addZero(y1), x2:=this.addZero(x2), y2:=this.addZero(y2)
+		static init := DllCall("LoadLibrary", "Str","ntdll", "Ptr")
+		x1 := this.addZero(x1), y1 := this.addZero(y1), x2 := this.addZero(x2), y2 := this.addZero(y2)
 		if (x1=0 && y1=0 && x2=0 && y2=0)
-			n:=150000, x:=y:=-n, w:=h:=2*n
+			n := 150000, x := y := -n, w := h := 2*n
 		else
-			x:=min(x1,x2), y:=min(y1,y2), w:=Abs(x2-x1)+1, h:=Abs(y2-y1)+1
-		bits:=this.GetBitsFromScreen(x,y,w,h,ScreenShot,zx,zy), x-=zx, y-=zy
+			x := min(x1,x2), y := min(y1,y2), w := abs(x2-x1)+1, h := abs(y2-y1)+1
+		bits := this.getBitsFromScreen(x,y,w,h,ScreenShot,zx,zy), x-=zx, y-=zy
 		if (w<1 || h<1 || !bits.Scan0)
 			return 0
-		hash:=0, Stride:=bits.Stride, p:=bits.Scan0+(y-1)*Stride+x*4, w*=4
-		ListLines % (lls:=A_ListLines)?0:0
+		hash := 0, Stride := bits.Stride, p := bits.Scan0+(y-1)*Stride+x*4, w*=4
+		listLines % (lls := A_ListLines)?0:0
 		loop, % h
-			hash:=(hash*31+DllCall("ntdll\RtlComputeCrc32", "uint",0
+			hash := (hash*31+DllCall("ntdll\RtlComputeCrc32", "uint",0
 			, "Ptr",p+=Stride, "uint",w, "uint"))&0xFFFFFFFF
-		ListLines % lls
+		listLines % lls
 		return hash
 	}
 
-	WindowToScreen(ByRef x, ByRef y, x1, y1, id:="")
-	{
+	windowToScreen(ByRef x, ByRef y, x1, y1, id := "") {
 		local
 		if (!id)
-			WinGet, id, ID, A
-		VarSetCapacity(rect, 16, 0)
+			winGet, id, ID, A
+		varSetCapacity(rect, 16, 0)
 		, DllCall("GetWindowRect", "Ptr",id, "Ptr",&rect)
-		, x:=x1+NumGet(rect,"int"), y:=y1+NumGet(rect,4,"int")
+		, x := x1+numGet(rect,"int"), y := y1+numGet(rect,4,"int")
 	}
 
-	ScreenToWindow(ByRef x, ByRef y, x1, y1, id:="")
-	{
+	screenToWindow(ByRef x, ByRef y, x1, y1, id := "") {
 		local
-		this.WindowToScreen(dx, dy, 0, 0, id), x:=x1-dx, y:=y1-dy
+		this.windowToScreen(dx, dy, 0, 0, id), x := x1-dx, y := y1-dy
 	}
 
-	ClientToScreen(ByRef x, ByRef y, x1, y1, id:="")
-	{
+	clientToScreen(ByRef x, ByRef y, x1, y1, id := "") {
 		local
 		if (!id)
-			WinGet, id, ID, A
-		VarSetCapacity(pt, 8, 0), NumPut(0, pt, "int64")
-		, DllCall("ClientToScreen", "Ptr",id, "Ptr",&pt)
-		, x:=x1+NumGet(pt,"int"), y:=y1+NumGet(pt,4,"int")
+			winGet, id, ID, A
+		varSetCapacity(pt, 8, 0), numPut(0, pt, "int64")
+		, DllCall("clientToScreen", "Ptr",id, "Ptr",&pt)
+		, x := x1+numGet(pt,"int"), y := y1+numGet(pt,4,"int")
 	}
 
-	ScreenToClient(ByRef x, ByRef y, x1, y1, id:="")
-	{
+	screenToClient(ByRef x, ByRef y, x1, y1, id := "") {
 		local
-		this.ClientToScreen(dx, dy, 0, 0, id), x:=x1-dx, y:=y1-dy
+		this.clientToScreen(dx, dy, 0, 0, id), x := x1-dx, y := y1-dy
 		}
 		; But like built-in command PixelGetColor using CoordMode Settings
 
-		PixelGetColor(x, y, ScreenShot:=1, id:="")
-		{
+		pixelGetColor(x, y, ScreenShot := 1, id := "") {
 		if (A_CoordModePixel="Window")
-			this.WindowToScreen(x, y, x, y, id)
+			this.windowToScreen(x, y, x, y, id)
 		else if (A_CoordModePixel="Client")
-			this.ClientToScreen(x, y, x, y, id)
+			this.clientToScreen(x, y, x, y, id)
 		if (ScreenShot)
 			this.ScreenShot(x, y, x, y)
 		return this.GetColor(x, y)
 	}
-	; But like built-in command ImageSearch using CoordMode Settings
+	; But like built-in command imageSearch using CoordMode Settings
 	; ImageFile can use "*n *TransBlack/White/RRGGBB-DRDGDB... d:\a.bmp"
 
-	ImageSearch(ByRef rx:="", ByRef ry:="", x1:=0, y1:=0, x2:=0, y2:=0
-	, ImageFile:="", ScreenShot:=1, FindAll:=0, dir:=1)
-	{
+	imageSearch(ByRef rx := "", ByRef ry := "", x1 := 0, y1 := 0, x2 := 0, y2 := 0
+	, ImageFile := "", ScreenShot := 1, FindAll := 0, dir := 1) {
 		local
-		dx:=dy:=0
+		dx := dy := 0
 		if (A_CoordModePixel="Window")
-			this.WindowToScreen(dx, dy, 0, 0)
+			this.windowToScreen(dx, dy, 0, 0)
 		else if (A_CoordModePixel="Client")
-			this.ClientToScreen(dx, dy, 0, 0)
-		text:=""
+			this.clientToScreen(dx, dy, 0, 0)
+		text := ""
 		loop, parse, ImageFile, |
-		if (v:=Trim(A_LoopField))!=""
-		{
-			text.=InStr(v,"$") ? "|" v : "|##"
-			. (RegExMatch(v, "O)(^|\s)\*(\d+)\s", r)
-			? Format("{:06X}", r[2]<<16|r[2]<<8|r[2]) : "000000")
-			. (RegExMatch(v, "Oi)(^|\s)\*Trans(\S+)\s", r) ? "/" Trim(r[2],"/"):"")
-			. "$" Trim(RegExReplace(v,"(^|\s)\*\S+"))
+		if (v := trim(A_LoopField))!="" {
+			text.=inStr(v,"$") ? "|" v : "|##"
+			. (regExMatch(v, "O)(^|\s)\*(\d+)\s", r)
+			? format("{:06X}", r[2]<<16|r[2]<<8|r[2]) : "000000")
+			. (regExMatch(v, "Oi)(^|\s)\*Trans(\S+)\s", r) ? "/" trim(r[2],"/"):"")
+			. "$" trim(regExReplace(v,"(^|\s)\*\S+"))
 		}
-		x1:=this.addZero(x1), y1:=this.addZero(y1), x2:=this.addZero(x2), y2:=this.addZero(y2)
+		x1 := this.addZero(x1), y1 := this.addZero(y1), x2 := this.addZero(x2), y2 := this.addZero(y2)
 		if (x1=0 && y1=0 && x2=0 && y2=0)
-			n:=150000, x1:=y1:=-n, x2:=y2:=n
-		if (resultObj:=this.find(x1+dx, y1+dy, x2+dx, y2+dy
-			, 0, 0, text, ScreenShot, FindAll,,,, dir))
-		{
+			n := 150000, x1 := y1 := -n, x2 := y2 := n
+		if (resultObj := this.find(x1+dx, y1+dy, x2+dx, y2+dy
+			, 0, 0, text, ScreenShot, FindAll,,,, dir)) {
 			for k,v in resultObj
 			v.1-=dx, v.2-=dy, v.x-=dx, v.y-=dy
-			rx:=resultObj[1].1, ry:=resultObj[1].2, ErrorLevel:=0
+			rx := resultObj[1].1, ry := resultObj[1].2, ErrorLevel := 0
 			return resultObj
-		}
-		else
-		{
-			rx:=ry:="", ErrorLevel:=1
+		} else {
+			rx := ry := "", ErrorLevel := 1
 			return 0
 		}
 	}
-	; But like built-in command PixelSearch using CoordMode Settings
+	; But like built-in command pixelSearch using CoordMode Settings
 	; ColorID can use "RRGGBB-DRDGDB|RRGGBB-DRDGDB", Variation in 0-255
 
-	PixelSearch(ByRef rx:="", ByRef ry:="", x1:=0, y1:=0, x2:=0, y2:=0
-	, ColorID:="", Variation:=0, ScreenShot:=1, FindAll:=0, dir:=1)
+	pixelSearch(ByRef rx := "", ByRef ry := "", x1 := 0, y1 := 0, x2 := 0, y2 := 0
+	, ColorID := "", Variation := 0, ScreenShot := 1, FindAll := 0, dir := 1)
 	{
 		local
-		n:=this.addZero(Variation), text:=Format("##{:06X}$0/0/", n<<16|n<<8|n)
-		. Trim(StrReplace(ColorID, "|", "/"), "- /")
-		return this.ImageSearch(rx, ry, x1, y1, x2, y2, text, ScreenShot, FindAll, dir)
+		n := this.addZero(Variation), text := format("##{:06X}$0/0/", n<<16|n<<8|n)
+		. trim(strReplace(ColorID, "|", "/"), "- /")
+		return this.imageSearch(rx, ry, x1, y1, x2, y2, text, ScreenShot, FindAll, dir)
 	}
 	; ColorID can use "RRGGBB-DRDGDB|RRGGBB-DRDGDB", Variation in 0-255
 
-	PixelCount(x1:=0, y1:=0, x2:=0, y2:=0, ColorID:="", Variation:=0, ScreenShot:=1)
-	{
+	pixelCount(x1 := 0, y1 := 0, x2 := 0, y2 := 0, ColorID := "", Variation := 0, ScreenShot := 1) {
 		local
-		x1:=this.addZero(x1), y1:=this.addZero(y1), x2:=this.addZero(x2), y2:=this.addZero(y2)
+		x1 := this.addZero(x1), y1 := this.addZero(y1), x2 := this.addZero(x2), y2 := this.addZero(y2)
 		if (x1=0 && y1=0 && x2=0 && y2=0)
-			n:=150000, x:=y:=-n, w:=h:=2*n
+			n := 150000, x := y := -n, w := h := 2*n
 		else
-			x:=min(x1,x2), y:=min(y1,y2), w:=Abs(x2-x1)+1, h:=Abs(y2-y1)+1
-		bits:=this.GetBitsFromScreen(x,y,w,h,ScreenShot,zx,zy), x-=zx, y-=zy
-		sum:=0, VarSetCapacity(s1,4), VarSetCapacity(s0,4), VarSetCapacity(ss,w*h)
-		ini:={ bits:bits, ss:&ss, s1:&s1, s0:&s0
+			x := min(x1,x2), y := min(y1,y2), w := abs(x2-x1)+1, h := abs(y2-y1)+1
+		bits := this.getBitsFromScreen(x,y,w,h,ScreenShot,zx,zy), x-=zx, y-=zy
+		sum := 0, varSetCapacity(s1,4), varSetCapacity(s0,4), varSetCapacity(ss,w*h)
+		ini := { bits:bits, ss:&ss, s1:&s1, s0:&s0
 			, err1:0, err0:0, allpos_max:0, zoomW:1, zoomH:1 }
-		n:=this.addZero(Variation), text:=Format("##{:06X}$0/0/", n<<16|n<<8|n)
-		. Trim(StrReplace(ColorID, "|", "/"), "- /")
-		if isObject(j:=this.PicInfo(text))
-			sum:=this.PicFind(ini, j, 1, x, y, w, h, 0)
+		n := this.addZero(Variation), text := format("##{:06X}$0/0/", n<<16|n<<8|n)
+		. trim(strReplace(ColorID, "|", "/"), "- /")
+		if isObject(j := this.PicInfo(text))
+			sum := this.PicFind(ini, j, 1, x, y, w, h, 0)
 		return sum
 	}
 	; ColorID can use "RRGGBB1@0.8|RRGGBB2-DRDGDB2"
 	; Count is the quantity within the range that must meet the criteria
 
-	ColorBlock(ColorID, w, h, Count)
-	{
+	colorBlock(ColorID, w, h, Count) {
 		local
-		Text:="|<>[" (1-Count/(w*h)) ",1]"
-		. Trim(StrReplace(ColorID,"|","/"),"- /") . Format("${:d}.",w)
-		. this.bit2base64(StrReplace(Format(Format("{{}:0{:d}d{}}",w*h),0),"0","1"))
+		query := "|<>[" (1-Count/(w*h)) ",1]"
+		. trim(strReplace(ColorID,"|","/"),"- /") . format("${:d}.",w)
+		. this.bit2base64(strReplace(format(format("{{}:0{:d}d{}}",w*h),0),"0","1"))
 		return Text
 	}
 }
