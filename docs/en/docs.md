@@ -229,9 +229,11 @@ Visually display the locations of search results on the screen. It takes in a `r
 | Argument       | Type    | Description |
 |----------------|---------|-------------|
 | `resultsObject`| object  | The GraphicSearch results object. |
-| `options`      | object  | The options object. Default: `{showlabels: true, timeout: 4000}`. |
-| `options.showlabels` | number  | Whether or not to display labels. Default: `1` |
-| `options.timeout`    | number  | The ammount of time in milliseconds to hide the search results on screen. Default: `4000` |
+| `options`      | object  | The options object. Default: `{showBox:true, showLabel:true, timeout:4000, color:"0b87da"}`. |
+| `options.showBox`		| number  | Whether or not to display boxes. Default: `1` |
+| `options.showLabel`	| number  | Whether or not to display labels. Default: `1` |
+| `options.timeout`		| number  | The ammount of time in milliseconds to hide the search results on screen. Default: `4000` |
+| `options.color`		| number  | The color use on screen. Default: `"0b87da"` |
 
 
 #### Returns
@@ -285,4 +287,6 @@ ocrResults := oGraphicSearch.ocr(resultObj, 30, 20, 10)
 msgBox % "OCR Text: " ocrResults.text "`n" 
 	. "Bounding Box - X: " ocrResults.x " Y: " ocrResults.y 
 	. " Width: " ocrResults.w " Height: " ocrResults.h
+; => "OCR Text: HelloWorld"
+; => "Bounding Box - X: 300 Y: 200 Width: 110 Height: 30"
 ```
