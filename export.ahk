@@ -204,7 +204,7 @@ class graphicsearch {
 		; apply defaults
 		param_options := this._merge({showBox:true, showLabel:true, timeout:4000, color:"0b87da"}, param_options)
 		; convert if width/height object
-		param_resultObj := this._ocrObjToStandard(param_resultObj)
+		param_resultObj := this._nonStandardConvert(param_resultObj)
 		; Check if param_resultObj is a single object, cast it to an array if necessary
 		if !isObject(param_resultObj[1]) {
 			; Cast single result to an array
@@ -275,7 +275,7 @@ class graphicsearch {
 	_drawBoxOnScreen(para_text, para_options) {
 		try {
 			; apply defaults
-			para_options := this._merge({x: 100, y: 100, timeout: 4000}, para_options)
+			; para_options := this._merge({x: 100, y: 100, timeout: 4000}, para_options)
 
 			; create unique name and start timeout timer
 			l_name := this._hash([para_text, para_options])
@@ -354,28 +354,17 @@ class graphicsearch {
 		return mergedObj
 	}
 
-	_ocrObjToStandard(inputObj) {
+	_nonStandardConvert(inputObj) {
 		local
 		if (inputObj.hasKey("h")) {
-			; Extract properties from the input object
-			centerX := inputObj.x
-			centerY := inputObj.y
-			height := inputObj.h
-			width := inputObj.w
-			id := inputObj.text
-		
-			; Calculate top-left and bottom-right coordinates
-			topLeftX := centerX - (width // 2)
-			topLeftY := centerY - (height // 2)
-			bottomRightX := centerX + (width // 2)
-			bottomRightY := centerY + (height // 2)
-		
-			; Create the transformed object
-			outputObj := {1: topLeftX, 2: topLeftY, 3: bottomRightX, 4: bottomRightY, "x": centerX, "y": centerY, "id": id}
-			return [outputObj]
+			; Calculate top-left coordinates
+			topLeftX := inputObj.x
+			topLeftY := inputObj.y
+			return [{1: topLeftX, 2: topLeftY, 3: inputObj.w, 4: inputObj.h, "id": inputObj.text}]
 		}
 		return inputObj
 	}
+	
 
 	addZero(i) {
 		if i is number
@@ -1236,38 +1225,48 @@ class graphicsearch {
 	; offsetY is the maximum height difference between two texts.
 	; overlapW is used to set the width of the overlap.
 	; Return Association array {text:Text, x:X, y:Y, w:W, h:H}
-
-	ocr(resultObj, offsetX := 20, offsetY := 20, overlapW := 0) {
+	resultMerge(resultsArr, offsetX:=20, offsetY:=20, overlapW:=0) {
 		local
-		ocr_query := ocr_X := ocr_Y := min_X := dx := ""
-		for k,v in resultObj
-			x := v.1
-			, min_X := (A_Index=1 || x<min_X ? x : min_X)
-			, max_X := (A_Index=1 || x>max_X ? x : max_X)
-		while (min_X!="" && min_X<=max_X)
-		{
-			leftX := ""
-			for k,v in resultObj
-			{
-			x := v.1, y := v.2
-			if (x<min_X) || (ocr_Y!="" && abs(y-ocr_Y)>offsetY)
-				continue
-			if (LeftX="" || x<LeftX)
-				leftX := x, LeftY := y, LeftW := v.3, LeftH := v.4, LeftOCR := v.id
-			}
-			if (LeftX="")
-				break
-			if (ocr_X="")
-			ocr_X := LeftX, min_Y := LeftY, max_Y := LeftY+LeftH
-			ocr_Text.=(ocr_Text!="" && LeftX>dx ? "*":"") . LeftOCR
-			min_X := LeftX+LeftW-(overlapW>LeftW//2 ? LeftW//2:overlapW)
-			, dx := LeftX+LeftW+offsetX, ocr_Y := LeftY
-			, (LeftY<min_Y && min_Y := LeftY)
-			, (LeftY+LeftH>max_Y && max_Y := LeftY+LeftH)
+		mergeStr := "", min_X := "", max_X := "", min_Y := "", max_Y := ""
+		topLeftX := topLeftY := ""
+		bottomRightX := bottomRightY := ""
+		; To keep track of the last text segment's x position
+		lastX := 0
+	
+		; Iterate through each result to find min/max coordinates
+		For k, value in resultsArr {
+			x := value.1
+			y := value.2
+			w := value.3
+			h := value.4
+	
+			; Update bounding box coordinates
+			if (topLeftX = "" || x < topLeftX)
+				topLeftX := x
+			if (topLeftY = "" || y < topLeftY)
+				topLeftY := y
+			if (bottomRightX = "" || x + w > bottomRightX)
+				bottomRightX := x + w
+			if (bottomRightY = "" || y + h > bottomRightY)
+				bottomRightY := y + h
+	
+			; Build the merged text result
+			if (mergeStr != "" && x - lastX > offsetX)
+				mergeStr .= "*"  ; Add "*" if there's a gap larger than offsetX
+			mergeStr .= value.id
+	
+			; Update lastX position for next check
+			lastX := x + w
 		}
-		(ocr_X="") && ocr_X := min_Y := min_X := max_Y := 0
-		return {text:ocr_Text, x:ocr_X, y:min_Y, w:min_X-ocr_X, h:max_Y-min_Y}
+	
+		; Calculate final width and height
+		finalWidth := bottomRightX - topLeftX
+		finalHeight := bottomRightY - topLeftY
+	
+		return {text: mergeStr, x: topLeftX, y: topLeftY, w: finalWidth, h: finalHeight}
 	}
+
+
 	; and top to bottom, ignore slight height difference
 
 	sort(resultObj, dy := 10) {
