@@ -252,22 +252,22 @@ oGraphicSearch.showMatches(resultsObj, {showlabels: false, timeout: 60000}}]
 
 # Misc
 
-## .ocr
-> .ocr(resultObj, offsetX := 20, offsetY := 20, overlapW := 0)
+## .resultMerge
+> .resultMerge(resultObj, offsetX := 20, offsetY := 20, overlapW := 0)
 
 #### Arguments
 | Parameter | Type   | Default Value | Description |
 |-----------|--------|---------------|-------------|
-| resultObj | Object | N/A           | The GraphicSearch result object containing the search results to process.    |
-| offsetX   | number | 20            | The horizontal offset in pixels between adjacent OCR results.                |
-| offsetY   | number | 20            | The vertical offset in pixels between adjacent OCR results.                  |
+| resultObj | Object | N/A           | The GraphicSearch results object containing the search results to process.   |
+| offsetX   | number | 20            | The horizontal offset in pixels between adjacent mergable results.           |
+| offsetY   | number | 20            | The vertical offset in pixels between adjacent mergable results.             |
 | overlapW  | number | 0             | The overlap width in pixels. Sets the allowed horizontal overlap between OCR blocks. |
 
 #### Returns
 | Type   | Description |
 |--------|-------------|
 | Object | Returns an object containing the combined OCR text and bounding box dimensions of the text. The object includes: |
-|        | `text`: The concatenated OCR text.                                        |
+|        | `text`: The concatenated id string.                                       |
 |        | `x`: The x-coordinate of the bounding box's upper-left corner.            |
 |        | `y`: The y-coordinate of the bounding box's upper-left corner.            |
 |        | `w`: The width of the bounding box.                                       |
@@ -280,13 +280,13 @@ resultObj := [{1:300, 2:200, 3:50, 4:30, id:"Hello"}
 	, {1:360, 2:200, 3:60, 4:30, id:"World"}
 	, {1:900, 2:250, 3:80, 4:40, id:"OCR"}]
 
-; Extract OCR text with custom offsets
-ocrResults := oGraphicSearch.ocr(resultObj, 30, 20, 10)
+; Extract text with custom offsets
+merged := oGraphicSearch.resultMerge(resultObj, 30)
 
 ; Output the OCR text and bounding box info
-msgBox % "OCR Text: " ocrResults.text "`n" 
-	. "Bounding Box - X: " ocrResults.x " Y: " ocrResults.y 
-	. " Width: " ocrResults.w " Height: " ocrResults.h
-; => "OCR Text: HelloWorld"
+msgBox % "Text: " merged.text "`n" 
+	. "Bounding Box - X: " merged.x " Y: " merged.y 
+	. " Width: " merged.w " Height: " merged.h
+; => "Text: HelloWorld"
 ; => "Bounding Box - X: 300 Y: 200 Width: 110 Height: 30"
 ```
