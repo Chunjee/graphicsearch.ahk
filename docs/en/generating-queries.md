@@ -11,7 +11,7 @@ Use "Capture" button and right click twice over the image your ahk script would 
 
 <br>
 
-GraphicSearch works great on text or images. We'll use text for this example as it will have a stark difference between forground and background. The [tutorial](/tutorial) offers more image-centric examples.
+GraphicSearch works great on text or images. We'll use text for this example as it will have a stark difference between forground and background. The [tutorial](/en/tutorial) offers more image-centric examples.
 
 ![GraphicSearch capture](https://chunjee.github.io/graphicsearch.ahk/assets/gui_capturetext.jpg)
 
