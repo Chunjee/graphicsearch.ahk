@@ -35,7 +35,7 @@ oGraphicSearch.scan(pizzaGraphic, 0, 0, 600, 600, false)
 oGraphicSearch.find(0, 0, 600, 600, 0, 0, pizzaGraphic, 1, false)
 ```
 
-See [Documentation](/en/documentation) for more details on all methods.
+See [Documentation](/en/docs) for more details on all methods.
 
 
 <br>
