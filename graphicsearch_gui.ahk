@@ -2438,7 +2438,7 @@ if (!A_IsCompiled && A_LineFile=A_ScriptFullPath)
 	Case "MakeMainWindow":
 		Try FindText_Main.Destroy()
 		FindText_Main:=_Gui:=Gui()
-		_Gui.Opt("+LastFound +AlwaysOnTop -DPIScale")
+		_Gui.Opt("+LastFound -DPIScale")
 		_Gui.MarginX:=15, _Gui.MarginY:=10
 		_Gui.BackColor:=WindowColor
 		_Gui.SetFont("s12", "Verdana")
@@ -3258,22 +3258,12 @@ if (!A_IsCompiled && A_LineFile=A_ScriptFullPath)
 		}
 		x:=nX+CutLeft+(nW-CutLeft-CutRight)//2
 		y:=nY+CutUp+(nH-CutUp-CutDown)//2
-		s:=StrReplace(s, "Text.=", "Text:="), r:=StrSplit(Lang["s8"] "|||||||", "|")
-		s:="`nt1:=A_TickCount, Text:=X:=Y:=""""`n" s
-		. "`nif (ok:=graphicsearch(X, Y, " x "-150000, "
-		. y "-150000, " x "+150000, " y "+150000, 0, 0, Text))"
-		. "`n{"
-		. "`n  `; graphicsearch()." . "Click(" . "X, Y, ""L"")"
-		. "`n}`n"
-		. "`n`; ok:=graphicsearch(X:=""wait"", Y:=3, 0,0,0,0,0,0,Text)    `; " r[7]
-		. "`n`; ok:=graphicsearch(X:=""wait0"", Y:=-1, 0,0,0,0,0,0,Text)  `; " r[8]
-		. "`n`nMsgBox, 4096, Tip, `% """ r[1] ":``t"" (IsObject(ok)?ok.Length():ok)"
-		. "`n  . ""``n``n" r[2] ":``t"" (A_TickCount-t1) "" " r[3] """"
-		. "`n  . ""``n``n" r[4] ":``t"" X "", "" Y"
-		. "`n  . ""``n``n" r[5] ":``t<"" (IsObject(ok)?ok[1].id:"""") "">""`n"
-		. "`nTry For i,v in ok  `; ok " r[6] " ok:=graphicsearch().ok"
-		. "`n  if (i<=2)"
-		. "`n    graphicsearch().MouseTip(ok[i].x, ok[i].y)`n"
+		s:=StrReplace(s, "Text.=", "query := "), r:=StrSplit(Lang["s8"] "|||||||", "|")
+		s:="`; #include %A_ScriptDir%\..\node_modules"
+		. "`n; #include graphicsearch.ahk\export.ahk"
+		. "`n" s
+		. "`noGraphicSearch := new graphicsearch"
+		. "`nresultObj := oGraphicSearch.search(query)`n`n"
 		Event:=cmd, Result:=s
 		_Gui.Hide()
 		return

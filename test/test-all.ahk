@@ -1,7 +1,7 @@
 
 #Include %A_ScriptDir%\..\export.ahk
 #Include %A_ScriptDir%\..\node_modules
-#Include unit-testing.ahk\export.ahk
+#Include expect.ahk\export.ahk
 
 #Requires autohotkey v1.1
 #NoTrayIcon
@@ -11,7 +11,9 @@
 SetBatchLines, -1
 
 oGraphicSearch := new graphicsearch()
-assert := new unittesting()
+assert := new expect()
+
+
 
 ; this testing should be performed with image.png open in mspaint. 1920x1080 if it matters
 
@@ -66,7 +68,8 @@ if (result1) {
 	assert.test(threeResults[5].id, "pizza")
 	assert.test(threeResults[6].id, "spagg")
 	assert.test(threeResults[7].id, "drink")
-	oGraphicSearch.showMatches(threeResults, {timeout: 60000, showlabels: 1})
+	oGraphicSearch.showMatches(threeResults, {showBox: false, showLabel: true})
+	oGraphicSearch.showMatches(threeResults[4], {showBox: true, showLabel: true})
 
 
 	assert.group(".find")
@@ -88,8 +91,9 @@ if (result1) {
 	resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :2000, "y" :2000}
 				  , {1: 1215, 2: 407, 3: 22, 4: 10, "id": "HumanReadableTag", "x" :1226, "y" :412}]
 	resultsObj := oGraphicSearch.resultSortDistance(resultsObj, screenSizeX, screenSizeY)
-	assert.test(resultsObj[1].distance, 936)
-	assert.test(resultsObj[2].distance, 952)
+	assert.test(resultsObj[1].distance, 923)
+	assert.test(resultsObj[2].distance, 963)
+	assert.notEqual(resultsObj[resultsObj.count()], "")
 
 	; check that drink is closest to a spaggetti
 	assert.label("drink is closest to spagg")
@@ -107,12 +111,12 @@ if (result1) {
 	resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
 				, {1: 1215, 2: 407, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 	resultsObj0 := oGraphicSearch.resultSortDistance(resultsObj, screenSizeX, screenSizeY)
-	assert.test(resultsObj0[1].distance, 936)
-	assert.test(resultsObj0[2].distance, 952)
+	assert.test(resultsObj0[1].distance, 923)
+	assert.test(resultsObj0[2].distance, 963)
 
 	resultsObj1 := oGraphicSearch.resultSortDistance(resultsObj, screenSizeX, screenSizeY)
-	assert.test(resultsObj1[1].distance, 936)
-	assert.test(resultsObj1[2].distance, 952)
+	assert.test(resultsObj1[1].distance, 923)
+	assert.test(resultsObj1[2].distance, 963)
 
 
 	assert.group("Unsuccessful searches")
@@ -127,6 +131,16 @@ if (result1) {
 	assert.label("change noMatchVal")
 	oGraphicSearch.noMatchVal := "foobar"
 	assert.test(oGraphicSearch.searchAgain(), "foobar")
+
+	assert.label(".resultMerge")
+	resultObj := [{1:300, 2:200, 3:50, 4:30, id:"Hello"}
+		, {1:360, 2:200, 3:60, 4:30, id:"World"}
+		, {1:900, 2:250, 3:80, 4:40, id:"OCR?"}]
+
+	; with custom offsets
+	results := oGraphicSearch.resultMerge(resultObj, 30, 20, 10)
+	assert.test(results, {"x":300, "y":200, "h":90, "w":680, "text":"HelloWorld*OCR?"})
+
 
 	assert.fullReport()
 } else {

@@ -183,7 +183,7 @@ class graphicsearch {
 
 		for key, value in resultObj {
 			resultObj[key].distance := round(sqrt((value.x - param_x)**2 + (value.y - param_y)**2), 0)
-			sortStr .= value.distance "###" key "`n"
+			sortStr .= value.distance "#/#/#" key "`n"
 		}
 
 		; Sort the string by distance in ascending order
@@ -191,10 +191,11 @@ class graphicsearch {
 		resultObj2 := []
 		loop, parse, sortStr, `n
 		{
-			k := strSplit(A_LoopField, "###")[2]
-			resultObj2.push(resultObj[k])
+			if (A_LoopField != "") {
+				k := strSplit(A_LoopField, "#/#/#")[2]
+				resultObj2.push(resultObj[k])
+			}
 		}
-
 		return resultObj2
 	}
 
@@ -275,7 +276,7 @@ class graphicsearch {
 	_drawBoxOnScreen(para_text, para_options) {
 		try {
 			; apply defaults
-			; para_options := this._merge({x: 100, y: 100, timeout: 4000}, para_options)
+			para_options := this._merge({x: 100, y: 100, timeout: 4000}, para_options)
 
 			; create unique name and start timeout timer
 			l_name := this._hash([para_text, para_options])
