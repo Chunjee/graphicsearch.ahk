@@ -65,8 +65,9 @@ Or this if more than one was found:
 
 <br>
 
-## Example Scripts
+## Examples
 
+### Log Each Match
 If we want to search for all the pizzas we can perform the following to msgbox the x,y location of each match
 
 ```autohotkey
@@ -81,6 +82,8 @@ if (resultObj) {
 ```
 
 <br>
+
+### Join Queries
 
 If we wanted to search for two (or more) items in one search that can be accomplished by joining both queries into one long string and performing the same search
 
@@ -98,6 +101,8 @@ if (resultObj) {
 
 
 <br>
+
+### Search Again
 
 There may be things we want to search for repeatedly but don't want to juggle arguments constantly, you can create instances of GraphicSearch that are responsible for finding individual graphics.
 
@@ -134,6 +139,8 @@ while (foundBothGate != true) {
 
 <br>
 
+### Closest Match to Location
+
 Let's imagine we want to click the pizza closet to the center, `.resultSortDistance` will sort a ResultsObject by proximity to an x,y coord. A real smart app might even use GraphicSearch to find the center <img src = 'assets/emojii/smart.png'>
 
 For example simplicity we'll say we already know the center is at 300,300
@@ -153,6 +160,8 @@ if (resultObj) {
 	Click, % sortedResults[1].x " " sortedResults[1].y
 }
 ```
+
+### Filter Results By Distance
 
 `.resultSortDistance` returns a ResultsObject with an additional a property "distance" for each match. That may be useful for calculating how close things are to each other. Let's msgbox on any pizza's found outside the circle. We'll perform the check `if (sortedResults[A_Index].distance > 350)` which will return true for anything greater than the radius of the circle (about 350 pixels)
 
