@@ -57,6 +57,10 @@ if (result1) {
 	assert.test(result1.count(), 5)
 	assert.test(result2.count(), 1)
 
+	; endure findall setting considered when disabled
+	assert.label("find only one")
+	assert.test(oGraphicSearch.search(pizzaGraphic, {findall: false}).count(), 1)
+
 	; test three searches combined
 	assert.label("multiple searches combined count")
 	assert.test(threeResults.count(), 7)
