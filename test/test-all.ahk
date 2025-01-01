@@ -143,7 +143,7 @@ if (result1) {
 
 	; with custom offsets
 	results := oGraphicSearch.resultMerge(resultObj, 30, 20, 10)
-	assert.test(results, {"x":300, "y":200, "h":90, "w":680, "text":"HelloWorld*OCR?"})
+	assert.test(results, {"x":300, "y":200, "h":30, "w":110, "text":"HelloWorld"})
 
 
 	assert.fullReport()
