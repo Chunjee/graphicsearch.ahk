@@ -30,17 +30,17 @@ finds GraphicSearch queries on the screen
 
 ##### Example
 ```autohotkey
-optionsObj := {   x1: 0
-                , y1: 0
-                , x2: A_ScreenWidth
-                , y2: A_ScreenHeight
-                , err1: 0
-                , err0: 0
-                , screenshot: 1
-                , findall: 1
-                , joinqueries: 1
-                , offsetx: 1
-                , offsety: 1 }
+optionsObj :=	{ x1: 0
+				, y1: 0
+				, x2: A_ScreenWidth
+				, y2: A_ScreenHeight
+				, err1: 0
+				, err0: 0
+				, screenshot: 1
+				, findall: 1
+				, joinqueries: 1
+				, offsetx: 1
+				, offsety: 1 }
 
 oGraphicSearch.search("|<tag>*165$22.03z", optionsObj)
 oGraphicSearch.search("|<tag>*165$22.03z", {x2: 100, y2: 100})
@@ -178,8 +178,8 @@ Sort the results object from left to right and top to bottom, ignoring slight he
 
 #### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
-              , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
+resultsObj := 	[ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
+				, {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 
 oGraphicSearch.resultSort(resultsObj)
 ; => [{1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}, {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}]
@@ -208,8 +208,8 @@ Sort the results objects by distance to a given x,y coordinate. A property "dist
 
 #### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
-              , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
+resultsObj :=	[ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
+				, {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 
 oGraphicSearch.resultSortDistance(resultsObj, 2000, 2000)
 /*
@@ -244,16 +244,19 @@ Visually display the locations of search results on the screen. It takes in a `r
 
 #### Example
 ```autohotkey
-resultsObj := [ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
-              , {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
+resultsObj :=	[ {1: 2000, 2: 2000, 3: 22, 4: 10, id: "HumanReadableTag", x: 2000, y: 2000}
+				, {1: 1215, 2: 400, 3: 22, 4: 10, id: "HumanReadableTag", x: 1226, y: 412}]
 
-oGraphicSearch.showMatches(resultsObj, {showlabels: false, timeout: 60000}}]
+oGraphicSearch.showMatches(resultsObj, {showlabels: false, timeout: 60000})
 ```
 
 # Misc
 
 ## .resultMerge
-> .resultMerge(resultObj, offsetX := 20, offsetY := 20, overlapW := 0)
+`.resultMerge(resultObj, offsetX := 20, offsetY := 20, overlapW := 0)`
+
+Merge overlapping or adjacent search results into a single resultsObject. It takes in a resultsObject and optional parameters to adjust proximity and overlap thresholds. This can be used like a Optical Character Recognition (OCR) system, or just to combine nearby results into one object.
+
 
 #### Arguments
 | Parameter | Type   | Default Value | Description |
@@ -261,12 +264,12 @@ oGraphicSearch.showMatches(resultsObj, {showlabels: false, timeout: 60000}}]
 | resultObj | Object | N/A           | The GraphicSearch results object containing the search results to process.   |
 | offsetX   | number | 20            | The horizontal offset in pixels between adjacent mergable results.           |
 | offsetY   | number | 20            | The vertical offset in pixels between adjacent mergable results.             |
-| overlapW  | number | 0             | The overlap width in pixels. Sets the allowed horizontal overlap between OCR blocks. |
+| overlapW  | number | 0             | The overlap width in pixels. Sets the allowed horizontal overlap between labels. |
 
 #### Returns
 | Type   | Description |
 |--------|-------------|
-| Object | Returns an object containing the combined OCR text and bounding box dimensions of the text. The object includes: |
+| Object | Returns an object containing the combined labels text and bounding box dimensions of the text. The object includes: |
 |        | `text`: The concatenated id string.                                       |
 |        | `x`: The x-coordinate of the bounding box's upper-left corner.            |
 |        | `y`: The y-coordinate of the bounding box's upper-left corner.            |
@@ -278,15 +281,13 @@ oGraphicSearch.showMatches(resultsObj, {showlabels: false, timeout: 60000}}]
 ```autohotkey
 resultObj := [{1:300, 2:200, 3:50, 4:30, id:"Hello"}
 	, {1:360, 2:200, 3:60, 4:30, id:"World"}
-	, {1:900, 2:250, 3:80, 4:40, id:"OCR"}]
+	, {1:900, 2:250, 3:80, 4:40, id:"FOO!"}]
 
-; Extract text with custom offsets
-merged := oGraphicSearch.resultMerge(resultObj, 30)
+; merge with custom offsets
+resultObj := [{1:300, 2:200, 3:50, 4:30, id:"Hello"}
+		, {1:360, 2:200, 3:60, 4:30, id:"World"}
+		, {1:900, 2:250, 3:80, 4:40, id:"FOO!"}]
 
-; Output the OCR text and bounding box info
-msgBox % "Text: " merged.text "`n" 
-	. "Bounding Box - X: " merged.x " Y: " merged.y 
-	. " Width: " merged.w " Height: " merged.h
-; => "Text: HelloWorld"
-; => "Bounding Box - X: 300 Y: 200 Width: 110 Height: 30"
+resultObj := oGraphicSearch.resultMerge(resultObj, 30, 20, 10)
+; => {"x":300, "y":200, "h":30, "w":110, "text":"HelloWorld"}
 ```
