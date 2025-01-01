@@ -1,13 +1,21 @@
-Long-form README: https://chunjee.github.io/graphicsearch.ahk
+Online Documentation: https://chunjee.github.io/graphicsearch.ahk
 
-## GraphicSearch
+## graphicsearch.ahk
 
 A lightning-fast, highly versatile, and powerful screen searching library for AutoHotkey
 
 
 ## What is it?
 
-> GraphicSearch offers a powerful alternative to the native AHK [Imagesearch](https://autohotkey.com/docs/commands/ImageSearch.htm) command. While the native command requires saved image files, nearly exact image matching, and can be slow and difficult to troubleshoot, GraphicSearch takes a different approach. It abstracts the screen into a simplified representation, similar to ASCII art, using characters like 0s and _s. This abstraction enables faster matching, easier adjustments to fault tolerance, and more flexibility. Unlike AHK ImageSearch, which returns only the first match, GraphicSearch can return all matches, making it more efficient for complex searches. Additionally, it avoids the need to recapture the screen image for each search, improving performance when checking multiple graphics.
+graphicsearch.ahk is a robust alternative to AutoHotkey's native `ImageSearch` command, addressing its limitations with innovative features tailored for modern developers. Unlike `ImageSearch`, which requires saved image files, exact matches, and can be slow and challenging to debug, graphicsearch.ahk simplifies the process by abstracting the screen into a lightweight representation, akin to ASCII art, using characters `0` and `_`.
+
+This approach offers several key advantages:  
+- **Array of Results**: graphicsearch.ahk returns an array of objects, each representing a match with detailed properties. This structured format makes it easier to process and integrate results into modern workflows.  
+- **Speed and Efficiency**: It performs faster matches without the need to recapture the screen image for each search, streamlining searches involving multiple graphics.  
+- **Flexibility**: Its adjustable fault tolerance and abstraction layer allow fine-tuning for varying conditions.  
+- **Comprehensive Results**: Unlike `ImageSearch`, which returns only the first match, graphicsearch.ahk identifies and returns all matches, enabling advanced and complex search scenarios.  
+
+With these enhancements, graphicsearch.ahk not only surpasses `ImageSearch` in speed and functionality but also provides a developer-friendly experience, making graphical searches more intuitive and powerful.
 
 
 ## Installation
